@@ -30,10 +30,10 @@ function App() {
           </div>
       </div>
       <div className="footer w-full h-14 flex flex-row justify-center items-center p-4">
-        <div className="container flex flex-row justify-center items-center gap-2">
+      <a href="https://github.com/rubengpr"><div className="container flex flex-row justify-center items-center gap-2">
           <img className="w-8" src="/public/github-logo.png" alt="Github logo" />
           <p className="text-md text-white">Made by rubengpr</p>
-        </div>
+        </div></a>
       </div>
     </div>
   )
