@@ -14,7 +14,7 @@ function App() {
           </ul>
         </div>
         <div className="w-full h-full flex justify-end items-center">
-          <button className="cursor-pointer hover:bg-gray-800 text-white px-4 py-1.5 rounded-sm text-sm border border-white "><Link to="login">Log in</Link></button>
+          <button className="cursor-pointer hover:bg-gray-800 text-white px-4 py-1.5 rounded-sm text-sm border border-white"><Link to="login">Log in</Link></button>
         </div>
       </nav>
       <div className="hero-page w-full mt-30 h-60 justify-center items-center">
