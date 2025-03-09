@@ -1,4 +1,4 @@
-export default function Login() {
+export default function LoginPage() {
     return(
         <div className="login-page font-mono bg-black min-h-screen">
             <div className="login-container w-40 h-40 bg-gray-700 border-solid border-white rounded-md">
