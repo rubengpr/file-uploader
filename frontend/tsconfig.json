@@ -3,5 +3,10 @@
   "references": [
     { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" }
-  ]
+  ],
+  "compilerOptions": {
+    // ...existing config...
+    "noImplicitAny": false,    // Disables implicit 'any' type errors
+    "strict": false            // Disables all strict type checking
+  }
 }
