@@ -1,4 +1,6 @@
 import { Link } from "react-router-dom"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 import { useState, FocusEvent } from "react"
 
 export default function SignupPage() {
@@ -8,6 +10,14 @@ export default function SignupPage() {
     const [repeatPasswordError, setRepeatPasswordError] = useState("");
     const [email, setEmail] = useState("");
     const [emailError, setEmailError] = useState("");
+
+    const [showPassword, setShowPassword] = useState(false)
+    const [showRepeatPassword, setShowRepeatPassword] = useState(false)
+
+    function toggleShowPassword() {
+        setShowPassword(prev => !prev);
+        setShowRepeatPassword(prev => !prev)
+    }
 
     function handlePasswordBlur(e: FocusEvent<HTMLInputElement>) {
         validatePassword(e.target.value)
@@ -63,12 +73,15 @@ export default function SignupPage() {
                     </div>
                     <div className="flex flex-col justify-center items-start mb-3">
                         <label className="text-xs w-full" htmlFor="">Password</label>
-                        <input className="border-1 rounded-sm w-full px-2 py-1 text-xs" value={password} type="password" onChange={(e) => setPassword(e.target.value)} onBlur={handlePasswordBlur} />
+                        <div className="relative flex flex-row justify-center items-center w-full">
+                            <input className="border-1 rounded-sm w-full pr-10 px-2 py-1 text-xs" type={showPassword ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} onBlur={handlePasswordBlur} />
+                            <FontAwesomeIcon onClick={toggleShowPassword} className="text-xs absolute top-1/2 right-2.5 -translate-y-1/2 cursor-pointer" icon={showPassword ? faEye : faEyeSlash} />
+                        </div>
                         {passwordError && <p className="text-red-500 text-[10px] mt-1">{passwordError}</p>}
                     </div>
                     <div className="flex flex-col justify-center items-start mb-3">
                         <label className="text-xs w-full" htmlFor="">Repeat password</label>
-                        <input className="border-1 rounded-sm w-full px-2 py-1 text-xs" value={repeatPassword} type="password" onChange={(e) => setRepeatPassword(e.target.value)} onBlur={handleRepeatPasswordBlur} />
+                        <input className="border-1 rounded-sm w-full px-2 py-1 text-xs" value={repeatPassword} type={showRepeatPassword ? "text" : "password" } onChange={(e) => setRepeatPassword(e.target.value)} onBlur={handleRepeatPasswordBlur} />
                         {repeatPasswordError && <p className="text-red-500 text-[10px] mt-1">{repeatPasswordError}</p>}
                     </div>
                     <div className="signup-footer flex flex-col justify-center items-center py-3 mt-6">

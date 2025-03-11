@@ -1,9 +1,15 @@
 import { Link } from "react-router-dom"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEye } from '@fortawesome/free-solid-svg-icons'
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
+import { useState } from "react"
 
 
 export default function LoginPage() {
+    const [showPassword, setShowPassword] = useState(false)
+
+    const toggleShowPassword = () => setShowPassword(prev => !prev);
+
+    
     return(
         <div className="login-page flex flex-col justify-center items-center font-mono text-white bg-black min-h-screen">
             <img className="w-30 mb-6" src="../public/folded-logo.svg" alt="Folded logo" />
@@ -19,9 +25,9 @@ export default function LoginPage() {
                     </div>
                     <div className="flex flex-col justify-center items-start mb-3">
                         <label className="text-xs w-full" htmlFor="">Password</label>
-                        <div className="flex flex-row justify-center items-center">
-                            <input className="border-1 rounded-sm w-full px-2 py-1 text-xs" type="password" />
-                            <FontAwesomeIcon icon={faEye} />
+                        <div className="relative flex flex-row justify-center items-center w-full">
+                            <input className="border-1 rounded-sm w-full pr-10 px-2 py-1 text-xs" type={showPassword ? "text" : "password"} />
+                            <FontAwesomeIcon onClick={toggleShowPassword} className="text-xs absolute top-1/2 right-2.5 -translate-y-1/2 cursor-pointer" icon={showPassword ? faEye : faEyeSlash} />
                         </div>
                     </div>
                     <div className="login-footer flex flex-col justify-center items-center py-3 mt-6">
