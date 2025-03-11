@@ -1,4 +1,7 @@
 import { Link } from "react-router-dom"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEye } from '@fortawesome/free-solid-svg-icons'
+
 
 export default function LoginPage() {
     return(
@@ -16,7 +19,10 @@ export default function LoginPage() {
                     </div>
                     <div className="flex flex-col justify-center items-start mb-3">
                         <label className="text-xs w-full" htmlFor="">Password</label>
-                        <input className="border-1 rounded-sm w-full px-2 py-1 text-xs" type="password" />
+                        <div className="flex flex-row justify-center items-center">
+                            <input className="border-1 rounded-sm w-full px-2 py-1 text-xs" type="password" />
+                            <FontAwesomeIcon icon={faEye} />
+                        </div>
                     </div>
                     <div className="login-footer flex flex-col justify-center items-center py-3 mt-6">
                         <button className="cursor-pointer w-full hover:bg-gray-800 text-white px-4 py-1.5 rounded-sm text-sm border border-white mb-2">Log in</button>
