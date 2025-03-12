@@ -2,6 +2,7 @@ import { Link } from "react-router-dom"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 import { useState, FocusEvent } from "react"
+import LabelInput from "../components/LabelInput"
 
 export default function SignupPage() {
     const [password, setPassword] = useState("");
@@ -66,23 +67,13 @@ export default function SignupPage() {
                     <h2>Sign up</h2>
                 </div>
                 <form className="px-12 py-6" action="">
-                    <div className="flex flex-col justify-center items-start mb-3">
-                        <label className="text-xs w-full" htmlFor="">Email</label>
-                        <input className="border-1 rounded-sm w-full px-1 py-1 text-xs" type="text" value={email} onChange={(e) => setEmail(e.target.value)} onBlur={handleEmailBlur} />
-                        {emailError && <p className="text-red-500 text-[10px] mt-1">{emailError}</p>}
-                    </div>
-                    <div className="flex flex-col justify-center items-start mb-3">
-                        <label className="text-xs w-full" htmlFor="">Password</label>
-                        <div className="relative flex flex-row justify-center items-center w-full">
-                            <input className="border-1 rounded-sm w-full pr-10 px-2 py-1 text-xs" type={showPassword ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} onBlur={handlePasswordBlur} />
-                            <FontAwesomeIcon onClick={toggleShowPassword} className="text-xs absolute top-1/2 right-2.5 -translate-y-1/2 cursor-pointer" icon={showPassword ? faEye : faEyeSlash} />
+                    <div className="flex flex-col gap-3">
+                        <LabelInput type="text" label="Email" error={emailError} value={email} onChange={(e) => setEmail(e.target.value)} onBlur={handleEmailBlur} />
+                        <div className="relative">
+                            <LabelInput type={showPassword ? "text" : "password"} label="Password" error={passwordError} value={password} onChange={(e) => setPassword(e.target.value)} onBlur={handlePasswordBlur} />
+                            <FontAwesomeIcon onClick={toggleShowPassword} className="text-xs absolute top-6.5 left-65 cursor-pointer" icon={showPassword ? faEye : faEyeSlash} />
                         </div>
-                        {passwordError && <p className="text-red-500 text-[10px] mt-1">{passwordError}</p>}
-                    </div>
-                    <div className="flex flex-col justify-center items-start mb-3">
-                        <label className="text-xs w-full" htmlFor="">Repeat password</label>
-                        <input className="border-1 rounded-sm w-full px-2 py-1 text-xs" value={repeatPassword} type={showRepeatPassword ? "text" : "password" } onChange={(e) => setRepeatPassword(e.target.value)} onBlur={handleRepeatPasswordBlur} />
-                        {repeatPasswordError && <p className="text-red-500 text-[10px] mt-1">{repeatPasswordError}</p>}
+                        <LabelInput type={showRepeatPassword ? "text" : "password" } label="Repeat password" error={repeatPasswordError} value={repeatPassword} onChange={(e) => setRepeatPassword(e.target.value)} onBlur={handleRepeatPasswordBlur} />
                     </div>
                     <div className="signup-footer flex flex-col justify-center items-center py-3 mt-6">
                         <button className="cursor-pointer w-full hover:bg-gray-800 text-white px-4 py-1.5 rounded-sm text-sm border border-white mb-2">Sign up</button>

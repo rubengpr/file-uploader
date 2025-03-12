@@ -2,6 +2,7 @@ import { Link } from "react-router-dom"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 import { useState } from "react"
+import LabelInput from "../components/LabelInput"
 
 
 export default function LoginPage() {
@@ -19,15 +20,13 @@ export default function LoginPage() {
                     <h2>Log in</h2>
                 </div>
                 <form className="px-12 py-6" action="">
-                    <div className="flex flex-col justify-center items-start mb-3">
-                        <label className="text-xs w-full" htmlFor="">Email</label>
-                        <input className="border-1 rounded-sm w-full px-1 py-1 text-xs" type="text" />
-                    </div>
-                    <div className="flex flex-col justify-center items-start mb-3">
-                        <label className="text-xs w-full" htmlFor="">Password</label>
-                        <div className="relative flex flex-row justify-center items-center w-full">
-                            <input className="border-1 rounded-sm w-full pr-10 px-2 py-1 text-xs" type={showPassword ? "text" : "password"} />
-                            <FontAwesomeIcon onClick={toggleShowPassword} className="text-xs absolute top-1/2 right-2.5 -translate-y-1/2 cursor-pointer" icon={showPassword ? faEye : faEyeSlash} />
+                    <div className="flex flex-col gap-3">
+                        <LabelInput type="text" label="Email"/>
+                        <div className="flex flex-col justify-center items-start mb-3">
+                            <div className="relative w-full">
+                                <LabelInput type={showPassword ? "text" : "password"} label="Password" />
+                                <FontAwesomeIcon onClick={toggleShowPassword} className="text-xs absolute top-6.5 left-65 cursor-pointer" icon={showPassword ? faEye : faEyeSlash} />
+                            </div>
                         </div>
                     </div>
                     <div className="login-footer flex flex-col justify-center items-center py-3 mt-6">
