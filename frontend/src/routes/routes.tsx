@@ -2,7 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import App from "../App"
 import LoginPage from "../pages/LoginPage"
 import SignupPage from "../pages/SignupPage"
-import Test from "../components/Test";
+import Form from "../components/Form";
 
 const router = createBrowserRouter([
     {
@@ -18,8 +18,8 @@ const router = createBrowserRouter([
       element: <SignupPage />,
     },
     {
-      path: "test",
-      element: <Test />,
+      path: "form",
+      element: <Form title={""} buttonText={""} children={undefined} />,
     },
   ]);
 
