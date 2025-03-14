@@ -61,7 +61,7 @@ export default function SignupPage() {
 
     return(
         <div className="signup-page flex flex-col justify-center items-center font-mono text-white bg-black min-h-screen">
-            <Form title="Sign up" buttonText="Sign up" belowButton={ <> or{" "} <u className="cursor-pointer"> <Link to="/login">Log in</Link> </u> </> }>
+            <Form title="Sign up" buttonText="Sign up" belowButton={ <> or{" "} <u className="cursor-pointer"> <Link to="/login">log in</Link> </u> </> }>
                 <LabelInput label="Email" type="text" error={emailError} value={email} onChange={(e) => setEmail(e.target.value)} onBlur={handleEmailBlur} />
                 <div className="relative w-full">
                     <LabelInput label="Password" type={showPassword ? "text" : "password"} error={passwordError} value={password} onChange={(e) => setPassword(e.target.value)} onBlur={handlePasswordBlur} />
