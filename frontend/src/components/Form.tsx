@@ -23,5 +23,3 @@ export default function Form({ children, title, buttonText, belowButton }: FormP
         </div>
     )
 }
-
-//Props: form title, LabelInputs, button text, below-button text (optional)
