@@ -65,7 +65,7 @@ export default function SignupPage() {
                 <LabelInput label="Email" type="text" error={emailError} value={email} onChange={(e) => setEmail(e.target.value)} onBlur={handleEmailBlur} />
                 <div className="relative w-full">
                     <LabelInput label="Password" type={showPassword ? "text" : "password"} error={passwordError} value={password} onChange={(e) => setPassword(e.target.value)} onBlur={handlePasswordBlur} />
-                    <FontAwesomeIcon onClick={toggleShowPassword} className="text-xs absolute top-6.5 left-65 cursor-pointer" icon={showPassword ? faEye : faEyeSlash} />
+                    <FontAwesomeIcon onClick={toggleShowPassword} className="text-xs absolute top-6.5 left-70 cursor-pointer" icon={showPassword ? faEye : faEyeSlash} />
                 </div>
                 <LabelInput label="Repeat password" type={showRepeatPassword ? "text" : "password"} error={repeatPasswordError} value={repeatPassword} onChange={(e) => setRepeatPassword(e.target.value)} onBlur={handleRepeatPasswordBlur} />
             </Form>

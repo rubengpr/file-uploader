@@ -20,7 +20,7 @@ export default function LoginPage() {
                 <LabelInput label="Email" type="text" />
                 <div className="relative w-full">
                     <LabelInput type={showPassword ? "text" : "password"} label="Password" />
-                    <FontAwesomeIcon onClick={toggleShowPassword} className="text-xs absolute top-6.5 left-65 cursor-pointer" icon={showPassword ? faEye : faEyeSlash} />
+                    <FontAwesomeIcon onClick={toggleShowPassword} className="text-xs absolute top-6.5 left-70 cursor-pointer" icon={showPassword ? faEye : faEyeSlash} />
                 </div>
             </Form>
         </div>
