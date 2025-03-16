@@ -1,12 +1,22 @@
 import { Link, useNavigate } from "react-router-dom"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
-import { useState, FocusEvent } from "react"
+import { useState, FocusEvent, useEffect } from "react"
 import LabelInput from "../components/LabelInput"
 import Form from "../components/Form"
 import axios from 'axios';
+import { isAuthenticated } from "../utils/auth"
 
 export default function SignupPage() {
+    
+    const navigate = useNavigate();
+        
+        useEffect(() => {
+            if (isAuthenticated()) {
+              navigate("/dashboard");
+            }
+          }, [navigate]);
+    
     const [password, setPassword] = useState("");
     const [repeatPassword, setRepeatPassword] = useState("");
     const [passwordError, setPasswordError] = useState("");
@@ -17,8 +27,6 @@ export default function SignupPage() {
 
     const [showPassword, setShowPassword] = useState(false)
     const [showRepeatPassword, setShowRepeatPassword] = useState(false)
-
-    const navigate = useNavigate();
 
     function toggleShowPassword() {
         setShowPassword(prev => !prev);

@@ -1,10 +1,18 @@
-import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { isAuthenticated, logout } from '../utils/auth.ts';
+import { useEffect } from 'react';
 
 export default function Dashboard() {
-    if (!isAuthenticated()) {
-        return <Navigate to='/login' replace />;
-    }
+    
+        const navigate = useNavigate();
+        
+        useEffect(() => {
+            if (isAuthenticated()) {
+              navigate('/dashboard');
+            } else {
+              navigate('/login');
+            }
+          }, [navigate]);
 
     return (
         <>
@@ -13,4 +21,4 @@ export default function Dashboard() {
             <button onClick={logout}>Log out</button>
         </>
     );
-}
+};
