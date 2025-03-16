@@ -1,9 +1,10 @@
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 import { useState, FocusEvent } from "react"
 import LabelInput from "../components/LabelInput"
 import Form from "../components/Form"
+import axios from 'axios';
 
 export default function SignupPage() {
     const [password, setPassword] = useState("");
@@ -12,9 +13,12 @@ export default function SignupPage() {
     const [repeatPasswordError, setRepeatPasswordError] = useState("");
     const [email, setEmail] = useState("");
     const [emailError, setEmailError] = useState("");
+    const [errorMsg, setErrorMsg] = useState("");
 
     const [showPassword, setShowPassword] = useState(false)
     const [showRepeatPassword, setShowRepeatPassword] = useState(false)
+
+    const navigate = useNavigate();
 
     function toggleShowPassword() {
         setShowPassword(prev => !prev);
@@ -59,12 +63,33 @@ export default function SignupPage() {
         }
     }
 
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setErrorMsg("");
+
+        try {
+            const response = await axios.post('http://localhost:4000/api/auth/signup', { email, password });
+
+            const { token } = response.data
+            localStorage.setItem('token', token);
+
+            navigate('/dashboard');
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                const message = error.response?.data?.error || "Something went wrong. Please, try again.";
+                setErrorMsg(message);
+            } else {
+                setErrorMsg("Unexpected error occurred.");
+            }
+        }
+    }
+
     return(
         <div className="signup-page flex flex-col justify-center items-center font-mono text-white bg-black min-h-screen">
             <img className="w-30 mb-6" src="../public/folded-logo.svg" alt="Folded logo" />
             <p className="mb-2">One more step to store your files</p>
-            <Form title="Sign up" buttonText="Sign up" belowButton={ <> or{" "} <u className="cursor-pointer"> <Link to="/login">log in</Link> </u> </> }>
-                <LabelInput label="Email" type="text" name="email" error={emailError} value={email} onChange={(e) => setEmail(e.target.value)} onBlur={handleEmailBlur} />
+            <Form handleSubmit={handleSubmit} title="Sign up" buttonText="Sign up" belowButton={ <> or{" "} <u className="cursor-pointer"> <Link to="/login">log in</Link> </u> </> }>
+                <LabelInput label="Email" type="text" name="email" error={emailError} errorMsg={errorMsg} value={email} onChange={(e) => setEmail(e.target.value)} onBlur={handleEmailBlur} />
                 <div className="relative w-full">
                     <LabelInput label="Password" name="password" type={showPassword ? "text" : "password"} error={passwordError} value={password} onChange={(e) => setPassword(e.target.value)} onBlur={handlePasswordBlur} />
                     <FontAwesomeIcon onClick={toggleShowPassword} className="text-xs absolute top-6.5 left-70 cursor-pointer" icon={showPassword ? faEye : faEyeSlash} />
