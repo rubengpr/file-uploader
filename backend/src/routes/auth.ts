@@ -8,12 +8,10 @@ const prisma = new PrismaClient();
 
 router.post('/', async (req: any, res: any) => {
     const { email, password } = req.body;
-    console.log(email, password);
 
     try {
         // 1. Check if user already exists
         const existingUser = await prisma.user.findUnique({where: { email } });
-        console.log(existingUser);
         if (existingUser) return res.status(400).json({ error: 'User already exists' });
 
         // 2. Hash password
