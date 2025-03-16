@@ -3,15 +3,16 @@ interface FormProps {
     buttonText: string;
     belowButton?: React.ReactNode;
     children: React.ReactNode;
+    handleSubmit: React.FormEventHandler<HTMLFormElement>;
   }
 
-export default function Form({ children, title, buttonText, belowButton }: FormProps) {
+export default function Form({ children, title, buttonText, belowButton, handleSubmit }: FormProps) {
     return(
         <div className="w-100 bg-gray-700 border-solid border-white rounded-md text-white">
             <div className="login-header flex flex-row justify-center items-center py-3 text-xl font-bold">
                 <h2>{title}</h2>
             </div>
-            <form className="px-12 py-6" action="">
+            <form className="px-12 py-6" onSubmit={handleSubmit} action="">
                 <div className="flex flex-col gap-3">
                     {children}
                 </div>
