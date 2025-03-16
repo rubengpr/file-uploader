@@ -1,18 +1,27 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 import Form from "../components/Form"
 import LabelInput from "../components/LabelInput";
 import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios'
+import { isAuthenticated } from "../utils/auth";
 
 
 export default function LoginPage() {
+
+    const navigate = useNavigate();
+    
+    useEffect(() => {
+        if (isAuthenticated()) {
+          navigate("/dashboard");
+        }
+      }, [navigate]);
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
-    const navigate = useNavigate();
 
     const toggleShowPassword = () => setShowPassword(prev => !prev);
 
@@ -43,7 +52,7 @@ export default function LoginPage() {
             <img className="w-30 mb-6" src="../public/folded-logo.svg" alt="Folded logo" />
             <p className="mb-2">Welcome back to your file storage</p>
             <Form errorMsg={errorMsg} handleSubmit={handleSubmit} title="Log in" buttonText="Log in" belowButton={ <> or{" "} <u className="cursor-pointer"> <Link to="/signup">sign up</Link> </u> </> }>
-                <LabelInput label="Email" name="email" type="text" value={email} onChange={(e) => setEmail(e.target.value)} />
+                <LabelInput label="Email" name="email" type="text" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
                 <div className="relative w-full">
                     <LabelInput type={showPassword ? "text" : "password"} name="password" label="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
                     <FontAwesomeIcon onClick={toggleShowPassword} className="text-xs absolute top-6.5 left-70 cursor-pointer" icon={showPassword ? faEye : faEyeSlash} />
