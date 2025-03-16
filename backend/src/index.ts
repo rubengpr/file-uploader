@@ -9,9 +9,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use('/signup', authRoutes);
+app.use('/', authRoutes);
 
-const PORT = 5173
+const PORT = 4000
 app.listen(PORT, () => {
     console.log(`Server listening coming requests from port ${PORT}`);
 })
