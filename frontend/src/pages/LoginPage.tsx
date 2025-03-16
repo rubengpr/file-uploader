@@ -29,7 +29,6 @@ export default function LoginPage() {
             navigate('/dashboard');
         } catch (error) {
             if (axios.isAxiosError(error)) {
-                console.error('Login failed:', error.response?.data || error.message);
                 const message = error.response?.data?.error || "Something went wrong. Please, try again.";
                 setErrorMsg(message);
             } else {
