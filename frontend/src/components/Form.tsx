@@ -7,6 +7,8 @@ interface FormProps {
     handleSubmit: React.FormEventHandler<HTMLFormElement>;
   }
 
+import Button from "./Button";
+
 export default function Form({ children, title, buttonText, belowButton, errorMsg, handleSubmit }: FormProps) {
     return(
         <div className="w-100 bg-gray-700 border-solid border-white rounded-md text-white">
@@ -19,7 +21,7 @@ export default function Form({ children, title, buttonText, belowButton, errorMs
                 </div>
                 {errorMsg && <p className="text-red-400 text-xs mt-1 mb-1">{errorMsg}</p>}
                 <div className="login-footer flex flex-col justify-center items-center py-3 mt-6">
-                    <button className="cursor-pointer w-full hover:bg-gray-800 text-white px-4 py-1.5 rounded-sm text-sm border border-white mb-2">{buttonText}</button>
+                    <Button buttonText={buttonText} />
                     {belowButton && <p className="text-xs">{belowButton}</p>}
                 </div>
             </form>
