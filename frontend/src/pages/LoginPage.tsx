@@ -57,7 +57,7 @@ export default function LoginPage() {
                     <LabelInput type={showPassword ? "text" : "password"} name="password" label="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
                     <FontAwesomeIcon onClick={toggleShowPassword} className="text-xs absolute top-6.5 left-70 cursor-pointer" icon={showPassword ? faEye : faEyeSlash} />
                 </div>
-                <p className="text-xs underline cursor-pointer">Forgot your password, again?</p>
+                <u className="cursor-pointer text-xs"> <Link to="/recover-password">Forgot your password, again?</Link> </u>
             </Form>
         </div>
     )
