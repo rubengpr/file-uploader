@@ -10,52 +10,61 @@ router.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        //1. Find the user
-        const user = await prisma.user.findUnique({ where: {email} });
-        if (!user) return res.status(401).json({ error: 'Invalid email or password' });
+        // 1. Find the user
+        const user = await prisma.user.findUnique({ where: { email } });
+        if (!user) {
+            res.status(401).json({ error: 'Invalid email or password' });
+            return;
+        }
 
-        //2. Compare passwords
+        // 2. Compare passwords
         const isMatch = await bcrypt.compare(password, user.hashedPassword);
-        if (!isMatch) return res.status(401).json({ error: 'Invalid email or password' });
+        if (!isMatch) {
+            res.status(401).json({ error: 'Invalid email or password' });
+            return;
+        }
 
-        //3. Generate token
+        // 3. Generate token
         const token = signToken({ id: user.id, email: user.email });
 
-        //4. Return token
-        return res.status(200).json({ token });
+        // 4. Send token
+        res.status(200).json({ token });
     } catch (err) {
-        return res.status(500).json({ error: 'Something went wrong. Try again, or contact us' })
+        res.status(500).json({ error: 'Something went wrong. Try again, or contact us' });
     }
 });
 
-router.post('/signup', async (req: any, res: any) => {
+router.post('/signup', async (req, res) => {
     const { email, password } = req.body;
 
     try {
         // 1. Check if user already exists
-        const existingEmail = await prisma.user.findUnique({where: { email } });
-        if (existingEmail) return res.status(400).json({ error: 'Email is already registered' });
+        const existingEmail = await prisma.user.findUnique({ where: { email } });
+        if (existingEmail) {
+            res.status(400).json({ error: 'Email is already registered' });
+            return;
+        }
 
         // 2. Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // 3. Create user
         const user = await prisma.user.create({
-        data: {
-            email,
-            hashedPassword
-        }
+            data: {
+                email,
+                hashedPassword,
+            },
         });
 
         // 4. Create JWT token
         const token = signToken({ id: user.id, email: user.email });
 
         // 5. Respond with token
-        return res.status(201).json({ token });
+        res.status(201).json({ token });
     } catch (err) {
         console.error(err);
-        return res.status(500).json({ error: 'Signup failed' });
-  }
+        res.status(500).json({ error: 'Signup failed' });
+    }
 });
 
 export default router;
