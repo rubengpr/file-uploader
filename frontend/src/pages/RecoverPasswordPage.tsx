@@ -7,12 +7,15 @@ import axios from "axios";
 export default function RecoverPasswordPage() {
     const [email, setEmail] = useState("");
     const [errorMsg, setErrorMsg] = useState("");
+    const [isEmailSent, setIsEmailSent] = useState(false);
     
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
+        setIsEmailSent(true);
+
         try {
-            const response = await axios.post('http://localhost:4000/api/email/simple-email', { email })
+            const response = await axios.post('http://localhost:4000/api/auth/recover-password', { email })
             console.log(response);
         } catch (error) {
             if (axios.isAxiosError(error)) {
@@ -32,6 +35,7 @@ export default function RecoverPasswordPage() {
             <Form errorMsg={errorMsg} title="Password recovery" buttonText="Send email" belowButton={ <> <u className="cursor-pointer"> <Link to="/login">Back to login</Link> </u> </> } handleSubmit={handleSubmit}>
                 <p className="text-xs text-center">We'll send you an email to recover your password. Hope it's the last time.</p>
                 <LabelInput type="text" label="Email" name="email" onChange={(e) => setEmail(e.target.value)} />
+                {isEmailSent && <p className="text-xs">We've sent you an email</p>}
             </Form>
         </div>
     )

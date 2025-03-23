@@ -1,7 +1,7 @@
 import FormData from "form-data"; // form-data v4.0.1
 import Mailgun from "mailgun.js"; // mailgun.js v11.1.0
 
-export default async function sendSimpleMessageTemplate() {
+export default async function sendSimpleMessageTemplate(email: string, token: string) {
   const mailgun = new Mailgun(FormData);
 
   const mg = mailgun.client({
@@ -14,11 +14,12 @@ export default async function sendSimpleMessageTemplate() {
   try {
     const data = await mg.messages.create("folded.me", {
       from: "Folded <mailing@folded.me>",
-      to: ["Ruben <rubengpr@gmail.com>"],
+      to: [`Ruben <${email}>`],
       subject: "Recover your Folded password",
       template: "Recover password template",
       "h:X-Mailgun-Variables": JSON.stringify({
         test: "test",
+        token,
       }),
     });
     console.log(data); // logs response data

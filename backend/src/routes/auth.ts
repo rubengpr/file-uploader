@@ -2,6 +2,8 @@ import { Router } from 'express';
 import bcrypt from 'bcrypt';
 import { PrismaClient } from '@prisma/client';
 import { signToken } from '../utils/jwt.ts';
+import crypto from 'crypto';
+import sendEmail from '../utils/sendEmail.ts'
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -66,5 +68,38 @@ router.post('/signup', async (req, res) => {
         res.status(500).json({ error: 'Signup failed' });
     }
 });
+
+router.post('/recover-password', async (req, res) => {
+    //1. Get email input value
+    const { email } = req.body;
+
+    //2. Look up in the database if the email exists
+    const user = await prisma.user.findUnique({ where: { email } });
+
+    //If not, end the process and return a 200 status
+    if (user) {
+        //If so, create a randomized crypto token
+        const token = crypto.randomBytes(32).toString("hex");
+        //Optional: hash token to store it in the database
+
+        //Set expiration date
+        const expiresAt = new Date(Date.now() + 1000 * 60 *60);
+
+        //Create a new row in the PasswordResetToken table
+        const passwordToken = await prisma.passwordResetToken.create({
+            data: {
+                token,
+                userId: user.id,
+                expiresAt,
+            }
+        });
+
+        //Add the token to the URL button & send an email to email value
+        sendEmail(email, token);
+    }
+
+    //Return a 200 success status, no matter if email exists
+    res.status(200).json({ message: "We've sent you an email" })
+})
 
 export default router;

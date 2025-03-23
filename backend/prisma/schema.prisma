@@ -18,4 +18,14 @@ model User {
   email String @unique
   hashedPassword String
   createdAt DateTime @default(now())
+  passwordTokens PasswordResetToken[]
+}
+
+model PasswordResetToken {
+  id String @id @default(uuid())
+  token String @unique
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
 }
