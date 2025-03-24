@@ -1,9 +1,9 @@
 import { Router } from 'express';
 import bcrypt from 'bcrypt';
 import { PrismaClient } from '@prisma/client';
-import { signToken } from '../utils/jwt';
+import { signToken } from '../utils/jwt.js';
 import crypto from 'crypto';
-import sendEmail from '../utils/sendEmail';
+import sendEmail from '../utils/sendEmail.js';
 const router = Router();
 const prisma = new PrismaClient();
 router.post('/login', async (req, res) => {
