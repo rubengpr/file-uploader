@@ -4,6 +4,7 @@ import LoginPage from "../pages/LoginPage"
 import SignupPage from "../pages/SignupPage"
 import Dashboard from "../pages/DashboardPage";
 import RecoverPasswordPage from "../pages/RecoverPasswordPage";
+import ChangePasswordPage from "../pages/ChangePasswordPage";
 
 const router = createBrowserRouter([
     {
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
     {
       path: "recover-password",
       element: <RecoverPasswordPage />,
+    },
+    {
+      path: "change-password",
+      element: <ChangePasswordPage />,
     },
   ]);
 

@@ -25,7 +25,6 @@ export default function RecoverPasswordPage() {
                 setErrorMsg("Unexpected error occurred.");
             }
         }
-        //Send email
         //Add success feedback
         //Add error message
     }

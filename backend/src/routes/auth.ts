@@ -100,6 +100,41 @@ router.post('/recover-password', async (req, res) => {
 
     //Return a 200 success status, no matter if email exists
     res.status(200).json({ message: "We've sent you an email" })
-})
+});
+
+router.post('/change-password', async (req, res) => {
+    //Get token value from frontend
+    const { password, token } = req.body;
+
+    //Check if token exists in PasswordResetToken table
+    const checkToken = await prisma.passwordResetToken.findUnique({ where: { token } })
+    //If it does not, return an error
+    
+    if (!checkToken) {
+        res.status(400).json({ message: "Password recovery request not found" })
+    }
+    //If it does, check expiresAt date and compare with Date
+    if (checkToken && checkToken.expiresAt < new Date()) {
+        res.status(400).json({ message: "Token expired. Request a new password recovery" })
+    }
+
+    //If token exists and is not expired, hash the inputted password value
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    //Update the hashed password into the right user (from the token table, userId)
+    const updatePassword = await prisma.user.update({
+        where: {
+            id: checkToken?.userId
+        },
+        data: {
+            hashedPassword,
+        }
+    });
+
+    res.status(200).json({ message: "Password changed successfully" });
+
+    //If something's wrong, return an error
+
+});
 
 export default router;
