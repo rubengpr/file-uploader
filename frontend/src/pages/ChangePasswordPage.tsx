@@ -48,7 +48,7 @@ export default function ChangePasswordPage() {
         setErrorMsg("");
 
         try {
-            const response = await axios.post('http://localhost:400/api/auth/change-password', { password, token });
+            const response = await axios.post('http://localhost:4000/api/auth/change-password', { password, token });
             console.log(response);
         } catch (error) {
             if (axios.isAxiosError(error)) {
