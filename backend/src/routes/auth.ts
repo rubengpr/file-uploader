@@ -1,9 +1,9 @@
 import { Router } from 'express';
 import bcrypt from 'bcrypt';
 import { PrismaClient } from '@prisma/client';
-import { signToken } from '../utils/jwt.ts';
+import { signToken } from '../utils/jwt';
 import crypto from 'crypto';
-import sendEmail from '../utils/sendEmail.ts'
+import sendEmail from '../utils/sendEmail'
 
 const router = Router();
 const prisma = new PrismaClient();
