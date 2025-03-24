@@ -1,12 +1,11 @@
 {
   "name": "file-uploader",
   "version": "1.0.0",
-  "main": "src/index.js",
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "start": "node src/index.ts",
-    "dev": "node --loader ts-node/esm src/index.ts",
+    "start": "node src/index.js",
+    "dev": "NODE_OPTIONS=\"--loader ts-node/esm\" node src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "migrate": "npx prisma migrate deploy"
   },
