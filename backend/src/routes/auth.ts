@@ -107,7 +107,6 @@ router.post('/change-password', async (req, res) => {
         const { password, token } = req.body;
 
         const checkToken = await prisma.passwordResetToken.findUnique({ where: { token } });
-        console.log(checkToken)
 
         if (!checkToken) {
             res.status(400).json({ message: "You didn't request a new password" });

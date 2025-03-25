@@ -15,8 +15,7 @@ export default function RecoverPasswordPage() {
         setIsEmailSent(true);
 
         try {
-            const response = await axios.post('http://localhost:4000/api/auth/recover-password', { email })
-            console.log(response);
+            await axios.post('http://localhost:4000/api/auth/recover-password', { email })
         } catch (error) {
             if (axios.isAxiosError(error)) {
                 const message = error.response?.data?.error || "Something went wrong. Please, try again.";
