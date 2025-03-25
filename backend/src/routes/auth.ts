@@ -107,6 +107,7 @@ router.post('/change-password', async (req, res) => {
         const { password, token } = req.body;
 
         const checkToken = await prisma.passwordResetToken.findUnique({ where: { token } });
+        console.log(checkToken)
 
         if (!checkToken) {
             res.status(400).json({ message: "You didn't request a new password" });
@@ -129,7 +130,17 @@ router.post('/change-password', async (req, res) => {
             }
         });
 
-        res.status(200).json({ message: "Password changed successfully" });
+        //Find user info
+        const user = await prisma.user.findUnique({ where: { id: checkToken.userId } });
+
+
+        //Generate a new auth token
+        const authToken = signToken({ id: user.id, email: user.email });
+
+
+        res.status(200).json({ message: "Password changed successfully", authToken });
+
+        
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: "Internal server error" });

@@ -4,8 +4,12 @@ import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function ChangePasswordPage() {
+
+    const navigate = useNavigate();
+
     const [password, setPassword] = useState("");
     const [repeatPassword, setRepeatPassword] = useState("");
     const [passwordError, setPasswordError] = useState("");
@@ -49,7 +53,11 @@ export default function ChangePasswordPage() {
 
         try {
             const response = await axios.post('http://localhost:4000/api/auth/change-password', { password, token });
-            console.log(response);
+
+            const { authToken } = response.data;
+            localStorage.setItem('token', authToken);
+
+            navigate('/dashboard');
         } catch (error) {
             if (axios.isAxiosError(error)) {
                 const message = error.response?.data?.message || "Something went wrong. Please, try again.";
