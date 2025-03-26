@@ -43,9 +43,9 @@ export default function Dashboard() {
                 <p className='option-text text-white text-sm'>New folder</p>
               </div>
             </div>
-            <div className="page-content w-full flex justify-center h-screen py-8 px-4">
-              <div className="w-full h-fit max-w-5xl rounded-md shadow-md border border-gray-500">
-                <table className="min-w-full text-white rounded-md bg-neutral-900">
+            <div className="page-content w-full flex justify-center h-screen px-10 py-8">
+              <div className="w-full h-fit rounded-md shadow-md border border-gray-500">
+                <table className="w-full text-white rounded-md bg-neutral-900">
                   <thead className="text-xs border-b border-white">
                     <tr>
                       <th className="px-6 py-2 text-left">File name</th>
