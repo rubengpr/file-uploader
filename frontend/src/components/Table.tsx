@@ -17,35 +17,33 @@ export default function Table() {
     ]
 
     return(
-        <div className="page-content w-full flex justify-center h-screen px-10 py-8 bg-black font-mono">
-            <div className="w-full h-fit rounded-md shadow-md border border-gray-500">
-                <table className="w-full text-white rounded-md bg-neutral-900">
-                    <thead className="text-xs border-b border-white">
-                        <tr className='bg-neutral-700'>
-                            <th className="px-6 py-2 text-left">File name</th>
-                            <th className="px-6 py-2 text-left">Created at</th>
-                            <th className="px-6 py-2 text-left">Size</th>
-                            <th className="px-6 py-2 text-left">Created by</th>
-                            <th className="px-6 py-2 text-left"></th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-white/10">
-                    {data.map((row) => (
-                        <tr key={row.id} className="hover:bg-neutral-800 cursor-pointer text-gray-300 hover:text-white">
-                            <td className="px-6 py-2 text-xs">{row.name}</td>
-                            <td className="px-6 py-2 text-xs">{row.createdAt}</td>
-                            <td className="px-6 py-2 text-xs">{row.size}</td>
-                            <td className="px-6 py-2 text-xs">{row.createdBy}</td>
-                            <td className="relative flex flex-row justify-center items-center px-6 py-2 text-xs">
-                                <FontAwesomeIcon onClick={() => toggleMenu(row.id)} className='px-2 py-1 rounded-full hover:bg-neutral-600' icon={faEllipsisVertical} />
-                                {openOptionsMenu === row.id && <OptionsMenu />}
-                            </td>
-                        </tr>
-                    ))}
+        <div className="w-full h-fit rounded-md shadow-md border border-gray-500">
+            <table className="w-full text-white rounded-md bg-neutral-900">
+                <thead className="text-xs border-b border-white">
+                    <tr className='bg-neutral-700'>
+                        <th className="px-6 py-2 text-left">File name</th>
+                        <th className="px-6 py-2 text-left">Created at</th>
+                        <th className="px-6 py-2 text-left">Size</th>
+                        <th className="px-6 py-2 text-left">Created by</th>
+                        <th className="px-6 py-2 text-left"></th>
+                    </tr>
+                </thead>
+                <tbody className="divide-y divide-white/10">
+                {data.map((row) => (
+                    <tr key={row.id} className="hover:bg-neutral-800 cursor-pointer text-gray-300 hover:text-white">
+                        <td className="px-6 py-2 text-xs">{row.name}</td>
+                        <td className="px-6 py-2 text-xs">{row.createdAt}</td>
+                        <td className="px-6 py-2 text-xs">{row.size}</td>
+                        <td className="px-6 py-2 text-xs">{row.createdBy}</td>
+                        <td className="relative flex flex-row justify-center items-center px-6 py-2 text-xs">
+                            <FontAwesomeIcon onClick={() => toggleMenu(row.id)} className='px-2 py-1 rounded-full hover:bg-neutral-600' icon={faEllipsisVertical} />
+                            {openOptionsMenu === row.id && <OptionsMenu />}
+                        </td>
+                    </tr>
+                ))}
 
-                    </tbody>
-                </table>
-            </div>
+                </tbody>
+            </table>
         </div>
     )
 };
