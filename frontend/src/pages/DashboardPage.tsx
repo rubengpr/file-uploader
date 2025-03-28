@@ -24,7 +24,7 @@ export default function Dashboard() {
           }
 
     return (
-        <div className='main-page flex flex-col bg-black font-mono'>
+        <div className='main-page flex flex-col bg-black'>
           <div className='top-bar h-12 flex flex-row justify-between items-center px-4 border-b border-gray-700'>
             <img className='logo w-20' src="/folded-logo.svg" alt="Folded logo" />
             <FontAwesomeIcon className='text-white cursor-pointer' icon={faRightFromBracket} onClick={handleLogout} />

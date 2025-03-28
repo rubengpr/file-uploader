@@ -69,7 +69,7 @@ export default function ChangePasswordPage() {
     }
     
     return(
-        <div className="login-page flex flex-col justify-center items-center font-mono text-white bg-black min-h-screen">
+        <div className="login-page flex flex-col justify-center items-center text-white bg-black min-h-screen">
             <Form errorMsg={errorMsg} title="Change password" buttonText="Change password" handleSubmit={handleSubmit}>
                 <p className="text-xs text-center">You can now set your new password</p>
                 <div className="relative w-full">

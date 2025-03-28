@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 function App() {
 
   return (
-    <div className="font-mono bg-black min-h-screen">
+    <div className="bg-black min-h-screen">
       <nav className="navbar w-full h-14 flex items-center p-4">
         <div className="w-full h-full flex justify-start items-center">
           <img className="w-24 h-auto pr-6" src="/folded-logo.svg" alt="Website logo" />
