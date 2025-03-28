@@ -2,8 +2,9 @@ import { useNavigate } from 'react-router-dom';
 import { isAuthenticated } from '../utils/auth.ts';
 import { useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faRightFromBracket, faFolder, faFile } from '@fortawesome/free-solid-svg-icons'
+import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons'
 import Table from '../components/Table.tsx';
+import Sidebar from '../components/Sidebar.tsx';
 
 export default function Dashboard() {
 
@@ -30,20 +31,7 @@ export default function Dashboard() {
             <FontAwesomeIcon className='text-white cursor-pointer' icon={faRightFromBracket} onClick={handleLogout} />
           </div>
           <div className='main-page flex flex-row bg-black'>
-            <div className='sidebar flex flex-col w-50 bg-black px-2 py-4 border-r border-gray-700 gap-2'>
-              <div className='sidebar-option flex flex-row justify-start items-center gap-2 cursor-pointer'>
-                <div className='w-4'>
-                  <FontAwesomeIcon className='text-white' icon={faFile} />
-                </div>
-                <p className='option-text text-white text-sm'>New file</p>
-              </div>
-              <div className='sidebar-option flex flex-row justify-start items-center gap-2 cursor-pointer'>
-                <div className='w-4'>
-                  <FontAwesomeIcon className='text-white' icon={faFolder} />
-                </div>
-                <p className='option-text text-white text-sm'>New folder</p>
-              </div>
-            </div>
+            <Sidebar />
             <div className="page-content w-full flex justify-center h-screen px-10 py-8">
               <Table />
             </div>
