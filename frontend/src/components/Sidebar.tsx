@@ -41,12 +41,11 @@ export default function Sidebar() {
         const supabase = createSupabaseClientWithAuth(stoken || '');
         
         //2. Upload file to Supabase
-        const { data, error } = await supabase.storage.from('files').upload(`${userId}/${file.name}`, file)
+        const { error } = await supabase.storage.from('files').upload(`${userId}/${file.name}`, file)
         if (error) {
             showErrorToast("An error occured");
         } else {
             showSuccessToast("File successfully uploaded");
-            console.log(data);
         }
 
         //3. If upload is successful, create database entry
