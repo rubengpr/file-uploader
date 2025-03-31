@@ -18,8 +18,9 @@ model User {
   email String @unique
   hashedPassword String
   createdAt DateTime @default(now())
-  passwordTokens PasswordResetToken[]
   updatedAt DateTime @updatedAt @default(now())
+  passwordTokens PasswordResetToken[]
+  files File[]
 }
 
 model PasswordResetToken {
@@ -29,4 +30,14 @@ model PasswordResetToken {
   userId String
   expiresAt DateTime
   createdAt DateTime @default(now())
+}
+
+model File {
+  id String @id @default(uuid())
+  name String
+  size Int
+  user User @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  createdBy String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @default(now())
 }

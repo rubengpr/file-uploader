@@ -6,6 +6,7 @@ import { createSupabaseClientWithAuth } from '../utils/supabaseClientWithAuth';
 import { useNavigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { showSuccessToast, showErrorToast } from '../utils/toast'
+import axios from 'axios';
 
 type JwtPayload = {
     id: string,
@@ -45,11 +46,20 @@ export default function Sidebar() {
         if (error) {
             showErrorToast("An error occured");
             return;
-        } else {
-            showSuccessToast("File successfully uploaded");
         }
 
         //3. If upload is successful, create database entry
+        try {
+            const response = await axios.post('http://localhost:4000/api/file/create', { createdBy: user.id, name: file.name, size: file.size })
+            showSuccessToast(response.data.message);
+        } catch(error) {
+            if (axios.isAxiosError(error)) {
+                const message = error.response?.data?.error || "Something went wrong. Please, try again.";
+                showErrorToast(message);
+            } else {
+                showErrorToast("Unexpected error occurred.");
+            }
+        }
 
         event.target.value = '';
     }
