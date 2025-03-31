@@ -4,6 +4,7 @@ import { PrismaClient } from '@prisma/client';
 import { signToken } from '../utils/jwt.js';
 import crypto from 'crypto';
 import sendEmail from '../utils/sendEmail.js'
+import jwt from 'jsonwebtoken';
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -29,8 +30,19 @@ router.post('/login', async (req, res) => {
         // 3. Generate token
         const token = signToken({ id: user.id, email: user.email });
 
-        // 4. Send token
-        res.status(200).json({ token });
+        //4. Supabase token
+        const stoken = jwt.sign(
+            {
+              sub: user.id,           // required
+              email: user.email,      // optional
+              role: 'authenticated',  // required if you use it in policies
+            },
+            process.env.JWT_SECRET,
+            { expiresIn: '1h', audience: 'authenticated' } // 'aud' should match Supabase setting
+          );
+
+        // 5. Send token
+        res.status(200).json({ token, stoken });
     } catch (err) {
         res.status(500).json({ error: 'Something went wrong. Try again, or contact us' });
     }

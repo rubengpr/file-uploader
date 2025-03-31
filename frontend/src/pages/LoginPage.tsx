@@ -32,8 +32,9 @@ export default function LoginPage() {
         try {
             const response = await axios.post('http://localhost:4000/api/auth/login', { email, password });
 
-            const { token } = response.data;
+            const { token, stoken } = response.data;
             localStorage.setItem('token', token);
+            localStorage.setItem('stoken', stoken);
 
             navigate('/dashboard');
         } catch (error) {
