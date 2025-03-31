@@ -44,6 +44,7 @@ export default function Sidebar() {
         const { error } = await supabase.storage.from('files').upload(`${userId}/${file.name}`, file)
         if (error) {
             showErrorToast("An error occured");
+            return;
         } else {
             showSuccessToast("File successfully uploaded");
         }
