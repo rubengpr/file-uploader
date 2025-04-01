@@ -13,7 +13,7 @@ type JwtPayload = {
     email: string,
 }
 
-export default function Sidebar() {
+export default function Sidebar({ onUploadSuccess }: { onUploadSuccess: () => void }) {
 
     const navigate = useNavigate();
     
@@ -62,6 +62,7 @@ export default function Sidebar() {
         }
 
         event.target.value = '';
+        onUploadSuccess();
     }
     
     return(

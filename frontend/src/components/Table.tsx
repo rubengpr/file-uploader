@@ -3,18 +3,20 @@ import { useState } from 'react'
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons'
 import OptionsMenu from './OptionsMenu';
 
-export default function Table() {
+interface File {
+    id: number;
+    name: string;
+    createdAt: string;
+    size: string;
+    createdBy: string;
+}
+
+export default function Table({ files }: { files: File[] }) {
     const [openOptionsMenu, setOpenOptionsMenu] = useState< number | null>(null);
 
     const toggleMenu = (rowId: number) => {
         setOpenOptionsMenu((prev) => (prev === rowId ? null : rowId))
     }
-    
-    const data = [
-        { id: 1, name: "myscanneddocument.pdf", createdAt: "Jan 28th 17:30h", size: "12 MB", createdBy: "Ruben Godoy" },
-        { id: 2, name: "myimages.jpg", createdAt: "Jan 28th 17:30h", size: "18 MB", createdBy: "Jessica Brownie" },
-        { id: 3, name: "worddocumentwithalongnamesoitstruncated.doc", createdAt: "Jan 28th 17:30h", size: "63 KB", createdBy: "Rose Red" },
-    ]
 
     return(
         <div className="w-full h-fit rounded-md shadow-md border border-gray-500">
@@ -29,7 +31,7 @@ export default function Table() {
                     </tr>
                 </thead>
                 <tbody className="divide-y divide-white/10">
-                {data.map((row) => (
+                {files.map((row) => (
                     <tr key={row.id} className="hover:bg-neutral-800 cursor-pointer text-gray-300 hover:text-white">
                         <td className="px-6 py-2 text-xs">{row.name}</td>
                         <td className="px-6 py-2 text-xs">{row.createdAt}</td>

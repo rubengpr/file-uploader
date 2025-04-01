@@ -22,4 +22,13 @@ router.post('/create', async (req, res) => {
     }
 });
 
+router.get('/get', async (req, res) => {
+    try {
+        const files = await prisma.file.findMany();
+        res.status(200).json(files);
+    } catch(error) {
+        res.status(500).json({ message: "Something went wrong" });
+    }
+})
+
 export default router;
