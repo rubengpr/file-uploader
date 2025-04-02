@@ -24,7 +24,13 @@ router.post('/create', async (req, res) => {
 
 router.get('/get', async (req, res) => {
     try {
-        const files = await prisma.file.findMany();
+        const files = await prisma.file.findMany({
+            include: {
+              user: {
+                select: { email: true }
+              }
+            }
+          });
         res.status(200).json(files);
     } catch(error) {
         res.status(500).json({ message: "Something went wrong" });

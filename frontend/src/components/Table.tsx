@@ -34,8 +34,8 @@ export default function Table({ files }: { files: File[] }) {
                 {files.map((row) => (
                     <tr key={row.id} className="hover:bg-neutral-800 cursor-pointer text-gray-300 hover:text-white">
                         <td className="px-6 py-2 text-xs">{row.name}</td>
-                        <td className="px-6 py-2 text-xs">{row.createdAt}</td>
-                        <td className="px-6 py-2 text-xs">{row.size}</td>
+                        <td className="px-6 py-2 text-xs">{new Date(row.createdAt).toLocaleDateString()}</td>
+                        <td className="px-6 py-2 text-xs">  {(Number(row.size) / 1024).toFixed(1)} KB</td>
                         <td className="px-6 py-2 text-xs">{row.createdBy}</td>
                         <td className="relative flex flex-row justify-center items-center px-6 py-2 text-xs">
                             <FontAwesomeIcon onClick={() => toggleMenu(row.id)} className='px-2 py-1 rounded-full hover:bg-neutral-600' icon={faEllipsisVertical} />
