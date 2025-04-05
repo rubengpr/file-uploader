@@ -62,7 +62,7 @@ export default function Dashboard() {
           <div className='main-page flex flex-row bg-black'>
             <Sidebar onUploadSuccess={getFiles} />
             <div className="page-content w-full flex justify-center h-screen px-10 py-8">
-              <Table files={files} />
+              <Table files={files} onUpdate={getFiles} />
             </div>
           </div>
         </div>

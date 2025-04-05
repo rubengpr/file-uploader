@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons'
 import OptionsMenu from './OptionsMenu';
 
-interface File {
+export interface AppFile {
     id: number;
     name: string;
     createdAt: string;
@@ -11,7 +11,12 @@ interface File {
     createdBy: string;
 }
 
-export default function Table({ files }: { files: File[] }) {
+interface TableProps {
+    files: AppFile[];
+    onUpdate: () => void;
+  }
+
+export default function Table({ files, onUpdate }: TableProps ) {
     const [openOptionsMenu, setOpenOptionsMenu] = useState< number | null>(null);
 
     const toggleMenu = (rowId: number) => {
@@ -39,7 +44,7 @@ export default function Table({ files }: { files: File[] }) {
                         <td className="px-6 py-2 text-xs">{row.createdBy}</td>
                         <td className="relative flex flex-row justify-center items-center px-6 py-2 text-xs">
                             <FontAwesomeIcon onClick={() => toggleMenu(row.id)} className='px-2 py-1 rounded-full hover:bg-neutral-600' icon={faEllipsisVertical} />
-                            {openOptionsMenu === row.id && <OptionsMenu />}
+                            {openOptionsMenu === row.id && (<OptionsMenu file={row} onUpdate={onUpdate} />)}
                         </td>
                     </tr>
                 ))}

@@ -37,4 +37,23 @@ router.get('/get', async (req, res) => {
     }
 })
 
+router.patch('/rename', async (req, res) => {
+    const { fileId, newFileName } = req.body;
+
+    try {
+        const renameFile = await prisma.file.update({
+            where: {
+                id: fileId,
+            },
+            data: {
+                name: newFileName
+            },
+        });
+
+        res.status(200).json({ message: "File renamed successfully" });
+    } catch(error) {
+        res.status(500).json({ message: "Something went wrong" });
+    }
+});
+
 export default router;
