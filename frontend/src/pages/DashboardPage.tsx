@@ -17,6 +17,9 @@ export default function Dashboard() {
                 createdAt: string;
                 size: string;
                 createdBy: string;
+                user: {
+                  email: string;
+                };
             }
 
         const navigate = useNavigate();

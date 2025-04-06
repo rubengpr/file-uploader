@@ -9,6 +9,9 @@ export interface AppFile {
     createdAt: string;
     size: string;
     createdBy: string;
+    user: {
+        email: string;
+    };
 }
 
 interface TableProps {
@@ -41,7 +44,7 @@ export default function Table({ files, onUpdate }: TableProps ) {
                         <td className="px-6 py-2 text-xs">{row.name}</td>
                         <td className="px-6 py-2 text-xs">{new Date(row.createdAt).toLocaleDateString()}</td>
                         <td className="px-6 py-2 text-xs">  {(Number(row.size) / 1024).toFixed(1)} KB</td>
-                        <td className="px-6 py-2 text-xs">{row.createdBy}</td>
+                        <td className="px-6 py-2 text-xs">{row.user.email}</td>
                         <td className="relative flex flex-row justify-center items-center px-6 py-2 text-xs">
                             <FontAwesomeIcon onClick={() => toggleMenu(row.id)} className='px-2 py-1 rounded-full hover:bg-neutral-600' icon={faEllipsisVertical} />
                             {openOptionsMenu === row.id && (<OptionsMenu file={row} onUpdate={onUpdate} />)}
