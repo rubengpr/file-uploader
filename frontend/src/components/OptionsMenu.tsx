@@ -16,7 +16,8 @@ interface OptionsMenuProps {
 
 export default function OptionsMenu({ file, onUpdate }: OptionsMenuProps) {
     
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
+    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
     const [newFileName, setNewFileName] = useState("");
     
     const stoken = localStorage.getItem('stoken');
@@ -50,9 +51,33 @@ export default function OptionsMenu({ file, onUpdate }: OptionsMenuProps) {
                 }
             }
     }
-    setIsModalOpen(false);
+    setIsRenameModalOpen(false);
 
 };
+
+const handleDelete = async (file: AppFile) => {
+    const fileName = file.name
+    const userId = file.createdBy
+
+    //Delete file on Supabase Storage
+    const { error } = await supabase.storage.from('files').remove([`${userId}/${fileName}`]);
+
+    //Delete file from database
+    if (!error) {
+        try {
+            const response = await axios.delete('http://localhost:4000/api/delete');
+            showSuccessToast(response.data.message);
+        } catch(error) {
+            if (axios.isAxiosError(error)) {
+                const message = error.response?.data?.error || "Something went wrong. Please, try again.";
+                showErrorToast(message);
+            } else {
+                showErrorToast("Unexpected error occurred.");
+            }
+        }
+    }
+
+}
 
     return(
         <>
@@ -65,17 +90,17 @@ export default function OptionsMenu({ file, onUpdate }: OptionsMenuProps) {
                     <FontAwesomeIcon icon={faCircleDown} />
                     <p>Download</p>
                 </div>
-                <div onClick={() => setIsModalOpen(true)} className='w-full flex flex-row justify-start top-5 py-1 hover:bg-neutral-300 text-neutral-800 px-3 gap-2'>
+                <div onClick={() => setIsRenameModalOpen(true)} className='w-full flex flex-row justify-start top-5 py-1 hover:bg-neutral-300 text-neutral-800 px-3 gap-2'>
                     <FontAwesomeIcon icon={faPenToSquare} />
                     <p>Rename</p>
                 </div>
-                <div className='w-full flex flex-row justify-start top-5 py-1 hover:bg-neutral-300 text-neutral-800 px-3 gap-2'>
+                <div onClick={() => setIsConfirmModalOpen(true)} className='w-full flex flex-row justify-start top-5 py-1 hover:bg-neutral-300 text-neutral-800 px-3 gap-2'>
                     <FontAwesomeIcon icon={faTrash} />
                     <p>Delete</p>
                 </div>
             </div>
 
-            {isModalOpen && (<Modal modalTitle='Rename file' modalText='Select the new name for your file. This will change the name of your file.'>
+            {isRenameModalOpen && (<Modal modalTitle='Rename file' modalText='Select the new name for your file. This will change the name of your file.'>
                 {
                     <>
                         <div className='mb-6'>
@@ -83,6 +108,14 @@ export default function OptionsMenu({ file, onUpdate }: OptionsMenuProps) {
                         </div>
                         <Button buttonText='Save' onClick={() => handleRename(file)} />
                     </>
+                }
+            </Modal>)}
+            {isConfirmModalOpen && (<Modal modalTitle='Delete file' modalText='Are you sure you want to delete this file? You will not be able to recover it.' >
+                {
+                    <div className='flex flex-row gap-4'>
+                        <Button buttonText='Cancel' onClick={() => setIsConfirmModalOpen(false)} />
+                        <Button buttonText='Delete' onClick={() => handleDelete(file)} />
+                    </div>
                 }
             </Modal>)}
         </>
