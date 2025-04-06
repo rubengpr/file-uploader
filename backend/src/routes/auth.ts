@@ -38,7 +38,7 @@ router.post('/login', async (req, res) => {
               role: 'authenticated',  // required if you use it in policies
             },
             process.env.JWT_SECRET,
-            { expiresIn: '1h', audience: 'authenticated' } // 'aud' should match Supabase setting
+            { expiresIn: '24h', audience: 'authenticated' } // 'aud' should match Supabase setting
           );
 
         // 5. Send token
