@@ -8,6 +8,7 @@ import { useState } from 'react';
 import Modal from './Modal';
 import Button from './Button';
 import LabelInput from './LabelInput';
+import { downloadBlob } from '../utils/downloadBlob'
 
 interface OptionsMenuProps {
     file: AppFile;
@@ -84,6 +85,24 @@ const handleDelete = async (file: AppFile) => {
 
 }
 
+const handleDownload = async () => {
+    const userId = file.createdBy
+    const fileName = file.name
+
+    const { data, error } = await supabase.storage.from('files').download(`${userId}/${fileName}`);
+
+    if (error) {
+        showErrorToast(error.message);
+    }
+
+    if (data) {
+        downloadBlob(data, `${fileName}`);
+        showSuccessToast("File downloaded successfully");
+    } else {
+        showErrorToast("Failed to download the file.");
+    }
+}
+
     return(
         <>
             <div className='z-1 absolute min-w-26 top-8 right-10 rounded-xs text-[10px] flex flex-col items-center justify-center bg-neutral-50'>
@@ -91,7 +110,7 @@ const handleDelete = async (file: AppFile) => {
                     <FontAwesomeIcon icon={faShareFromSquare} />
                     <p>Share</p>
                 </div>
-                <div className='w-full flex flex-row justify-start top-5 py-1 hover:bg-neutral-300 text-neutral-800 px-3 gap-2'>
+                <div onClick={handleDownload} className='w-full flex flex-row justify-start top-5 py-1 hover:bg-neutral-300 text-neutral-800 px-3 gap-2'>
                     <FontAwesomeIcon icon={faCircleDown} />
                     <p>Download</p>
                 </div>
