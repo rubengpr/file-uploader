@@ -7,11 +7,6 @@ function App() {
       <nav className="navbar w-full h-14 flex items-center p-4">
         <div className="w-full h-full flex justify-start items-center">
           <img className="w-24 h-auto pr-6" src="/folded-logo.svg" alt="Website logo" />
-          <ul className="flex flex-row justify-center items-center text-sm text-white gap-4">
-            <li className="cursor-pointer">Home</li>
-            <li className="cursor-pointer">About</li>
-            <li className="cursor-pointer">Contact</li>
-          </ul>
         </div>
         <div className="w-full h-full flex justify-end items-center">
           <button className="cursor-pointer hover:bg-gray-800 text-white px-4 py-1.5 rounded-sm text-sm border border-white"><Link to="login">Log in</Link></button>
