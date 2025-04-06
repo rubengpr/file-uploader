@@ -56,4 +56,19 @@ router.patch('/rename', async (req, res) => {
     }
 });
 
+router.delete('/delete', async (req, res) => {
+    const { fileId, userId } = req.body;
+
+    try {
+        await prisma.file.delete({
+            where: {
+                id: fileId
+            }
+        })
+        res.status(200).json({ message: "File deleted successfully" })
+    } catch(error) {
+        res.status(500).json({ message: "Something went wrong" });
+    }
+})
+
 export default router;
