@@ -34,7 +34,7 @@ export default function Dashboard() {
 
           const getFiles = async () => {
             try {
-                const response = await axios.get('https://file-uploaderrgp.up.railway.app/api/file/get');
+                const response = await axios.get(`${import.meta.env.API_URL}/api/file/get`);
                 setFiles(response.data);
             } catch(error) {
                 if (axios.isAxiosError(error)) {

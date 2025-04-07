@@ -50,7 +50,7 @@ export default function Sidebar({ onUploadSuccess }: { onUploadSuccess: () => vo
 
         //3. If upload is successful, create database entry
         try {
-            const response = await axios.post('https://file-uploaderrgp.up.railway.app/api/file/create', { createdBy: user.id, name: file.name, size: file.size })
+            const response = await axios.post(`${import.meta.env.API_URL}/api/file/create`, { createdBy: user.id, name: file.name, size: file.size })
             showSuccessToast(response.data.message);
         } catch(error) {
             if (axios.isAxiosError(error)) {
