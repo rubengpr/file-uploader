@@ -62,15 +62,13 @@ const handleDelete = async (file: AppFile) => {
     const userId = file.createdBy
 
     //Delete file on Supabase Storage
-    const { data, error } = await supabase.storage.from('files').remove([`${userId}/${fileName}`]);
-    console.log(data);
+    const { error } = await supabase.storage.from('files').remove([`${userId}/${fileName}`]);
 
     //Delete file from database
     if (!error) {
         try {
             const response = await axios.delete('http://localhost:4000/api/file/delete', { data: { fileId, userId } });
             showSuccessToast(response.data.message);
-            console.log(response);
         } catch(error) {
             if (axios.isAxiosError(error)) {
                 const message = error.response?.data?.error || "Something went wrong. Please, try again.";
