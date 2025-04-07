@@ -9,6 +9,10 @@ app.use(cors({
     origin: "https://folded.me",
     credentials: true,
 }));
+app.options('*', cors({
+    origin: 'https://folded.me',
+    credentials: true,
+}));
 app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/file', fileRoutes);
