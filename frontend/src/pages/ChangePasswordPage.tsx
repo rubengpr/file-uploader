@@ -52,7 +52,7 @@ export default function ChangePasswordPage() {
         setErrorMsg("");
 
         try {
-            const response = await axios.post(`${import.meta.env.API_URL}/api/auth/change-password`, { password, token });
+            const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/change-password`, { password, token });
 
             const { authToken } = response.data;
             localStorage.setItem('token', authToken);
