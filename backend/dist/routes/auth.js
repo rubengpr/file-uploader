@@ -4,6 +4,7 @@ import { PrismaClient } from '@prisma/client';
 import { signToken } from '../utils/jwt.js';
 import crypto from 'crypto';
 import sendEmail from '../utils/sendEmail.js';
+import jwt from 'jsonwebtoken';
 const router = Router();
 const prisma = new PrismaClient();
 router.post('/login', async (req, res) => {
@@ -23,8 +24,15 @@ router.post('/login', async (req, res) => {
         }
         // 3. Generate token
         const token = signToken({ id: user.id, email: user.email });
-        // 4. Send token
-        res.status(200).json({ token });
+        //4. Supabase token
+        const stoken = jwt.sign({
+            sub: user.id, // required
+            email: user.email, // optional
+            role: 'authenticated', // required if you use it in policies
+        }, process.env.JWT_SECRET, { expiresIn: '24h', audience: 'authenticated' } // 'aud' should match Supabase setting
+        );
+        // 5. Send token
+        res.status(200).json({ token, stoken });
     }
     catch (err) {
         res.status(500).json({ error: 'Something went wrong. Try again, or contact us' });
@@ -85,31 +93,36 @@ router.post('/recover-password', async (req, res) => {
     res.status(200).json({ message: "We've sent you an email" });
 });
 router.post('/change-password', async (req, res) => {
-    //Get token value from frontend
-    const { password, token } = req.body;
-    //Check if token exists in PasswordResetToken table
-    const checkToken = await prisma.passwordResetToken.findUnique({ where: { token } });
-    //If it does not, return an error
-    if (!checkToken) {
-        res.status(400).json({ message: "Password recovery request not found" });
-    }
-    //If it does, check expiresAt date and compare with Date
-    if (checkToken && checkToken.expiresAt < new Date()) {
-        res.status(400).json({ message: "Token expired. Request a new password recovery" });
-    }
-    //If token exists and is not expired, hash the inputted password value
-    const hashedPassword = await bcrypt.hash(password, 10);
-    //Update the hashed password into the right user (from the token table, userId)
-    const updatePassword = await prisma.user.update({
-        where: {
-            id: checkToken?.userId
-        },
-        data: {
-            hashedPassword,
+    try {
+        const { password, token } = req.body;
+        const checkToken = await prisma.passwordResetToken.findUnique({ where: { token } });
+        if (!checkToken) {
+            res.status(400).json({ message: "You didn't request a new password" });
+            return;
         }
-    });
-    res.status(200).json({ message: "Password changed successfully" });
-    //If something's wrong, return an error
+        if (checkToken.expiresAt < new Date()) {
+            res.status(400).json({ message: "Your change password link has expired" });
+            return;
+        }
+        const hashedPassword = await bcrypt.hash(password, 10);
+        await prisma.user.update({
+            where: {
+                id: checkToken.userId
+            },
+            data: {
+                hashedPassword,
+            }
+        });
+        //Find user info
+        const user = await prisma.user.findUnique({ where: { id: checkToken.userId } });
+        //Generate a new auth token
+        const authToken = signToken({ id: user.id, email: user.email });
+        res.status(200).json({ message: "Password changed successfully", authToken });
+    }
+    catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Internal server error" });
+    }
 });
 export default router;
 //# sourceMappingURL=auth.js.map

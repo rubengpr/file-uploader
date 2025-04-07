@@ -19,10 +19,8 @@ export default async function sendSimpleMessageTemplate(email, token) {
                 token,
             }),
         });
-        console.log(data); // logs response data
     }
     catch (error) {
-        console.log(error); // logs any error
     }
 }
 //# sourceMappingURL=sendEmail.js.map
