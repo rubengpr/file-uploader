@@ -13,7 +13,7 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/file', fileRoutes);
 
-const PORT = 4000
+const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
-    console.log(`Server listening coming requests from port ${PORT}`);
-})
+  console.log(`Server listening on port ${PORT}`);
+});
