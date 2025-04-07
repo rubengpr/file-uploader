@@ -15,7 +15,7 @@ export default function RecoverPasswordPage() {
         setIsEmailSent(true);
 
         try {
-            await axios.post('http://localhost:4000/api/auth/recover-password', { email })
+            await axios.post('https://file-uploaderrgp.up.railway.app/api/auth/recover-password', { email })
         } catch (error) {
             if (axios.isAxiosError(error)) {
                 const message = error.response?.data?.error || "Something went wrong. Please, try again.";

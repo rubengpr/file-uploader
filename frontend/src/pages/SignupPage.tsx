@@ -76,7 +76,7 @@ export default function SignupPage() {
         setErrorMsg("");
 
         try {
-            const response = await axios.post('http://localhost:4000/api/auth/signup', { email, password });
+            const response = await axios.post('https://file-uploaderrgp.up.railway.app/api/auth/signup', { email, password });
 
             const { token } = response.data
             localStorage.setItem('token', token);

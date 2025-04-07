@@ -40,7 +40,7 @@ export default function OptionsMenu({ file, onUpdate }: OptionsMenuProps) {
 
             //Update file name on database
             try {
-                const response = await axios.patch('http://localhost:4000/api/file/rename', { fileId, newFileName });
+                const response = await axios.patch('https://file-uploaderrgp.up.railway.app/api/file/rename', { fileId, newFileName });
                 showSuccessToast(response.data.message);
                 onUpdate();
             } catch(error) {
@@ -67,7 +67,7 @@ const handleDelete = async (file: AppFile) => {
     //Delete file from database
     if (!error) {
         try {
-            const response = await axios.delete('http://localhost:4000/api/file/delete', { data: { fileId, userId } });
+            const response = await axios.delete('https://file-uploaderrgp.up.railway.app/api/file/delete', { data: { fileId, userId } });
             showSuccessToast(response.data.message);
         } catch(error) {
             if (axios.isAxiosError(error)) {
