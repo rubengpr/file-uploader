@@ -27,6 +27,12 @@ app.options('*', cors(corsOptions));
 
 app.use(express.json());
 
+app.use((req, res, next) => {
+  console.log(`[${req.method}] ${req.originalUrl}`);
+  next();
+});
+
+
 app.use('/api/auth', authRoutes);
 app.use('/api/file', fileRoutes);
 
