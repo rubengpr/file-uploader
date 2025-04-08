@@ -10,8 +10,9 @@ const app = express();
 
 const corsOptions = {
   origin: 'https://folded.me',
-  methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type'],
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Custom-Header'],
+  credentials: true,
 };
 
 app.use(cors(corsOptions));
