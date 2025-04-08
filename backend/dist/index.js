@@ -5,8 +5,13 @@ import authRoutes from './routes/auth.js';
 import fileRoutes from './routes/fileRoutes.js';
 dotenv.config();
 const app = express();
-app.use(cors({ origin: 'https://folded.me' }));
-app.options('*', cors({ origin: 'https://folded.me' }));
+const corsOptions = {
+    origin: 'https://folded.me',
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type'],
+};
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 app.use(express.json());
 app.use((req, res, next) => {
     console.log(`[${req.method}] ${req.originalUrl}`);
