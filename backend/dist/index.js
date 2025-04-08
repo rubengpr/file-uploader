@@ -5,20 +5,8 @@ import authRoutes from './routes/auth.js';
 import fileRoutes from './routes/fileRoutes.js';
 dotenv.config();
 const app = express();
-const allowedOrigins = ['https://folded.me'];
-const corsOptions = {
-    origin: function (origin, callback) {
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        }
-        else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
-    credentials: true,
-};
-app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
+app.use(cors({ origin: 'https://folded.me' }));
+app.options('*', cors({ origin: 'https://folded.me' }));
 app.use(express.json());
 app.use((req, res, next) => {
     console.log(`[${req.method}] ${req.originalUrl}`);
