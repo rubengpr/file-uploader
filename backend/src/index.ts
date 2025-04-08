@@ -8,8 +8,14 @@ import fileRoutes from './routes/fileRoutes.js';
 dotenv.config();
 const app = express();
 
+const isProd = process.env.NODE_ENV === 'production';
+
+const allowedOrigins = isProd
+  ? ['https://folded.me']
+  : ['https://folded.me', 'http://localhost:5173'];
+
 const corsOptions = {
-  origin: 'https://folded.me',
+  origin: allowedOrigins,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Custom-Header'],
   credentials: true,

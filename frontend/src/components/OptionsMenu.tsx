@@ -1,6 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faShareFromSquare, faCircleDown, faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons'
-import { createSupabaseClientWithAuth } from '../utils/supabaseClientWithAuth';
 import { AppFile } from './Table';
 import axios from 'axios';
 import { showSuccessToast, showErrorToast } from '../utils/toast'
@@ -9,6 +8,7 @@ import Modal from './Modal';
 import Button from './Button';
 import LabelInput from './LabelInput';
 import { downloadBlob } from '../utils/downloadBlob'
+import supabase from '../utils/supabaseClient'
 
 interface OptionsMenuProps {
     file: AppFile;
@@ -20,9 +20,6 @@ export default function OptionsMenu({ file, onUpdate }: OptionsMenuProps) {
     const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
     const [newFileName, setNewFileName] = useState("");
-    
-    const stoken = localStorage.getItem('stoken');
-    const supabase = createSupabaseClientWithAuth(stoken || '');
 
     const handleRename = async (file: AppFile) => {
         //Get old file name, from the file.name id
