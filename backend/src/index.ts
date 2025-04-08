@@ -8,22 +8,9 @@ import fileRoutes from './routes/fileRoutes.js';
 dotenv.config();
 const app = express();
 
-const allowedOrigins = ['https://folded.me'];
+app.use(cors({ origin: 'https://folded.me' }));
 
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true,
-};
-
-app.use(cors(corsOptions));
-
-app.options('*', cors(corsOptions));
+app.options('*', cors({ origin: 'https://folded.me' }));
 
 app.use(express.json());
 
