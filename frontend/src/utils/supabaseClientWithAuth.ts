@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 
-export const createSupabaseClientWithAuth = (stoken: string) => {
+const createSupabaseClientWithAuth = (stoken: string) => {
   return createClient(
     import.meta.env.VITE_SUPABASE_PROJECT_URL,
     import.meta.env.VITE_SUPABASE_API_KEY,
@@ -13,3 +13,5 @@ export const createSupabaseClientWithAuth = (stoken: string) => {
     }
   );
 };
+
+export default createSupabaseClientWithAuth;

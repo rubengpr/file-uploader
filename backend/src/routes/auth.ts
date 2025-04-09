@@ -76,7 +76,6 @@ router.post('/signup', async (req, res) => {
         // 5. Respond with token
         res.status(201).json({ token });
     } catch (err) {
-        console.error(err);
         res.status(500).json({ error: 'Signup failed' });
     }
 });
@@ -153,7 +152,6 @@ router.post('/change-password', async (req, res) => {
 
         
     } catch (err) {
-        console.error(err);
         res.status(500).json({ message: "Internal server error" });
     }
 });

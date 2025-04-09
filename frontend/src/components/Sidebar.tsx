@@ -2,7 +2,7 @@ import SidebarOption from './SidebarOption'
 import { faFolder, faFile } from '@fortawesome/free-solid-svg-icons'
 import { useRef } from 'react';
 import { jwtDecode } from "jwt-decode";
-import { createSupabaseClientWithAuth } from '../utils/supabaseClientWithAuth';
+import createSupabaseClientWithAuth from '../utils/supabaseClientWithAuth';
 import { useNavigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { showSuccessToast, showErrorToast } from '../utils/toast'
