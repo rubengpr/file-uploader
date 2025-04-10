@@ -8,8 +8,7 @@ import Modal from './Modal';
 import Button from './Button';
 import LabelInput from './LabelInput';
 import { downloadBlob } from '../utils/downloadBlob'
-import createSupabaseClientWithAuth from '../utils/supabaseClientWithAuth';
-import { useNavigate } from 'react-router-dom';
+import supabase from '../utils/supabaseClient';
 
 interface OptionsMenuProps {
     file: AppFile;
@@ -17,8 +16,6 @@ interface OptionsMenuProps {
   }
 
 export default function OptionsMenu({ file, onUpdate }: OptionsMenuProps) {
-
-    const navigate = useNavigate();
     
     const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
@@ -30,21 +27,13 @@ export default function OptionsMenu({ file, onUpdate }: OptionsMenuProps) {
         const userId = file.createdBy
         const fileId = file.id;
         const newFilePath = `${userId}/${newFileName}`;
-
-        const jwtToken = localStorage.getItem('stoken');
-        if (!jwtToken) {
-            navigate('/login');
-            return;
-          }
-
-        const supabaseAuth = createSupabaseClientWithAuth(jwtToken);
         
         //Copy file on Supabase storage
-        const { error } = await supabaseAuth.storage.from('files').copy(`${userId}/${oldFileName}`, `${newFilePath}`);
+        const { error } = await supabase.storage.from('files').copy(`${userId}/${oldFileName}`, `${newFilePath}`);
 
         //Delete file with old name on Supabase storage
         if (!error) {
-            await supabaseAuth.storage.from('files').remove([`${userId}/${oldFileName}`]);
+            await supabase.storage.from('files').remove([`${userId}/${oldFileName}`]);
 
             //Update file name on database
             try {
@@ -69,16 +58,8 @@ const handleDelete = async (file: AppFile) => {
     const fileName = file.name
     const userId = file.createdBy
 
-    const jwtToken = localStorage.getItem('stoken');
-    if (!jwtToken) {
-        navigate('/login');
-        return; // explicitly return or redirect to login
-      }
-    
-    const supabaseAuth = createSupabaseClientWithAuth(jwtToken);
-
     //Delete file on Supabase Storage
-    const { error } = await supabaseAuth.storage.from('files').remove([`${userId}/${fileName}`]);
+    const { error } = await supabase.storage.from('files').remove([`${userId}/${fileName}`]);
 
     //Delete file from database
     if (!error) {
@@ -103,15 +84,7 @@ const handleDownload = async () => {
     const userId = file.createdBy
     const fileName = file.name
 
-    const jwtToken = localStorage.getItem('stoken');
-    if (!jwtToken) {
-        navigate('/login');
-        return; // explicitly return or redirect to login
-      }
-      
-    const supabaseAuth = createSupabaseClientWithAuth(jwtToken);
-
-    const { data, error } = await supabaseAuth.storage.from('files').download(`${userId}/${fileName}`);
+    const { data, error } = await supabase.storage.from('files').download(`${userId}/${fileName}`);
 
     if (error) {
         showErrorToast(error.message);
