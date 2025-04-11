@@ -37,7 +37,19 @@ model File {
   name String
   size Int
   user User @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  folder Folder @relation(fields: [folder], references: [id], onDelete: Cascade)
+  folder String
   createdBy String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt @default(now())
+}
+
+model Folder {
+  id String @id @default(uuid())
+  name String
+  user User @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  createdBy String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @default(now())
+  files File[]
 }
