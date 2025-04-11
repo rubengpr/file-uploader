@@ -21,6 +21,7 @@ model User {
   updatedAt DateTime @updatedAt @default(now())
   passwordTokens PasswordResetToken[]
   files File[]
+  folders Folder[]
 }
 
 model PasswordResetToken {
@@ -37,8 +38,8 @@ model File {
   name String
   size Int
   user User @relation(fields: [createdBy], references: [id], onDelete: Cascade)
-  folder Folder @relation(fields: [folder], references: [id], onDelete: Cascade)
-  folder String
+  folder Folder? @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  folderId String?
   createdBy String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt @default(now())
