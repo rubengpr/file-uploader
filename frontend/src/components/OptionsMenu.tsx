@@ -101,19 +101,19 @@ const handleDownload = async () => {
     return(
         <>
             <div className='z-1 absolute min-w-26 top-8 right-10 rounded-xs text-[10px] flex flex-col items-center justify-center bg-neutral-50'>
-                <div className='w-full flex flex-row justify-start py-1 hover:bg-neutral-300 text-neutral-800 px-3 gap-2'>
+                <div className='w-full flex flex-row justify-start items-center py-1 hover:bg-neutral-300 text-neutral-800 px-3 gap-2'>
                     <FontAwesomeIcon icon={faShareFromSquare} />
                     <p>Share</p>
                 </div>
-                <div onClick={handleDownload} className='w-full flex flex-row justify-start top-5 py-1 hover:bg-neutral-300 text-neutral-800 px-3 gap-2'>
+                <div onClick={handleDownload} className='w-full flex flex-row justify-start items-center top-5 py-1 hover:bg-neutral-300 text-neutral-800 px-3 gap-2'>
                     <FontAwesomeIcon icon={faCircleDown} />
                     <p>Download</p>
                 </div>
-                <div onClick={() => setIsRenameModalOpen(true)} className='w-full flex flex-row justify-start top-5 py-1 hover:bg-neutral-300 text-neutral-800 px-3 gap-2'>
+                <div onClick={() => setIsRenameModalOpen(true)} className='w-full flex flex-row justify-start items-center top-5 py-1 hover:bg-neutral-300 text-neutral-800 px-3 gap-2'>
                     <FontAwesomeIcon icon={faPenToSquare} />
                     <p>Rename</p>
                 </div>
-                <div onClick={() => setIsConfirmModalOpen(true)} className='w-full flex flex-row justify-start top-5 py-1 hover:bg-neutral-300 text-neutral-800 px-3 gap-2'>
+                <div onClick={() => setIsConfirmModalOpen(true)} className='w-full flex flex-row justify-start items-center top-5 py-1 hover:bg-neutral-300 text-neutral-800 px-3 gap-2'>
                     <FontAwesomeIcon icon={faTrash} />
                     <p>Delete</p>
                 </div>
