@@ -1,12 +1,14 @@
 import SidebarOption from './SidebarOption'
 import { faFolder, faFile } from '@fortawesome/free-solid-svg-icons'
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { jwtDecode } from "jwt-decode";
-import createSupabaseClientWithAuth from '../utils/supabaseClient';
-import { useNavigate } from 'react-router-dom';
+import supabase from '../utils/supabaseClient';
 import { Toaster } from 'react-hot-toast';
 import { showSuccessToast, showErrorToast } from '../utils/toast'
 import axios from 'axios';
+import Modal from './Modal';
+import LabelInput from './LabelInput';
+import Button from './Button';
 
 type JwtPayload = {
     id: string,
@@ -14,10 +16,15 @@ type JwtPayload = {
 }
 
 export default function Sidebar({ onUploadSuccess }: { onUploadSuccess: () => void }) {
-
-    const navigate = useNavigate();
+    
+    const [isNewFolderModalOpen, setIsNewFolderModalOpen] = useState(false);
+    const [newFolderName, setNewFolderName] = useState('');
     
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const token = localStorage.getItem('token');
+    const user = jwtDecode<JwtPayload>(token || '');
+    const userId = user.id
     
     const handleNewFileClick = () => {
         fileInputRef.current?.click()
@@ -27,19 +34,6 @@ export default function Sidebar({ onUploadSuccess }: { onUploadSuccess: () => vo
         //Recover uploaded file
         const file = event.target.files?.[0];
         if (!file) return
-        
-        //1. Get userId
-        const token = localStorage.getItem('token');
-        const stoken = localStorage.getItem('stoken');
-      
-        if (!token || !stoken) {
-          navigate('/login');
-          return;
-        }
-
-        const user = jwtDecode<JwtPayload>(token || '');
-        const userId = user.id
-        const supabase = createSupabaseClientWithAuth(stoken || '');
         
         //2. Upload file to Supabase
         const { error } = await supabase.storage.from('files').upload(`${userId}/${file.name}`, file)
@@ -64,13 +58,39 @@ export default function Sidebar({ onUploadSuccess }: { onUploadSuccess: () => vo
         event.target.value = '';
         onUploadSuccess();
     }
+
+    const createFolder = async () => {
+        try {
+            const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/folder/create`, { createdBy: user.id, name: newFolderName });
+            showSuccessToast(response.data.message);
+        } catch(error) {
+            if (axios.isAxiosError(error)) {
+                const message = error.response?.data?.error || "Something went wrong. Please, try again.";
+                showErrorToast(message);
+            } else {
+                showErrorToast("Unexpected error occurred.");
+            }
+        }
+        setIsNewFolderModalOpen(false);
+        onUploadSuccess();
+    }
     
     return(
         <div className='sidebar flex flex-col w-50 bg-black px-2 py-4 border-r border-gray-700 gap-1'>
             <SidebarOption onClick={handleNewFileClick} icon={faFile} text="New file" />
-            <SidebarOption icon={faFolder} text="New folder" />
+            <SidebarOption onClick={() => setIsNewFolderModalOpen(true)} icon={faFolder} text="New folder" />
             <input onChange={handleFileChange} ref={fileInputRef} className='hidden' type="file" />
             <Toaster />
+            {isNewFolderModalOpen && (<Modal modalTitle='Create folder' modalText='Select the new name for your folder. You can rename the folder name later.'>
+                {
+                    <>
+                        <div className='mb-6'>
+                            <LabelInput onValueChange={setNewFolderName} type='text' label='New folder name' name='newFolderName' />
+                        </div>
+                        <Button buttonText='Create folder' onClick={createFolder} />
+                    </>
+                }
+            </Modal>)}
         </div>
     )
 }

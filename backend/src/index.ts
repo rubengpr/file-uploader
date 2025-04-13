@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 
 import authRoutes from './routes/auth.js';
 import fileRoutes from './routes/fileRoutes.js';
+import folderRoutes from './routes/folderRoutes.js';
 
 dotenv.config();
 const app = express();
@@ -34,6 +35,7 @@ app.use((req, res, next) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/file', fileRoutes);
+app.use('/api/folder', folderRoutes);
 
 // ✅ Start server
 const PORT = process.env.PORT || 4000;

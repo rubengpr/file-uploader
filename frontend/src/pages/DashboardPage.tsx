@@ -10,6 +10,7 @@ import axios from 'axios';
 
 export default function Dashboard() {
   const [files, setFiles] = useState<File[]>([]);
+  const [folders, setFolders] = useState<Folder[]>([]);
 
         interface File {
                 id: number;
@@ -20,7 +21,17 @@ export default function Dashboard() {
                 user: {
                   email: string;
                 };
-            }
+          }
+
+          interface Folder {
+            id: number;
+            name: string;
+            createdAt: string;
+            createdBy: string;
+            user: {
+              email: string;
+            };
+          }
 
         const navigate = useNavigate();
         
@@ -44,10 +55,30 @@ export default function Dashboard() {
                     showErrorToast("Unexpected error occurred.");
                 }
             }
-        }
+          }
+
+          const getFolders = async () => {
+            try {
+                const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/folder/get`);
+                setFolders(response.data);
+            } catch(error) {
+                if (axios.isAxiosError(error)) {
+                    const message = error.response?.data?.error || "Something went wrong. Please, try again.";
+                    showErrorToast(message);
+                } else {
+                    showErrorToast("Unexpected error occurred.");
+                }
+            }
+          }
+
+          const updateTable = () => {
+            getFiles();
+            getFolders();
+          }
     
         useEffect(() => {
             getFiles();
+            getFolders();
           }, []);
 
           const handleLogout = () => {
@@ -63,9 +94,9 @@ export default function Dashboard() {
             <FontAwesomeIcon className='text-white cursor-pointer' icon={faRightFromBracket} onClick={handleLogout} />
           </div>
           <div className='main-page flex flex-row bg-black'>
-            <Sidebar onUploadSuccess={getFiles} />
+            <Sidebar onUploadSuccess={updateTable} />
             <div className="page-content w-full flex justify-center h-screen px-10 py-8">
-              <Table files={files} onUpdate={getFiles} />
+              <Table files={files} folders={folders} onUpdate={updateTable} />
             </div>
           </div>
         </div>
