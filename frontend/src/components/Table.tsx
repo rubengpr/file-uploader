@@ -42,7 +42,7 @@ export default function Table({ files, folders, onUpdate }: TableProps ) {
     const [openOptionsMenu, setOpenOptionsMenu] = useState<{ id: number; type: 'file' | 'folder' } | null>(null);
     const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-    const [newFileName, setNewFileName] = useState("");
+    const [newItemName, setNewItemName] = useState("");
     const [selectedItem, setSelectedItem] = useState<{ type: 'file' | 'folder'; data: AppFile | AppFolder } | null>(null);
 
     const handleShare = async (file: AppFile) => {
@@ -54,9 +54,8 @@ export default function Table({ files, folders, onUpdate }: TableProps ) {
         const oldFileName = file.name
         const userId = file.createdBy
         const fileId = file.id;
-        const newFilePath = `${userId}/${newFileName}`;
+        const newFilePath = `${userId}/${newItemName}`;
         
-        //Copy file on Supabase storage
         const { error } = await supabase.storage.from('files').copy(`${userId}/${oldFileName}`, `${newFilePath}`);
 
         //Delete file with old name on Supabase storage
@@ -65,7 +64,7 @@ export default function Table({ files, folders, onUpdate }: TableProps ) {
 
             //Update file name on database
             try {
-                const response = await axios.patch(`${import.meta.env.VITE_API_URL}/api/file/rename`, { fileId, newFileName });
+                const response = await axios.patch(`${import.meta.env.VITE_API_URL}/api/file/rename`, { fileId, newItemName });
                 showSuccessToast(response.data.message);
                 onUpdate();
             } catch(error) {
@@ -132,7 +131,35 @@ const handleDownload = async (file) => {
 }
 
 const handleRenameFolder = async (folder: AppFolder) => {
-    console.log(folder);
+    const oldFolderName = folder.name;
+    const userId = folder.createdBy;
+    const folderId = folder.id;
+
+    //Files is an array of objects, containing files paths
+    const { data, error } = await supabase.storage.from('files').list(oldFolderName);
+    if (data) {
+        for (const file of data) {
+            await supabase.storage.from('files').copy(`${userId}/${oldFolderName}/${file.name}`, `${userId}/${newItemName}/${file.name}`);
+        }
+    }
+
+    if (!error) {
+        await supabase.storage.from('files').remove([`${userId}/${oldFolderName}`]);
+
+        try {
+            const response = await axios.patch(`${import.meta.env.VITE_API_URL}/api/folder/rename`, { folderId, newItemName });
+            showSuccessToast(response.data.message);
+            onUpdate();
+        } catch(error) {
+            if (axios.isAxiosError(error)) {
+                const message = error.response?.data?.error || "Something went wrong. Please, try again.";
+                showErrorToast(message);
+            } else {
+                showErrorToast("Unexpected error occurred.");
+            }
+        }
+    }
+    
 }
 
 const handleDeleteFolder = async (folder: AppFolder) => {
@@ -171,18 +198,25 @@ const toggleMenu = (id: number, type: 'file' | 'folder') => {
                                 {
                                     label: "Share",
                                     icon: faShareFromSquare,
-                                    onClick: () => {},
+                                    onClick: () => {
+                                        setOpenOptionsMenu(null);
+                                    },
                                 },
                                 {
                                     label: "Rename",
                                     icon: faPenToSquare,
-                                    onClick: () => handleDownload(folder),
+                                    onClick: () => {
+                                        setSelectedItem({ type: 'folder', data: folder });
+                                        setOpenOptionsMenu(null);
+                                        setIsRenameModalOpen(true);
+                                    }
                                 },
                                 {
                                     label: "Delete",
                                     icon: faTrash,
                                     onClick: () => {
                                         setSelectedItem({ type: 'folder', data: folder });
+                                        setOpenOptionsMenu(null);
                                         setIsConfirmModalOpen(true);
                                       },
                                 },
@@ -203,18 +237,25 @@ const toggleMenu = (id: number, type: 'file' | 'folder') => {
                                 {
                                     label: "Share",
                                     icon: faShareFromSquare,
-                                    onClick: () => handleShare(file),
+                                    onClick: () => {
+                                        setOpenOptionsMenu(null);
+                                        handleShare(file);
+                                    },
                                 },
                                 {
                                     label: "Download",
                                     icon: faCircleDown,
-                                    onClick: () => handleDownload(file),
+                                    onClick: () => {
+                                        setOpenOptionsMenu(null);
+                                        handleDownload(file);
+                                    },
                                 },
                                 {
                                     label: "Rename",
                                     icon: faPenToSquare,
                                     onClick: () => {
                                         setSelectedItem({ type: 'file', data: file });
+                                        setOpenOptionsMenu(null);
                                         setIsRenameModalOpen(true);
                                       },
                                 },
@@ -223,6 +264,7 @@ const toggleMenu = (id: number, type: 'file' | 'folder') => {
                                     icon: faTrash,
                                     onClick: () => {
                                         setSelectedItem({ type: 'file', data: file });
+                                        setOpenOptionsMenu(null);
                                         setIsConfirmModalOpen(true);
                                       },
                                 }
@@ -236,16 +278,22 @@ const toggleMenu = (id: number, type: 'file' | 'folder') => {
                     <Modal modalTitle={`Rename ${selectedItem.type}`} modalText={`Select the new name for your ${selectedItem.type}. This will change its name.`}>
                         <>
                             <div className="mb-6">
-                                <LabelInput onValueChange={setNewFileName} type="text" label="New name" name="newName" />
+                                <LabelInput onValueChange={setNewItemName} type="text" label="New name" name="newName" />
                             </div>
-                        <Button buttonText="Save" onClick={() => {
-                            if (selectedItem.type === 'file') {
-                                handleRename(selectedItem.data as AppFile);
-                            } else {
-                                handleRenameFolder(selectedItem.data as AppFolder);
-                            }
-                            }}
-                        />
+                        <div className="flex flex-row gap-4">
+                            <Button buttonText='Cancel' onClick={() => {
+                                setIsRenameModalOpen(false)
+                                setNewItemName("");
+                                }}/>
+                            <Button buttonText="Save" onClick={() => {
+                                if (selectedItem.type === 'file') {
+                                    handleRename(selectedItem.data as AppFile);
+                                } else {
+                                    handleRenameFolder(selectedItem.data as AppFolder);
+                                }
+                                }}
+                            />
+                        </div>
                         </>
                     </Modal>
                     )}
