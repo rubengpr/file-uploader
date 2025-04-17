@@ -159,6 +159,8 @@ const handleRenameFolder = async (folder: AppFolder) => {
             }
         }
     }
+
+    setIsRenameModalOpen(false);
     
 }
 
