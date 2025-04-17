@@ -136,7 +136,12 @@ const handleRenameFolder = async (folder: AppFolder) => {
     const folderId = folder.id;
 
     //Files is an array of objects, containing files paths
-    const { error } = await supabase.storage.from('files').list(oldFolderName);
+    const { data, error } = await supabase.storage.from('files').list(oldFolderName);
+    if (data) {
+        for (const file of data) {
+            await supabase.storage.from('files').copy(`${userId}/${oldFolderName}/${file.name}`, `${userId}/${newItemName}/${file.name}`);
+        }
+    }
 
     if (!error) {
         await supabase.storage.from('files').remove([`${userId}/${oldFolderName}`]);
