@@ -1,7 +1,14 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useState } from 'react'
-import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons'
+import { faEllipsisVertical, faCircleDown, faShareFromSquare, faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons'
 import OptionsMenu from './OptionsMenu';
+import { showSuccessToast, showErrorToast } from '../utils/toast'
+import { downloadBlob } from '../utils/downloadBlob'
+import supabase from '../utils/supabaseClient';
+import Modal from './Modal';
+import Button from './Button';
+import LabelInput from './LabelInput';
+import axios from 'axios';
 
 export interface AppFile {
     id: number;
@@ -31,11 +38,112 @@ interface TableProps {
   }
 
 export default function Table({ files, folders, onUpdate }: TableProps ) {
-    const [openOptionsMenu, setOpenOptionsMenu] = useState< number | null>(null);
+    
+    const [openOptionsMenu, setOpenOptionsMenu] = useState<{ id: number; type: 'file' | 'folder' } | null>(null);
+    const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
+    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+    const [newFileName, setNewFileName] = useState("");
+    const [selectedItem, setSelectedItem] = useState<{ type: 'file' | 'folder'; data: AppFile | AppFolder } | null>(null);
 
-    const toggleMenu = (rowId: number) => {
-        setOpenOptionsMenu((prev) => (prev === rowId ? null : rowId))
+    const handleShare = async (file: AppFile) => {
+        console.log(file);
     }
+    
+    const handleRename = async (file: AppFile) => {
+        //Get old file name, from the file.name id
+        const oldFileName = file.name
+        const userId = file.createdBy
+        const fileId = file.id;
+        const newFilePath = `${userId}/${newFileName}`;
+        
+        //Copy file on Supabase storage
+        const { error } = await supabase.storage.from('files').copy(`${userId}/${oldFileName}`, `${newFilePath}`);
+
+        //Delete file with old name on Supabase storage
+        if (!error) {
+            await supabase.storage.from('files').remove([`${userId}/${oldFileName}`]);
+
+            //Update file name on database
+            try {
+                const response = await axios.patch(`${import.meta.env.VITE_API_URL}/api/file/rename`, { fileId, newFileName });
+                showSuccessToast(response.data.message);
+                onUpdate();
+            } catch(error) {
+                if (axios.isAxiosError(error)) {
+                    const message = error.response?.data?.error || "Something went wrong. Please, try again.";
+                    showErrorToast(message);
+                } else {
+                    showErrorToast("Unexpected error occurred.");
+                }
+            }
+    }
+    setIsRenameModalOpen(false);
+
+};
+
+const handleDelete = async (file: AppFile) => {
+    const fileId = file.id
+    const fileName = file.name
+    const userId = file.createdBy
+
+    //Delete file on Supabase Storage
+    const { error } = await supabase.storage.from('files').remove([`${userId}/${fileName}`]);
+
+    //Delete file from database
+    if (!error) {
+        try {
+            const response = await axios.delete(`${import.meta.env.VITE_API_URL}/api/file/delete`, { data: { fileId, userId } });
+            showSuccessToast(response.data.message);
+        } catch(error) {
+            if (axios.isAxiosError(error)) {
+                const message = error.response?.data?.error || "Something went wrong. Please, try again.";
+                showErrorToast(message);
+            } else {
+                showErrorToast("Unexpected error occurred.");
+            }
+        }
+        setIsConfirmModalOpen(false);
+        onUpdate();
+    }
+
+}
+
+const handleDownload = async (file) => {
+    const userId = file?.createdBy
+    const fileName = file?.name
+
+    if (!userId || !fileName) {
+        showErrorToast("Missing file info");
+        return;
+      }
+
+    const { data, error } = await supabase.storage.from('files').download(`${userId}/${fileName}`);
+
+    if (error) {
+        showErrorToast(error.message);
+    }
+
+    if (data) {
+        downloadBlob(data, `${fileName}`);
+        showSuccessToast("File downloaded successfully");
+    } else {
+        showErrorToast("Failed to download the file.");
+    }
+}
+
+const handleRenameFolder = async (folder: AppFolder) => {
+    console.log(folder);
+}
+
+const handleDeleteFolder = async (folder: AppFolder) => {
+    console.log(folder);
+}
+    
+const toggleMenu = (id: number, type: 'file' | 'folder') => {
+    setOpenOptionsMenu((prev) =>
+      prev?.id === id && prev?.type === type ? null : { id, type }
+    );
+  };
 
     return(
         <div className="w-full h-fit rounded-md shadow-md border border-gray-500">
@@ -56,6 +164,30 @@ export default function Table({ files, folders, onUpdate }: TableProps ) {
                         <td className="px-6 py-2 text-xs">{new Date(folder.createdAt).toLocaleDateString()}</td>
                         <td className="px-6 py-2 text-xs"></td>
                         <td className="px-6 py-2 text-xs">{folder.user.email}</td>
+                        <td className="relative flex flex-row justify-center items-center px-6 py-2 text-xs">
+                            <FontAwesomeIcon onClick={() => toggleMenu(folder.id, 'folder')} className='px-2 py-1 rounded-full hover:bg-neutral-600' icon={faEllipsisVertical} />
+                            {openOptionsMenu?.id === folder.id && openOptionsMenu?.type === 'folder' && (<OptionsMenu
+                            options={[
+                                {
+                                    label: "Share",
+                                    icon: faShareFromSquare,
+                                    onClick: () => {},
+                                },
+                                {
+                                    label: "Rename",
+                                    icon: faPenToSquare,
+                                    onClick: () => handleDownload(folder),
+                                },
+                                {
+                                    label: "Delete",
+                                    icon: faTrash,
+                                    onClick: () => {
+                                        setSelectedItem({ type: 'folder', data: folder });
+                                        setIsConfirmModalOpen(true);
+                                      },
+                                },
+                            ]} />)}
+                        </td>
                     </tr>
                 ))}
                 {files.map((file) => (
@@ -65,11 +197,79 @@ export default function Table({ files, folders, onUpdate }: TableProps ) {
                         <td className="px-6 py-2 text-xs">  {(Number(file.size) / 1024).toFixed(1)} KB</td>
                         <td className="px-6 py-2 text-xs">{file.user.email}</td>
                         <td className="relative flex flex-row justify-center items-center px-6 py-2 text-xs">
-                            <FontAwesomeIcon onClick={() => toggleMenu(file.id)} className='px-2 py-1 rounded-full hover:bg-neutral-600' icon={faEllipsisVertical} />
-                            {openOptionsMenu === file.id && (<OptionsMenu file={file} onUpdate={onUpdate} />)}
+                            <FontAwesomeIcon onClick={() => toggleMenu(file.id, 'file')} className='px-2 py-1 rounded-full hover:bg-neutral-600' icon={faEllipsisVertical} />
+                            {openOptionsMenu?.id === file.id && openOptionsMenu?.type === 'file' && (<OptionsMenu
+                            options={[
+                                {
+                                    label: "Share",
+                                    icon: faShareFromSquare,
+                                    onClick: () => handleShare(file),
+                                },
+                                {
+                                    label: "Download",
+                                    icon: faCircleDown,
+                                    onClick: () => handleDownload(file),
+                                },
+                                {
+                                    label: "Rename",
+                                    icon: faPenToSquare,
+                                    onClick: () => {
+                                        setSelectedItem({ type: 'file', data: file });
+                                        setIsRenameModalOpen(true);
+                                      },
+                                },
+                                {
+                                    label: "Delete",
+                                    icon: faTrash,
+                                    onClick: () => {
+                                        setSelectedItem({ type: 'file', data: file });
+                                        setIsConfirmModalOpen(true);
+                                      },
+                                }
+                            ]}
+                            />
+                        )}
                         </td>
                     </tr>
                 ))}
+                {isRenameModalOpen && selectedItem && (
+                    <Modal modalTitle={`Rename ${selectedItem.type}`} modalText={`Select the new name for your ${selectedItem.type}. This will change its name.`}>
+                        <>
+                            <div className="mb-6">
+                                <LabelInput onValueChange={setNewFileName} type="text" label="New name" name="newName" />
+                            </div>
+                        <Button buttonText="Save" onClick={() => {
+                            if (selectedItem.type === 'file') {
+                                handleRename(selectedItem.data as AppFile);
+                            } else {
+                                handleRenameFolder(selectedItem.data as AppFolder);
+                            }
+                            }}
+                        />
+                        </>
+                    </Modal>
+                    )}
+
+                    {isConfirmModalOpen && selectedItem && (
+                    <Modal
+                        modalTitle={`Delete ${selectedItem.type}`}
+                        modalText={`Are you sure you want to delete this ${selectedItem.type}? You will not be able to recover it.`}
+                    >
+                        <div className="flex flex-row gap-4">
+                        <Button buttonText="Cancel" onClick={() => setIsConfirmModalOpen(false)} />
+                        <Button
+                            buttonText="Delete"
+                            onClick={() => {
+                            if (selectedItem.type === 'file') {
+                                handleDelete(selectedItem.data as AppFile);
+                            } else {
+                                handleDeleteFolder(selectedItem.data as AppFolder);
+                            }
+                            }}
+                        />
+                        </div>
+                    </Modal>
+                    )}
 
                 </tbody>
             </table>
