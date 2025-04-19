@@ -2,7 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import App from "../App"
 import LoginPage from "../pages/LoginPage"
 import SignupPage from "../pages/SignupPage"
-import Dashboard from "../pages/DashboardPage";
+import FoldersPage from "../pages/FoldersPage";
 import RecoverPasswordPage from "../pages/RecoverPasswordPage";
 import ChangePasswordPage from "../pages/ChangePasswordPage";
 
@@ -20,8 +20,8 @@ const router = createBrowserRouter([
       element: <SignupPage />,
     },
     {
-      path: "dashboard",
-      element: <Dashboard />,
+      path: "folders",
+      element: <FoldersPage />,
     },
     {
       path: "recover-password",

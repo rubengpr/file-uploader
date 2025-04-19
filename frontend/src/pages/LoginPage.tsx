@@ -14,7 +14,7 @@ export default function LoginPage() {
     
     useEffect(() => {
         if (isAuthenticated()) {
-          navigate("/dashboard");
+          navigate("/folders");
         }
       }, [navigate]);
 
@@ -36,7 +36,7 @@ export default function LoginPage() {
             localStorage.setItem('token', token);
             localStorage.setItem('stoken', stoken);
 
-            navigate('/dashboard');
+            navigate('/folders');
         } catch (error) {
             if (axios.isAxiosError(error)) {
                 const message = error.response?.data?.error || "Something went wrong. Please, try again.";

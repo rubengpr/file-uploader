@@ -57,7 +57,7 @@ export default function ChangePasswordPage() {
             const { authToken } = response.data;
             localStorage.setItem('token', authToken);
 
-            navigate('/dashboard');
+            navigate('/folders');
         } catch (error) {
             if (axios.isAxiosError(error)) {
                 const message = error.response?.data?.message || "Something went wrong. Please, try again.";

@@ -8,7 +8,7 @@ import Sidebar from '../components/Sidebar.tsx';
 import { showErrorToast } from '../utils/toast.ts';
 import axios from 'axios';
 
-export default function Dashboard() {
+export default function FoldersPage() {
   const [files, setFiles] = useState<File[]>([]);
   const [folders, setFolders] = useState<Folder[]>([]);
 
@@ -37,7 +37,7 @@ export default function Dashboard() {
         
         useEffect(() => {
             if (isAuthenticated()) {
-              navigate('/dashboard');
+              navigate('/folders');
             } else {
               navigate('/login');
             }

@@ -13,7 +13,7 @@ export default function SignupPage() {
         
         useEffect(() => {
             if (isAuthenticated()) {
-              navigate("/dashboard");
+              navigate("/folders");
             }
           }, [navigate]);
     
@@ -81,7 +81,7 @@ export default function SignupPage() {
             const { token } = response.data
             localStorage.setItem('token', token);
 
-            navigate('/dashboard');
+            navigate('/folders');
         } catch (error) {
             if (axios.isAxiosError(error)) {
                 const message = error.response?.data?.error || "Something went wrong. Please, try again.";
