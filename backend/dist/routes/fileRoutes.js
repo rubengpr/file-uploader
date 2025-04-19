@@ -18,14 +18,17 @@ router.post('/create', async (req, res) => {
         res.status(500).json({ message: "Something went wrong" });
     }
 });
-router.get('/get', async (req, res) => {
+router.get('/get/:folderId', async (req, res) => {
+    const { folderId } = req.params;
+    const actualFolderId = folderId === 'root' ? null : folderId;
     try {
         const files = await prisma.file.findMany({
+            where: { folderId: actualFolderId },
             include: {
                 user: {
-                    select: { email: true }
-                }
-            }
+                    select: { email: true },
+                },
+            },
         });
         res.status(200).json(files);
     }
@@ -34,14 +37,14 @@ router.get('/get', async (req, res) => {
     }
 });
 router.patch('/rename', async (req, res) => {
-    const { fileId, newFileName } = req.body;
+    const { fileId, newItemName } = req.body;
     try {
         const renameFile = await prisma.file.update({
             where: {
                 id: fileId,
             },
             data: {
-                name: newFileName
+                name: newItemName
             },
         });
         res.status(200).json({ message: "File renamed successfully" });
