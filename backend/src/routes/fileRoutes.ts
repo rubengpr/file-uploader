@@ -22,20 +22,25 @@ router.post('/create', async (req, res) => {
     }
 });
 
-router.get('/get', async (req, res) => {
+router.get('/get/:folderId', async (req, res) => {
+    const { folderId } = req.params;
+    const actualFolderId = folderId === 'root' ? null : folderId;
+  
     try {
-        const files = await prisma.file.findMany({
-            include: {
-              user: {
-                select: { email: true }
-              }
-            }
-          });
-        res.status(200).json(files);
-    } catch(error) {
-        res.status(500).json({ message: "Something went wrong" });
+      const files = await prisma.file.findMany({
+        where: { folderId: actualFolderId },
+        include: {
+          user: {
+            select: { email: true },
+          },
+        },
+      });
+  
+      res.status(200).json(files);
+    } catch (error) {
+      res.status(500).json({ message: "Something went wrong" });
     }
-})
+  });
 
 router.patch('/rename', async (req, res) => {
     const { fileId, newItemName } = req.body;

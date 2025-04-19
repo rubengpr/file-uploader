@@ -9,9 +9,10 @@ import Modal from './Modal';
 import Button from './Button';
 import LabelInput from './LabelInput';
 import axios from 'axios';
+import { useParams } from 'react-router-dom';
 
 export interface AppFile {
-    id: number;
+    id: string;
     name: string;
     createdAt: string;
     size: string;
@@ -22,7 +23,7 @@ export interface AppFile {
 }
 
 export interface AppFolder {
-    id: number;
+    id: string;
     name: string;
     createdAt: string;
     createdBy: string;
@@ -34,12 +35,15 @@ export interface AppFolder {
 interface TableProps {
     files: AppFile[];
     folders: AppFolder[];
-    onUpdate: () => void;
+    onUpdate: (folderId: string) => void;
+    onFolderClick: (folderId: string) => void;
   }
 
-export default function Table({ files, folders, onUpdate }: TableProps ) {
+export default function Table({ files, folders, onUpdate, onFolderClick }: TableProps ) {
     
-    const [openOptionsMenu, setOpenOptionsMenu] = useState<{ id: number; type: 'file' | 'folder' } | null>(null);
+    const { folderId } = useParams<{ folderId?: string }>();
+    
+    const [openOptionsMenu, setOpenOptionsMenu] = useState<{ id: string; type: 'file' | 'folder' } | null>(null);
     const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
     const [newItemName, setNewItemName] = useState("");
@@ -66,7 +70,7 @@ export default function Table({ files, folders, onUpdate }: TableProps ) {
             try {
                 const response = await axios.patch(`${import.meta.env.VITE_API_URL}/api/file/rename`, { fileId, newItemName });
                 showSuccessToast(response.data.message);
-                onUpdate();
+                onUpdate(folderId ?? "root");
             } catch(error) {
                 if (axios.isAxiosError(error)) {
                     const message = error.response?.data?.error || "Something went wrong. Please, try again.";
@@ -102,12 +106,12 @@ const handleDelete = async (file: AppFile) => {
             }
         }
         setIsConfirmModalOpen(false);
-        onUpdate();
+        onUpdate(folderId ?? "root");
     }
 
 }
 
-const handleDownload = async (file) => {
+const handleDownload = async (file: AppFile) => {
     const userId = file?.createdBy
     const fileName = file?.name
 
@@ -149,7 +153,7 @@ const handleRenameFolder = async (folder: AppFolder) => {
         try {
             const response = await axios.patch(`${import.meta.env.VITE_API_URL}/api/folder/rename`, { folderId, newItemName });
             showSuccessToast(response.data.message);
-            onUpdate();
+            onUpdate(folderId ?? "root");
         } catch(error) {
             if (axios.isAxiosError(error)) {
                 const message = error.response?.data?.error || "Something went wrong. Please, try again.";
@@ -168,7 +172,7 @@ const handleDeleteFolder = async (folder: AppFolder) => {
     console.log(folder);
 }
     
-const toggleMenu = (id: number, type: 'file' | 'folder') => {
+const toggleMenu = (id: string, type: 'file' | 'folder') => {
     setOpenOptionsMenu((prev) =>
       prev?.id === id && prev?.type === type ? null : { id, type }
     );
@@ -188,7 +192,7 @@ const toggleMenu = (id: number, type: 'file' | 'folder') => {
                 </thead>
                 <tbody className="divide-y divide-white/10">
                 {folders.map((folder) => (
-                    <tr key={folder.id} className="hover:bg-neutral-800 cursor-pointer text-gray-300 hover:text-white">
+                    <tr onClick={() => onFolderClick(folder.id)} key={folder.id} className="hover:bg-neutral-800 cursor-pointer text-gray-300 hover:text-white">
                         <td className="px-6 py-2 text-xs">{folder.name}</td>
                         <td className="px-6 py-2 text-xs">{new Date(folder.createdAt).toLocaleDateString()}</td>
                         <td className="px-6 py-2 text-xs"></td>

@@ -24,6 +24,10 @@ const router = createBrowserRouter([
       element: <FoldersPage />,
     },
     {
+      path: "folders/:folderId",
+      element: <FoldersPage />,
+    },
+    {
       path: "recover-password",
       element: <RecoverPasswordPage />,
     },

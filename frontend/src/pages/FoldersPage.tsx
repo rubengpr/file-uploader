@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { isAuthenticated } from '../utils/auth.ts';
 import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -9,11 +9,15 @@ import { showErrorToast } from '../utils/toast.ts';
 import axios from 'axios';
 
 export default function FoldersPage() {
+
+  const { folderId } = useParams<{ folderId?: string }>();
+  const navigate = useNavigate();
+
   const [files, setFiles] = useState<File[]>([]);
   const [folders, setFolders] = useState<Folder[]>([]);
 
         interface File {
-                id: number;
+                id: string;
                 name: string;
                 createdAt: string;
                 size: string;
@@ -24,7 +28,7 @@ export default function FoldersPage() {
           }
 
           interface Folder {
-            id: number;
+            id: string;
             name: string;
             createdAt: string;
             createdBy: string;
@@ -32,20 +36,18 @@ export default function FoldersPage() {
               email: string;
             };
           }
-
-        const navigate = useNavigate();
         
-        useEffect(() => {
-            if (isAuthenticated()) {
-              navigate('/folders');
-            } else {
+          useEffect(() => {
+            if (!isAuthenticated()) {
               navigate('/login');
             }
           }, [navigate]);
+          
 
-          const getFiles = async () => {
+          const getFiles = async (folderId: string) => {
+            
             try {
-                const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/file/get`);
+                const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/file/get/${folderId}`);
                 setFiles(response.data);
             } catch(error) {
                 if (axios.isAxiosError(error)) {
@@ -57,9 +59,9 @@ export default function FoldersPage() {
             }
           }
 
-          const getFolders = async () => {
+          const getFolders = async (folderId: string) => {
             try {
-                const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/folder/get`);
+                const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/folder/get/${folderId}`);
                 setFolders(response.data);
             } catch(error) {
                 if (axios.isAxiosError(error)) {
@@ -72,14 +74,17 @@ export default function FoldersPage() {
           }
 
           const updateTable = () => {
-            getFiles();
-            getFolders();
+            const id = folderId ?? "root";
+            getFiles(id);
+            getFolders(id);
           }
     
-        useEffect(() => {
-            getFiles();
-            getFolders();
-          }, []);
+          useEffect(() => {
+            const id = folderId ?? "root";
+            getFiles(id);
+            getFolders(id);
+          }, [folderId]);
+          
 
           const handleLogout = () => {
             navigate('/login');
@@ -96,7 +101,7 @@ export default function FoldersPage() {
           <div className='main-page flex flex-row bg-black'>
             <Sidebar onUploadSuccess={updateTable} />
             <div className="page-content w-full flex justify-center h-screen px-10 py-8">
-              <Table files={files} folders={folders} onUpdate={updateTable} />
+              <Table files={files} folders={folders} onUpdate={updateTable} onFolderClick={(id) => navigate(`/folders/${id}`)} />
             </div>
           </div>
         </div>
