@@ -35,7 +35,7 @@ router.post('/login', async (req, res) => {
         const stoken = supabaseToken({ sub: user.id, email: user.email, role: 'authenticated' });
 
         // 5. Send token
-        res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, sameSite: 'strict', maxAge: 7 * 24 * 60 * 60 * 1000 });
+        res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, sameSite: 'none', maxAge: 7 * 24 * 60 * 60 * 1000 });
         res.status(200).json({ token, stoken });
     } catch (err) {
         res.status(500).json({ error: 'Something went wrong. Try again, or contact us' });
