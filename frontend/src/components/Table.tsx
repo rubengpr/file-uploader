@@ -198,7 +198,7 @@ const toggleMenu = (id: string, type: 'file' | 'folder') => {
                         <td className="px-6 py-2 text-xs"></td>
                         <td className="px-6 py-2 text-xs">{folder.user.email}</td>
                         <td className="relative flex flex-row justify-center items-center px-6 py-2 text-xs">
-                            <FontAwesomeIcon onClick={() => toggleMenu(folder.id, 'folder')} className='px-2 py-1 rounded-full hover:bg-neutral-600' icon={faEllipsisVertical} />
+                            <FontAwesomeIcon onClick={(e) => {e.stopPropagation(); toggleMenu(folder.id, 'folder')}} className='px-2 py-1 rounded-full hover:bg-neutral-600' icon={faEllipsisVertical} />
                             {openOptionsMenu?.id === folder.id && openOptionsMenu?.type === 'folder' && (<OptionsMenu
                             options={[
                                 {
