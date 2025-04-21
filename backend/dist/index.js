@@ -1,21 +1,32 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
 import authRoutes from './routes/auth.js';
 import fileRoutes from './routes/fileRoutes.js';
 import folderRoutes from './routes/folderRoutes.js';
 dotenv.config();
 const app = express();
+app.set('trust proxy', 1);
 const isProd = process.env.NODE_ENV === 'production';
-const allowedOrigins = isProd
-    ? ['https://folded.me']
-    : ['https://folded.me', 'http://localhost:5173'];
 const corsOptions = {
-    origin: allowedOrigins,
+    origin: function (origin, callback) {
+        const allowedOrigins = isProd
+            ? ['https://folded.me']
+            : ['https://folded.me', 'http://localhost:5173'];
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        }
+        else {
+            console.warn('Blocked by CORS:', origin);
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Custom-Header'],
     credentials: true,
 };
+app.use(cookieParser());
 app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
 app.use(express.json());

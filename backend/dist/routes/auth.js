@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import bcrypt from 'bcrypt';
 import { PrismaClient } from '@prisma/client';
-import { signToken } from '../utils/jwt.js';
+import { signToken, supabaseToken } from '../utils/jwt.js';
 import crypto from 'crypto';
 import sendEmail from '../utils/sendEmail.js';
-import jwt from 'jsonwebtoken';
+import { verifyRefreshToken } from '../utils/tokenUtils.js';
 const router = Router();
 const prisma = new PrismaClient();
 router.post('/login', async (req, res) => {
@@ -24,14 +24,11 @@ router.post('/login', async (req, res) => {
         }
         // 3. Generate token
         const token = signToken({ id: user.id, email: user.email });
+        const refreshToken = signToken({ id: user.id });
         //4. Supabase token
-        const stoken = jwt.sign({
-            sub: user.id, // required
-            email: user.email, // optional
-            role: 'authenticated', // required if you use it in policies
-        }, process.env.JWT_SECRET, { expiresIn: '24h', audience: 'authenticated' } // 'aud' should match Supabase setting
-        );
+        const stoken = supabaseToken({ sub: user.id, email: user.email, role: 'authenticated' });
         // 5. Send token
+        res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, sameSite: 'none', maxAge: 7 * 24 * 60 * 60 * 1000 });
         res.status(200).json({ token, stoken });
     }
     catch (err) {
@@ -120,6 +117,21 @@ router.post('/change-password', async (req, res) => {
     }
     catch (err) {
         res.status(500).json({ message: "Internal server error" });
+    }
+});
+router.post('/refresh', async (req, res) => {
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken) {
+        res.status(401).json({ message: "No refresh token found" });
+    }
+    try {
+        const payload = verifyRefreshToken(refreshToken);
+        const user = await prisma.user.findUnique({ where: { id: payload.id } });
+        const token = signToken({ id: user.id, email: user.email });
+        res.status(200).json({ token });
+    }
+    catch (err) {
+        res.status(500).json({ message: "Something went wrong" });
     }
 });
 export default router;
