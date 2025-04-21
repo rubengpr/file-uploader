@@ -36,6 +36,8 @@ router.get('/get/:folderId', async (req, res) => {
           },
         },
       });
+
+      console.log(req.cookies.refreshToken);
   
       res.status(200).json(files);
     } catch (error) {

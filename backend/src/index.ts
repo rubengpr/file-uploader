@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import cookieParser from 'cookie-parser'
 
 import authRoutes from './routes/auth.js';
 import fileRoutes from './routes/fileRoutes.js';
@@ -21,6 +22,8 @@ const corsOptions = {
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Custom-Header'],
   credentials: true,
 };
+
+app.use(cookieParser());
 
 app.use(cors(corsOptions));
 

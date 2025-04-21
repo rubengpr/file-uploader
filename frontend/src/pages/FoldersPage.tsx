@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { isAuthenticated } from '../utils/auth.ts';
+import { isAuthenticated, isTokenExpired } from '../utils/auth.ts';
 import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons'
@@ -41,6 +41,26 @@ export default function FoldersPage() {
             if (!isAuthenticated()) {
               navigate('/login');
             }
+          }, [navigate]);
+
+          useEffect(() => {
+            const refreshToken = async () => {
+              if (isTokenExpired()) {
+                try {
+                  const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/refresh`);
+                  const { token } = response.data;
+                  localStorage.setItem('token', token);
+                } catch(error) {
+                if (axios.isAxiosError(error)) {
+                    const message = error.response?.data?.error || "Something went wrong. Please, try again.";
+                    showErrorToast(message);
+                } else {
+                    showErrorToast("Unexpected error occurred.");
+                }
+              }}
+            }
+            
+            refreshToken()
           }, [navigate]);
           
 
