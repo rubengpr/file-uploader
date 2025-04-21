@@ -9,6 +9,7 @@ import folderRoutes from './routes/folderRoutes.js';
 
 dotenv.config();
 const app = express();
+app.set('trust proxy', 1);
 
 const isProd = process.env.NODE_ENV === 'production';
 
