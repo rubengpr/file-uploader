@@ -9,6 +9,7 @@ import axios from 'axios';
 import Modal from './Modal';
 import LabelInput from './LabelInput';
 import Button from './Button';
+import { useParams } from 'react-router-dom';
 
 type JwtPayload = {
     id: string,
@@ -16,6 +17,8 @@ type JwtPayload = {
 }
 
 export default function Sidebar({ onUploadSuccess }: { onUploadSuccess: () => void }) {
+
+    const { folderId } = useParams<{ folderId: string }>();
     
     const [isNewFolderModalOpen, setIsNewFolderModalOpen] = useState(false);
     const [newFolderName, setNewFolderName] = useState('');
@@ -44,7 +47,7 @@ export default function Sidebar({ onUploadSuccess }: { onUploadSuccess: () => vo
 
         //3. If upload is successful, create database entry
         try {
-            const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/file/create`, { createdBy: user.id, name: file.name, size: file.size })
+            const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/file/create`, { createdBy: user.id, name: file.name, size: file.size, folderId: folderId ?? null })
             showSuccessToast(response.data.message);
         } catch(error) {
             if (axios.isAxiosError(error)) {

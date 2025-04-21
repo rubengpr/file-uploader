@@ -5,7 +5,7 @@ const router = Router();
 const prisma = new PrismaClient();
 
 router.post('/create', async (req, res) => {
-    const { name, size, createdBy } = req.body;
+    const { name, size, createdBy, folderId } = req.body;
 
     try {
         const uploadFile = await prisma.file.create({
@@ -13,6 +13,7 @@ router.post('/create', async (req, res) => {
                 name,
                 size,
                 createdBy,
+                folderId,
             }
         });
 
