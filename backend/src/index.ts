@@ -13,12 +13,19 @@ app.set('trust proxy', 1);
 
 const isProd = process.env.NODE_ENV === 'production';
 
-const allowedOrigins = isProd
-  ? ['https://folded.me']
-  : ['https://folded.me', 'http://localhost:5173'];
-
-const corsOptions = {
-  origin: allowedOrigins,
+  const corsOptions = {
+    origin: function (origin, callback) {
+      const allowedOrigins = isProd
+        ? ['https://folded.me']
+        : ['https://folded.me', 'http://localhost:5173'];
+  
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        console.warn('Blocked by CORS:', origin);
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Custom-Header'],
   credentials: true,
