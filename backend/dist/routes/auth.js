@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import bcrypt from 'bcrypt';
 import { PrismaClient } from '@prisma/client';
-import { signToken, supabaseToken } from '../utils/jwt.js';
+import { signToken, signRefreshToken, supabaseToken } from '../utils/jwt.js';
 import crypto from 'crypto';
 import sendEmail from '../utils/sendEmail.js';
 import { verifyRefreshToken } from '../utils/tokenUtils.js';
@@ -24,7 +24,7 @@ router.post('/login', async (req, res) => {
         }
         // 3. Generate token
         const token = signToken({ id: user.id, email: user.email });
-        const refreshToken = signToken({ id: user.id });
+        const refreshToken = signRefreshToken({ id: user.id });
         //4. Supabase token
         const stoken = supabaseToken({ sub: user.id, email: user.email, role: 'authenticated' });
         // 5. Send token
@@ -131,7 +131,7 @@ router.post('/refresh', async (req, res) => {
         res.status(200).json({ token });
     }
     catch (err) {
-        res.status(500).json({ message: "Something went wrong" });
+        res.status(500).json({ message: "Something went wrong refreshing the token" });
     }
 });
 export default router;

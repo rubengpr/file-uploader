@@ -2,12 +2,12 @@ import jwt from 'jsonwebtoken';
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
 export function signToken(payload) {
-    return jwt.sign(payload, JWT_SECRET, { expiresIn: '15m' });
+    return jwt.sign(payload, JWT_SECRET, { expiresIn: '2s' });
 }
 export function supabaseToken(payload) {
     return jwt.sign(payload, JWT_SECRET, { expiresIn: '24h', audience: 'authenticated' });
 }
-export function refreshToken(payload) {
-    return jwt.sign(payload, JWT_REFRESH_SECRET, { expiresIn: '7d' });
+export function signRefreshToken(payload) {
+    return jwt.sign(payload, JWT_REFRESH_SECRET, { expiresIn: '5s' });
 }
 //# sourceMappingURL=jwt.js.map

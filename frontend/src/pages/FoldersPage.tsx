@@ -36,6 +36,12 @@ export default function FoldersPage() {
               email: string;
             };
           }
+
+          const handleLogout = () => {
+            navigate('/login');
+
+            localStorage.removeItem("token")
+          }
         
           useEffect(() => {
             if (!isAuthenticated()) {
@@ -47,21 +53,23 @@ export default function FoldersPage() {
             const refreshToken = async () => {
               if (isTokenExpired()) {
                 try {
-                  const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/refresh`);
+                  const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/refresh`, {}, { withCredentials: true });
                   const { token } = response.data;
                   localStorage.setItem('token', token);
                 } catch(error) {
                 if (axios.isAxiosError(error)) {
-                    const message = error.response?.data?.error || "Something went wrong. Please, try again.";
+                    const message = error.response?.data?.error || "Error refreshing the token";
                     showErrorToast(message);
+                    handleLogout();
                 } else {
                     showErrorToast("Unexpected error occurred.");
+                    handleLogout();
                 }
               }}
             }
             
             refreshToken()
-          }, [navigate]);
+          }, [navigate, handleLogout]);
           
 
           const getFiles = async (folderId: string) => {
@@ -71,7 +79,7 @@ export default function FoldersPage() {
                 setFiles(response.data);
             } catch(error) {
                 if (axios.isAxiosError(error)) {
-                    const message = error.response?.data?.error || "Something went wrong. Please, try again.";
+                    const message = error.response?.data?.error || "Error getting the files.";
                     showErrorToast(message);
                 } else {
                     showErrorToast("Unexpected error occurred.");
@@ -85,7 +93,7 @@ export default function FoldersPage() {
                 setFolders(response.data);
             } catch(error) {
                 if (axios.isAxiosError(error)) {
-                    const message = error.response?.data?.error || "Something went wrong. Please, try again.";
+                    const message = error.response?.data?.error || "Error getting the folders";
                     showErrorToast(message);
                 } else {
                     showErrorToast("Unexpected error occurred.");
@@ -104,13 +112,6 @@ export default function FoldersPage() {
             getFiles(id);
             getFolders(id);
           }, [folderId]);
-          
-
-          const handleLogout = () => {
-            navigate('/login');
-
-            localStorage.removeItem("token")
-          }
 
     return (
         <div className='main-page flex flex-col bg-black'>
