@@ -37,9 +37,11 @@ export default function Sidebar({ onUploadSuccess }: { onUploadSuccess: () => vo
         //Recover uploaded file
         const file = event.target.files?.[0];
         if (!file) return
+
+        const folderPath = folderId ? `${userId}/${folderId}` : `${userId}`
         
         //2. Upload file to Supabase
-        const { error } = await supabase.storage.from('files').upload(`${userId}/${file.name}`, file)
+        const { error } = await supabase.storage.from('files').upload(`${folderPath}/${file.name}`, file)
         if (error) {
             showErrorToast("An error occured");
             return;
