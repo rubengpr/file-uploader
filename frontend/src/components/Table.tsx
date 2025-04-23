@@ -169,7 +169,35 @@ const handleRenameFolder = async (folder: AppFolder) => {
 }
 
 const handleDeleteFolder = async (folder: AppFolder) => {
-    console.log(folder);
+    //1. Get userId and folderId
+    const userId = folder.createdBy
+    const folderId = folder.id
+
+    //2. Supabase: call list into the folderId
+    const { data, error } = await supabase.storage.from('files').list(`${userId}/${folderId}`)
+    
+    //3. Supabase: call delete into the files list
+    if (data) {
+        for (const folder of data) {
+            await supabase.storage.from('files').remove([`${userId}/${folderId}/${folder.name}`]);
+        }
+    }
+
+    if (!error) {
+        try {
+            const response = await axios.delete(`${import.meta.env.VITE_API_URL}/api/folder/delete`, { data: { folderId } });
+            showSuccessToast(response.data.message);
+            onUpdate(folderId ?? "root");
+        } catch(error) {
+            if (axios.isAxiosError(error)) {
+                const message = error.response?.data?.error || "Something went wrong. Please, try again.";
+                showErrorToast(message);
+            } else {
+                showErrorToast("Unexpected error occurred.");
+            }
+        }
+    }
+    
     setIsConfirmModalOpen(false);
 }
     
