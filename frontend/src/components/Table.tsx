@@ -170,6 +170,7 @@ const handleRenameFolder = async (folder: AppFolder) => {
 
 const handleDeleteFolder = async (folder: AppFolder) => {
     console.log(folder);
+    setIsConfirmModalOpen(false);
 }
     
 const toggleMenu = (id: string, type: 'file' | 'folder') => {
@@ -221,11 +222,11 @@ const toggleMenu = (id: string, type: 'file' | 'folder') => {
                                     label: "Delete",
                                     icon: faTrash,
                                     onClick: () => {
-                                        setSelectedItem({ type: 'folder', data: folder });
-                                        setOpenOptionsMenu(null);
-                                        setIsConfirmModalOpen(true);
-                                      },
-                                },
+                                      setSelectedItem({ type: 'folder', data: folder });
+                                      setOpenOptionsMenu(null);
+                                      setIsConfirmModalOpen(true);
+                                    },
+                                  },
                             ]} />)}
                         </td>
                     </tr>
