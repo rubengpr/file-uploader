@@ -240,6 +240,7 @@ const handleCopyURL = async () => {
         }
       }
     }
+      
 
     return(
         <div className="w-full h-fit rounded-md shadow-md border border-gray-500">
@@ -345,7 +346,14 @@ const handleCopyURL = async () => {
                     </tr>
                 ))}
                 {isRenameModalOpen && selectedItem && (
-                    <Modal modalTitle={`Rename ${selectedItem.type}`} modalText={`Select the new name for your ${selectedItem.type}. This will change its name.`}>
+                    <Modal
+                    modalTitle={`Rename ${selectedItem.type}`}
+                    modalText={`Select the new name for your ${selectedItem.type}. This will change its name.`}
+                    onClose={() => {
+                        setIsRenameModalOpen(false);
+                        setNewItemName('');
+                    }}
+                    >
                         <>
                             <div className="mb-6">
                                 <LabelInput onValueChange={setNewItemName} type="text" label="New name" name="newName" />
@@ -372,6 +380,7 @@ const handleCopyURL = async () => {
                     <Modal
                         modalTitle={`Delete ${selectedItem.type}`}
                         modalText={`Are you sure you want to delete this ${selectedItem.type}? You will not be able to recover it.`}
+                        onClose={() => setIsConfirmModalOpen(false)}
                     >
                         <div className="flex flex-row gap-4">
                         <Button buttonText="Cancel" onClick={() => setIsConfirmModalOpen(false)} />
@@ -393,6 +402,10 @@ const handleCopyURL = async () => {
                     <Modal
                         modalTitle='Share file'
                         modalText='Copy and paste the following URL to give anyone access to your file'
+                        onClose={() => {
+                            setIsShareModalOpen(false);
+                            setNewItemName('');
+                        }}
                     >
                         <div className='flex flex-col items-center gap-4'>
                         <p className='text-center text-sm font-bold px-4'>
