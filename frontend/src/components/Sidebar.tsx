@@ -91,7 +91,15 @@ export default function Sidebar({ onUploadSuccess }: { onUploadSuccess: () => vo
             <SidebarOption onClick={() => setIsNewFolderModalOpen(true)} icon={faFolder} text="New folder" />
             <input onChange={handleFileChange} ref={fileInputRef} className='hidden' type="file" />
             <Toaster />
-            {isNewFolderModalOpen && (<Modal modalTitle='Create folder' modalText='Select the new name for your folder. You can rename the folder name later.'>
+            {isNewFolderModalOpen && (
+                <Modal
+                    modalTitle='Create folder'
+                    modalText='Select the new name for your folder. You can rename the folder name later.'
+                    onClose={() => {
+                        setIsNewFolderModalOpen(false);
+                        setNewFolderName('');
+                    }}
+                    >
                 {
                     <>
                         <div className='mb-6'>
