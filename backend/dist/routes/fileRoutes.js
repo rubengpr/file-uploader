@@ -1,13 +1,15 @@
 import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
+import sanitize from 'sanitize-filename';
 const router = Router();
 const prisma = new PrismaClient();
 router.post('/create', async (req, res) => {
     const { name, size, createdBy, folderId } = req.body;
+    const filename = sanitize(name);
     try {
         const uploadFile = await prisma.file.create({
             data: {
-                name,
+                name: filename,
                 size,
                 createdBy,
                 folderId,
@@ -38,14 +40,15 @@ router.get('/get/:folderId', async (req, res) => {
     }
 });
 router.patch('/rename', async (req, res) => {
-    const { fileId, newItemName } = req.body;
+    const { fileId, itemName } = req.body;
+    const sanitizedItemName = sanitize(itemName);
     try {
         const renameFile = await prisma.file.update({
             where: {
                 id: fileId,
             },
             data: {
-                name: newItemName
+                name: sanitizedItemName,
             },
         });
         res.status(200).json({ message: "File renamed successfully" });
