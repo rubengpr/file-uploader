@@ -12,7 +12,7 @@ export default function Modal({ modalTitle, modalText, children, onClose }: Moda
   React.useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        e.stopPropagation();   // prevent bubbling to parent handlers
+        e.stopPropagation();
         onClose();
       }
     };
@@ -21,7 +21,7 @@ export default function Modal({ modalTitle, modalText, children, onClose }: Moda
     return () => {
       document.removeEventListener('keydown', handleKey);
     };
-  }, [onClose]);               // stable reference keeps effect accurate
+  }, [onClose]);
   
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.currentTarget === e.target) onClose();
