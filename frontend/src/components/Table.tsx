@@ -266,13 +266,6 @@ const handleCopyURL = async () => {
                             {openOptionsMenu?.id === folder.id && openOptionsMenu?.type === 'folder' && (<OptionsMenu
                             options={[
                                 {
-                                    label: "Share",
-                                    icon: faShareFromSquare,
-                                    onClick: () => {
-                                        setOpenOptionsMenu(null);
-                                    },
-                                },
-                                {
                                     label: "Rename",
                                     icon: faPenToSquare,
                                     onClick: () => {
