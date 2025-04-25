@@ -47,11 +47,28 @@ export default function Table({ files, folders, onUpdate, onFolderClick }: Table
     const [openOptionsMenu, setOpenOptionsMenu] = useState<{ id: string; type: 'file' | 'folder' } | null>(null);
     const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+    const [isShareModalOpen, setIsShareModalOpen] = useState(false);
     const [newItemName, setNewItemName] = useState("");
     const [selectedItem, setSelectedItem] = useState<{ type: 'file' | 'folder'; data: AppFile | AppFolder } | null>(null);
+    const [signedUrl, setSignedUrl] = useState<string | null>(null);
+
 
     const handleShare = async (file: AppFile) => {
-        console.log(file);
+
+        const userId = file.createdBy;
+        const fileName = file.name;
+        const filePath = `${userId}/${fileName}`
+        
+        const { data, error } = await supabase.storage.from('files').createSignedUrl(`${filePath}`, 86400)
+
+        if (data) {
+            setSignedUrl(data.signedUrl);
+            setIsShareModalOpen(true);
+        }
+
+        if (error) {
+            showErrorToast("Something went wrong")
+        }
     }
     
     const handleRename = async (file: AppFile) => {
@@ -213,6 +230,17 @@ const toggleMenu = (id: string, type: 'file' | 'folder') => {
     );
   };
 
+const handleCopyURL = async () => {
+    if (signedUrl) {
+        try {
+          await navigator.clipboard.writeText(signedUrl);
+          showSuccessToast('URL copied to clipboard');
+        } catch {
+          showErrorToast('Failed to copy URL');
+        }
+      }
+    }
+
     return(
         <div className="w-full h-fit rounded-md shadow-md border border-gray-500">
             <table className="w-full text-white rounded-md bg-neutral-900">
@@ -281,6 +309,7 @@ const toggleMenu = (id: string, type: 'file' | 'folder') => {
                                     onClick: () => {
                                         setOpenOptionsMenu(null);
                                         handleShare(file);
+                                        setIsShareModalOpen(true);
                                     },
                                 },
                                 {
@@ -339,7 +368,7 @@ const toggleMenu = (id: string, type: 'file' | 'folder') => {
                     </Modal>
                     )}
 
-                    {isConfirmModalOpen && selectedItem && (
+                {isConfirmModalOpen && selectedItem && (
                     <Modal
                         modalTitle={`Delete ${selectedItem.type}`}
                         modalText={`Are you sure you want to delete this ${selectedItem.type}? You will not be able to recover it.`}
@@ -358,7 +387,26 @@ const toggleMenu = (id: string, type: 'file' | 'folder') => {
                         />
                         </div>
                     </Modal>
-                    )}
+                )}
+
+                {isShareModalOpen && (
+                    <Modal
+                        modalTitle='Share file'
+                        modalText='Copy and paste the following URL to give anyone access to your file'
+                    >
+                        <div className='flex flex-col items-center gap-4'>
+                        <p className='text-center text-sm font-bold px-4'>
+                            {signedUrl?.slice(0, 40)}...{signedUrl?.slice(-10)}
+                        </p>
+
+                            <Button
+                                buttonText='Copy URL'
+                                onClick={handleCopyURL}
+                                />
+                        </div>   
+                    
+                    </Modal>
+                )}
 
                 </tbody>
             </table>
