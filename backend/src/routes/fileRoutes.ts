@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
+import sanitize from 'sanitize-filename'
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -7,10 +8,12 @@ const prisma = new PrismaClient();
 router.post('/create', async (req, res) => {
     const { name, size, createdBy, folderId } = req.body;
 
+    const filename = sanitize(name);
+
     try {
         const uploadFile = await prisma.file.create({
             data: {
-                name,
+                name: filename,
                 size,
                 createdBy,
                 folderId,

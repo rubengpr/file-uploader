@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
+import sanitize from 'sanitize-filename'
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -7,6 +8,8 @@ const prisma = new PrismaClient();
 router.post('/create', async (req, res) => {
     //receive variables to create folder
     const {name, createdBy} = req.body;
+
+    const folderName = sanitize(name);
 
     //create folder in database
     try {

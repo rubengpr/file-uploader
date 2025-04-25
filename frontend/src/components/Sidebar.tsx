@@ -10,6 +10,7 @@ import Modal from './Modal';
 import LabelInput from './LabelInput';
 import Button from './Button';
 import { useParams } from 'react-router-dom';
+import sanitize from 'sanitize-filename'
 
 type JwtPayload = {
     id: string,
@@ -38,18 +39,20 @@ export default function Sidebar({ onUploadSuccess }: { onUploadSuccess: () => vo
         const file = event.target.files?.[0];
         if (!file) return
 
+        const filename = sanitize(file.name);
+
         const folderPath = folderId ? `${userId}/${folderId}` : `${userId}`
         
         //2. Upload file to Supabase
-        const { error } = await supabase.storage.from('files').upload(`${folderPath}/${file.name}`, file)
+        const { error } = await supabase.storage.from('files').upload(`${folderPath}/${filename}`, file)
         if (error) {
-            showErrorToast("An error occured");
+            showErrorToast("An error occured uploading the file");
             return;
         }
 
         //3. If upload is successful, create database entry
         try {
-            const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/file/create`, { createdBy: user.id, name: file.name, size: file.size, folderId: folderId ?? null })
+            const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/file/create`, { createdBy: user.id, name: filename, size: file.size, folderId: folderId ?? null })
             showSuccessToast(response.data.message);
         } catch(error) {
             if (axios.isAxiosError(error)) {
@@ -65,8 +68,10 @@ export default function Sidebar({ onUploadSuccess }: { onUploadSuccess: () => vo
     }
 
     const createFolder = async () => {
+        const folderName = sanitize(newFolderName);
+        
         try {
-            const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/folder/create`, { createdBy: user.id, name: newFolderName });
+            const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/folder/create`, { createdBy: user.id, name: folderName });
             showSuccessToast(response.data.message);
         } catch(error) {
             if (axios.isAxiosError(error)) {
