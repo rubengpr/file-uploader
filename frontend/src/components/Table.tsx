@@ -10,6 +10,7 @@ import Button from './Button';
 import LabelInput from './LabelInput';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import sanitize from 'sanitize-filename';
 
 export interface AppFile {
     id: string;
@@ -58,7 +59,10 @@ export default function Table({ files, folders, onUpdate, onFolderClick }: Table
         const oldFileName = file.name
         const userId = file.createdBy
         const fileId = file.id;
-        const newFilePath = `${userId}/${newItemName}`;
+
+        const itemName = sanitize(newItemName);
+
+        const newFilePath = `${userId}/${itemName}`;
         
         const { error } = await supabase.storage.from('files').copy(`${userId}/${oldFileName}`, `${newFilePath}`);
 
@@ -68,7 +72,7 @@ export default function Table({ files, folders, onUpdate, onFolderClick }: Table
 
             //Update file name on database
             try {
-                const response = await axios.patch(`${import.meta.env.VITE_API_URL}/api/file/rename`, { fileId, newItemName });
+                const response = await axios.patch(`${import.meta.env.VITE_API_URL}/api/file/rename`, { fileId, itemName });
                 showSuccessToast(response.data.message);
                 onUpdate(folderId ?? "root");
             } catch(error) {
@@ -139,11 +143,13 @@ const handleRenameFolder = async (folder: AppFolder) => {
     const userId = folder.createdBy;
     const folderId = folder.id;
 
+    const itemName = sanitize(newItemName);
+
     //Files is an array of objects, containing files paths
     const { data, error } = await supabase.storage.from('files').list(oldFolderName);
     if (data) {
         for (const file of data) {
-            await supabase.storage.from('files').copy(`${userId}/${oldFolderName}/${file.name}`, `${userId}/${newItemName}/${file.name}`);
+            await supabase.storage.from('files').copy(`${userId}/${oldFolderName}/${file.name}`, `${userId}/${itemName}/${file.name}`);
         }
     }
 
@@ -151,7 +157,7 @@ const handleRenameFolder = async (folder: AppFolder) => {
         await supabase.storage.from('files').remove([`${userId}/${oldFolderName}`]);
 
         try {
-            const response = await axios.patch(`${import.meta.env.VITE_API_URL}/api/folder/rename`, { folderId, newItemName });
+            const response = await axios.patch(`${import.meta.env.VITE_API_URL}/api/folder/rename`, { folderId, itemName });
             showSuccessToast(response.data.message);
             onUpdate(folderId ?? "root");
         } catch(error) {

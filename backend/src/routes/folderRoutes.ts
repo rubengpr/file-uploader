@@ -47,7 +47,9 @@ router.get('/get/:folderId', async (req, res) => {
 });
 
 router.patch('/rename', async (req, res) => {
-    const { folderId, newItemName } = req.body;
+    const { folderId, itemName } = req.body;
+
+    const sanitizedItemName = sanitize(itemName);
 
     try {
         const renameFolder = await prisma.folder.update({
@@ -55,7 +57,7 @@ router.patch('/rename', async (req, res) => {
                 id: folderId
             },
             data: {
-                name: newItemName
+                name: sanitizedItemName,
             }
         });
         res.status(200).json({ message: "Folder renamed successfully" })
