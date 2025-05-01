@@ -42,7 +42,7 @@ export default function Sidebar({ onUploadSuccess }: { onUploadSuccess: () => vo
 
         const filename = sanitize(file.name);
 
-        if (file.size > 20971520) {
+        if (file.size > 20 * 1024 * 1024) {
             showErrorToast("Max file size is 20MB");
             return
         }

@@ -10,6 +10,11 @@ router.post('/create', async (req, res) => {
 
     const filename = sanitize(name);
 
+    if (size > 20 * 1024 * 1024) {
+        res.status(400).json({ message: "Max file size is 20MB" });
+        return
+      }
+
     try {
         const uploadFile = await prisma.file.create({
             data: {
