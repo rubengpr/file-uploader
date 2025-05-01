@@ -11,6 +11,7 @@ import LabelInput from './LabelInput';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import sanitize from 'sanitize-filename';
+import { isDisabled } from '../utils/disabled';
 
 export interface AppFile {
     id: string;
@@ -352,11 +353,16 @@ const handleCopyURL = async () => {
                                 <LabelInput onValueChange={setNewItemName} type="text" label="New name" name="newName" />
                             </div>
                         <div className="flex flex-row gap-4">
-                            <Button buttonText='Cancel' onClick={() => {
+                            <Button
+                                buttonText='Cancel'
+                                onClick={() => {
                                 setIsRenameModalOpen(false)
                                 setNewItemName("");
                                 }}/>
-                            <Button buttonText="Save" onClick={() => {
+                            <Button
+                                disabled={isDisabled(newItemName)}
+                                buttonText="Save"
+                                onClick={() => {
                                 if (selectedItem.type === 'file') {
                                     handleRename(selectedItem.data as AppFile);
                                 } else {

@@ -11,6 +11,7 @@ import LabelInput from './LabelInput';
 import Button from './Button';
 import { useParams } from 'react-router-dom';
 import sanitize from 'sanitize-filename'
+import { isDisabled } from '../utils/disabled';
 
 type JwtPayload = {
     id: string,
@@ -105,7 +106,20 @@ export default function Sidebar({ onUploadSuccess }: { onUploadSuccess: () => vo
                         <div className='mb-6'>
                             <LabelInput onValueChange={setNewFolderName} type='text' label='New folder name' name='newFolderName' />
                         </div>
-                        <Button buttonText='Create folder' onClick={createFolder} />
+                        <div className="flex flex-row gap-4">
+                            <Button
+                                buttonText='Cancel'
+                                onClick={() => {
+                                setIsNewFolderModalOpen(false)
+                                setNewFolderName("");
+                                }}
+                            />
+                            <Button
+                                disabled={isDisabled(newFolderName)}
+                                buttonText='Create folder'
+                                onClick={createFolder}
+                            />
+                        </div>
                     </>
                 }
             </Modal>)}
