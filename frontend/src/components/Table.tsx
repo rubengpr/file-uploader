@@ -400,19 +400,15 @@ const handleCopyURL = async () => {
                 {isShareModalOpen && (
                     <Modal
                         modalTitle='Share file'
-                        modalText='Copy and paste the following URL to give anyone access to your file'
+                        modalText='Share the URL with anyone & give them access to your file'
                         onClose={() => {
                             setIsShareModalOpen(false);
                             setNewItemName('');
                         }}
                     >
                         <div className='flex flex-col items-center gap-4'>
-                        <p className='text-center text-sm font-bold px-4'>
-                            {signedUrl?.slice(0, 40)}...{signedUrl?.slice(-10)}
-                        </p>
-
                             <Button
-                                buttonText='Copy URL'
+                                buttonText='Copy URL to clipboard'
                                 onClick={handleCopyURL}
                                 />
                         </div>   
