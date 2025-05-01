@@ -42,6 +42,11 @@ export default function Sidebar({ onUploadSuccess }: { onUploadSuccess: () => vo
 
         const filename = sanitize(file.name);
 
+        if (file.size > 20971520) {
+            showErrorToast("Max file size is 20MB");
+            return
+        }
+
         const folderPath = folderId ? `${userId}/${folderId}` : `${userId}`
         
         //2. Upload file to Supabase
