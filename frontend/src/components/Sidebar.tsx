@@ -58,7 +58,7 @@ export default function Sidebar({ onUploadSuccess }: { onUploadSuccess: () => vo
 
         //3. If upload is successful, create database entry
         try {
-            const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/file/create`, { createdBy: user.id, name: filename, size: file.size, folderId: folderId ?? null })
+            const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/file/create`, { createdBy: user.id, name: filename, size: file.size, folderId: folderId ?? null, type: file.type })
             showSuccessToast(response.data.message);
         } catch(error) {
             if (axios.isAxiosError(error)) {
@@ -95,7 +95,7 @@ export default function Sidebar({ onUploadSuccess }: { onUploadSuccess: () => vo
         <div className='sidebar flex flex-col w-50 bg-black px-2 py-4 border-r border-gray-700 gap-1'>
             <SidebarOption onClick={handleNewFileClick} icon={faFile} text="New file" />
             <SidebarOption onClick={() => setIsNewFolderModalOpen(true)} icon={faFolder} text="New folder" />
-            <input onChange={handleFileChange} ref={fileInputRef} className='hidden' type="file" />
+            <input onChange={handleFileChange} ref={fileInputRef} className='hidden' type="file" accept='.doc, .docx, .xls, .xlsx, .csv, .txt, .pdf, image/*' />
             <Toaster />
             {isNewFolderModalOpen && (
                 <Modal

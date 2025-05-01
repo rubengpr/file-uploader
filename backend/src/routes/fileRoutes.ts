@@ -6,14 +6,36 @@ const router = Router();
 const prisma = new PrismaClient();
 
 router.post('/create', async (req, res) => {
-    const { name, size, createdBy, folderId } = req.body;
+    const { name, size, createdBy, folderId, type } = req.body;
 
-    const filename = sanitize(name);
+    const allowedTypes = [
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'application/vnd.ms-excel',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'text/csv',
+        'text/plain',
+        'application/pdf',
+        'image/jpeg',
+        'image/png',
+        'image/gif',
+        'image/webp',
+        'image/bmp',
+        'image/svg+xml'
+      ];
 
+    if (!allowedTypes.includes(type)) {
+    res.status(400).json({ message: "File type not supported" })
+    return;
+    }
+      
+    
     if (size > 20 * 1024 * 1024) {
         res.status(400).json({ message: "Max file size is 20MB" });
         return
       }
+    
+    const filename = sanitize(name);
 
     try {
         const uploadFile = await prisma.file.create({
