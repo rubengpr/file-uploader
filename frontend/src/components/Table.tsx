@@ -17,6 +17,7 @@ export interface AppFile {
     id: string;
     name: string;
     createdAt: string;
+    type: string;
     size: string;
     createdBy: string;
     user: {
@@ -250,6 +251,7 @@ const handleCopyURL = async () => {
                     <tr className='bg-neutral-700'>
                         <th className="px-6 py-2 text-left">File name</th>
                         <th className="px-6 py-2 text-left">Created at</th>
+                        <th className="px-6 py-2 text-left">Type</th>
                         <th className="px-6 py-2 text-left">Size</th>
                         <th className="px-6 py-2 text-left">Created by</th>
                         <th className="px-6 py-2 text-left"></th>
@@ -260,6 +262,7 @@ const handleCopyURL = async () => {
                     <tr onClick={() => onFolderClick(folder.id)} key={folder.id} className="hover:bg-neutral-800 cursor-pointer text-gray-300 hover:text-white">
                         <td className="px-6 py-2 text-xs">{folder.name}</td>
                         <td className="px-6 py-2 text-xs">{new Date(folder.createdAt).toLocaleDateString()}</td>
+                        <td className="px-6 py-2 text-xs"></td>
                         <td className="px-6 py-2 text-xs"></td>
                         <td className="px-6 py-2 text-xs">{folder.user.email}</td>
                         <td className="relative flex flex-row justify-center items-center px-6 py-2 text-xs">
@@ -292,6 +295,7 @@ const handleCopyURL = async () => {
                     <tr key={file.id} className="hover:bg-neutral-800 cursor-pointer text-gray-300 hover:text-white">
                         <td className="px-6 py-2 text-xs">{file.name}</td>
                         <td className="px-6 py-2 text-xs">{new Date(file.createdAt).toLocaleDateString()}</td>
+                        <td className="px-6 py-2 text-xs">{file.type}</td>
                         <td className="px-6 py-2 text-xs">  {(Number(file.size) / 1024).toFixed(1)} KB</td>
                         <td className="px-6 py-2 text-xs">{file.user.email}</td>
                         <td className="relative flex flex-row justify-center items-center px-6 py-2 text-xs">

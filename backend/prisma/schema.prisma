@@ -37,6 +37,7 @@ model File {
   id String @id @default(uuid())
   name String
   size Int
+  type String
   user User @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   folder Folder? @relation(fields: [folderId], references: [id], onDelete: Cascade)
   folderId String?

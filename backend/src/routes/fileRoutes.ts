@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
 import sanitize from 'sanitize-filename'
+import { mapMimeType } from '../utils/mapMimeType.js';
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -37,6 +38,8 @@ router.post('/create', async (req, res) => {
     
     const filename = sanitize(name);
 
+    const fileType = mapMimeType(type);
+
     try {
         const uploadFile = await prisma.file.create({
             data: {
@@ -44,6 +47,7 @@ router.post('/create', async (req, res) => {
                 size,
                 createdBy,
                 folderId,
+                type: fileType,
             }
         });
 

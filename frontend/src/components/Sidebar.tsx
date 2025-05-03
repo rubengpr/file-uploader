@@ -40,12 +40,12 @@ export default function Sidebar({ onUploadSuccess }: { onUploadSuccess: () => vo
         const file = event.target.files?.[0];
         if (!file) return
 
-        const filename = sanitize(file.name);
-
         if (file.size > 20 * 1024 * 1024) {
             showErrorToast("Max file size is 20MB");
             return
         }
+
+        const filename = sanitize(file.name);
 
         const folderPath = folderId ? `${userId}/${folderId}` : `${userId}`
         
