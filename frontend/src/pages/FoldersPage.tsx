@@ -20,6 +20,7 @@ export default function FoldersPage() {
                 id: string;
                 name: string;
                 createdAt: string;
+                type: string;
                 size: string;
                 createdBy: string;
                 user: {
