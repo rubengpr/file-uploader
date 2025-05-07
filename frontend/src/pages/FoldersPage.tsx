@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons'
 import Table from '../components/Table.tsx';
 import Sidebar from '../components/Sidebar.tsx';
+import Input from '../components/Input.tsx';
 import { showErrorToast } from '../utils/toast.ts';
 import axios from 'axios';
 
@@ -15,8 +16,10 @@ export default function FoldersPage() {
 
   const [sortKey, setSortKey] = useState<keyof File | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
+  const [allFiles, setAllFiles] = useState<File[]>([]);
   const [files, setFiles] = useState<File[]>([]);
   const [folders, setFolders] = useState<Folder[]>([]);
+  const [searcherValue, setSearcherValue] = useState<string>("");
 
   interface File {
     id: string;
@@ -80,6 +83,7 @@ export default function FoldersPage() {
             try {
                 const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/file/get/${folderId}`);
                 setFiles(response.data);
+                setAllFiles(response.data);
             } catch(error) {
                 if (axios.isAxiosError(error)) {
                     const message = error.response?.data?.error || "Error getting the files.";
@@ -147,6 +151,23 @@ export default function FoldersPage() {
             setFiles(sorted);
           };
 
+          const handleSearcherChange = (value: string) => {
+            setSearcherValue(value);
+            const filteredArray = searchFiles(value);
+            setFiles(filteredArray);
+          };          
+
+          const searchFiles = (searchText: string): File[] => {
+            if (!searchText.trim()) return allFiles;
+          
+            return allFiles.filter((file) =>
+              file.name.toLowerCase().includes(searchText.toLowerCase())
+            );
+          };
+          
+          
+          
+
     return (
         <div className='main-page flex flex-col bg-black'>
           <div className='top-bar h-12 flex flex-row justify-between items-center px-4 border-b border-gray-700'>
@@ -155,7 +176,14 @@ export default function FoldersPage() {
           </div>
           <div className='main-page flex flex-row bg-black'>
             <Sidebar onUploadSuccess={updateTable} />
-            <div className="page-content w-full flex justify-center h-screen px-10 py-8">
+            <div className="page-content w-full flex flex-col h-screen px-10 py-8">
+              <div className="flex justify-end mb-4">
+                <Input
+                  type="text"
+                  placeholder='Search...'
+                  value={searcherValue}
+                  handleInputChange={handleSearcherChange} />
+              </div>
               <Table
                 files={files}
                 folders={folders}
