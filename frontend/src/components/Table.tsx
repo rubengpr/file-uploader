@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useState } from 'react'
-import { faEllipsisVertical, faCircleDown, faShareFromSquare, faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faEllipsisVertical, faCircleDown, faShareFromSquare, faPenToSquare, faTrash, faCaretDown, faCaretUp } from '@fortawesome/free-solid-svg-icons'
 import OptionsMenu from './OptionsMenu';
 import { showSuccessToast, showErrorToast } from '../utils/toast'
 import { downloadBlob } from '../utils/downloadBlob'
@@ -18,7 +18,7 @@ export interface AppFile {
     name: string;
     createdAt: string;
     type: string;
-    size: string;
+    size: number;
     createdBy: string;
     user: {
         email: string;
@@ -38,11 +38,14 @@ export interface AppFolder {
 interface TableProps {
     files: AppFile[];
     folders: AppFolder[];
+    sortDirection: string;
+    sortKey: keyof AppFile | null;
     onUpdate: (folderId: string) => void;
     onFolderClick: (folderId: string) => void;
-  }
+    onHeaderClick: (key: keyof AppFile) => void;
+}
 
-export default function Table({ files, folders, onUpdate, onFolderClick }: TableProps ) {
+export default function Table({ files, folders, sortDirection, sortKey, onUpdate, onFolderClick, onHeaderClick }: TableProps ) {
     
     const { folderId } = useParams<{ folderId?: string }>();
     
@@ -249,11 +252,44 @@ const handleCopyURL = async () => {
             <table className="w-full text-white rounded-md bg-neutral-900">
                 <thead className="text-xs border-b border-white">
                     <tr className='bg-neutral-700'>
-                        <th className="px-6 py-2 text-left">File name</th>
-                        <th className="px-6 py-2 text-left">Created at</th>
-                        <th className="px-6 py-2 text-left">Type</th>
-                        <th className="px-6 py-2 text-left">Size</th>
-                        <th className="px-6 py-2 text-left">Created by</th>
+                        <th className="pl-6 pr-1 py-2 text-left cursor-pointer" onClick={() => onHeaderClick("name")}>
+                            <div className="flex flex-row items-center gap-1">
+                                File name
+                                {sortKey === "name" && (
+                                    <FontAwesomeIcon icon={sortDirection === "asc" ? faCaretUp : faCaretDown} />
+                                )}
+                            </div>
+                        </th>
+                        <th className="pl-6 pr-1 py-2 text-left cursor-pointer" onClick={() => onHeaderClick("createdAt")}>
+                            <div className="flex flex-row items-center gap-1">
+                            Created at
+                                <FontAwesomeIcon icon={sortDirection === "asc" ? faCaretUp : faCaretDown} />
+                            </div>
+                        </th>
+                        <th className="pl-6 pr-1 py-2 text-left cursor-pointer" onClick={() => onHeaderClick("type")}>
+                            <div className="flex flex-row items-center gap-1">
+                            Type
+                            {sortKey === "type" && (
+                                <FontAwesomeIcon icon={sortDirection === "asc" ? faCaretUp : faCaretDown} />
+                            )}
+                            </div>
+                        </th>
+                        <th className="pl-6 pr-1 py-2 text-left cursor-pointer" onClick={() => onHeaderClick("size")}>
+                            <div className="flex flex-row items-center gap-1">
+                            Size
+                            {sortKey === "size" && (
+                                <FontAwesomeIcon icon={sortDirection === "asc" ? faCaretUp : faCaretDown} />
+                            )}
+                            </div>
+                        </th>
+                        <th className="pl-6 pr-1 py-2 text-left cursor-pointer" onClick={() => onHeaderClick("createdBy")}>
+                            <div className="flex flex-row items-center gap-1">
+                            Created by
+                            {sortKey === "createdBy" && (
+                                <FontAwesomeIcon icon={sortDirection === "asc" ? faCaretUp : faCaretDown} />
+                            )}
+                            </div>
+                        </th>
                         <th className="px-6 py-2 text-left"></th>
                     </tr>
                 </thead>

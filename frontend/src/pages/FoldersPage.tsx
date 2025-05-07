@@ -13,20 +13,22 @@ export default function FoldersPage() {
   const { folderId } = useParams<{ folderId?: string }>();
   const navigate = useNavigate();
 
+  const [sortKey, setSortKey] = useState<keyof File | null>(null);
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   const [files, setFiles] = useState<File[]>([]);
   const [folders, setFolders] = useState<Folder[]>([]);
 
-        interface File {
-                id: string;
-                name: string;
-                createdAt: string;
-                type: string;
-                size: string;
-                createdBy: string;
-                user: {
-                  email: string;
-                };
-          }
+  interface File {
+    id: string;
+    name: string;
+    createdAt: string;
+    type: string;
+    size: number;
+    createdBy: string;
+    user: {
+      email: string;
+    }
+  };
 
           interface Folder {
             id: string;
@@ -106,6 +108,7 @@ export default function FoldersPage() {
             const id = folderId ?? "root";
             getFiles(id);
             getFolders(id);
+            handleSort("createdAt");
           }
     
           useEffect(() => {
@@ -113,6 +116,36 @@ export default function FoldersPage() {
             getFiles(id);
             getFolders(id);
           }, [folderId]);
+
+          const handleSort = (key: keyof File) => {
+            if (sortKey === key) {
+              setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+            } else {
+              setSortKey(key);
+              setSortDirection("asc");
+            }
+          
+            const sorted = [...files].sort((a, b) => {
+              const aVal = a[key];
+              const bVal = b[key];
+          
+              if (typeof aVal === "number" && typeof bVal === "number") {
+                return sortDirection === "asc" ? aVal - bVal : bVal - aVal;
+              }
+          
+              if (key === "createdAt") {
+                const aDate = new Date(aVal as string).getTime();
+                const bDate = new Date(bVal as string).getTime();
+                return sortDirection === "asc" ? aDate - bDate : bDate - aDate;
+              }
+          
+              return sortDirection === "asc"
+                ? String(aVal).localeCompare(String(bVal))
+                : String(bVal).localeCompare(String(aVal));
+            });
+          
+            setFiles(sorted);
+          };
 
     return (
         <div className='main-page flex flex-col bg-black'>
@@ -123,7 +156,14 @@ export default function FoldersPage() {
           <div className='main-page flex flex-row bg-black'>
             <Sidebar onUploadSuccess={updateTable} />
             <div className="page-content w-full flex justify-center h-screen px-10 py-8">
-              <Table files={files} folders={folders} onUpdate={updateTable} onFolderClick={(id) => navigate(`/folders/${id}`)} />
+              <Table
+                files={files}
+                folders={folders}
+                sortKey={sortKey}
+                sortDirection={sortDirection}
+                onHeaderClick={handleSort}
+                onUpdate={updateTable}
+                onFolderClick={(id) => navigate(`/folders/${id}`)} />
             </div>
           </div>
         </div>
