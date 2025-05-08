@@ -8,6 +8,7 @@ import Sidebar from '../components/Sidebar.tsx';
 import Input from '../components/Input.tsx';
 import { showErrorToast } from '../utils/toast.ts';
 import axios from 'axios';
+import ButtonTable from '../components/ButtonTable.tsx';
 
 export default function FoldersPage() {
 
@@ -177,7 +178,8 @@ export default function FoldersPage() {
           <div className='main-page flex flex-row bg-black'>
             <Sidebar onUploadSuccess={updateTable} />
             <div className="page-content w-full flex flex-col h-screen px-10 py-8">
-              <div className="flex justify-end mb-4">
+              <div className="flex justify-end mb-4 gap-2">
+                <ButtonTable />
                 <Input
                   type="text"
                   placeholder='Search...'
