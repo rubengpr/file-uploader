@@ -2,7 +2,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { isAuthenticated, isTokenExpired } from '../utils/auth.ts';
 import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons'
+import { faRightFromBracket, faFilter } from '@fortawesome/free-solid-svg-icons'
 import Table from '../components/Table.tsx';
 import Sidebar from '../components/Sidebar.tsx';
 import Input from '../components/Input.tsx';
@@ -179,7 +179,7 @@ export default function FoldersPage() {
             <Sidebar onUploadSuccess={updateTable} />
             <div className="page-content w-full flex flex-col h-screen px-10 py-8">
               <div className="flex justify-end mb-4 gap-2">
-                <ButtonTable />
+                <ButtonTable text="Filters" icon={faFilter} />
                 <Input
                   type="text"
                   placeholder='Search...'
