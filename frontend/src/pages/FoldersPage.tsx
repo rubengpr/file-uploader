@@ -9,6 +9,10 @@ import Input from '../components/Input.tsx';
 import { showErrorToast } from '../utils/toast.ts';
 import axios from 'axios';
 import ButtonTable from '../components/ButtonTable.tsx';
+import Modal from '../components/Modal.tsx';
+import Button from '../components/Button.tsx';
+import Selector from '../components/Selector.tsx';
+import DatePicker from '../components/DatePicker.tsx';
 
 export default function FoldersPage() {
 
@@ -21,6 +25,9 @@ export default function FoldersPage() {
   const [files, setFiles] = useState<File[]>([]);
   const [folders, setFolders] = useState<Folder[]>([]);
   const [searcherValue, setSearcherValue] = useState<string>("");
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const [date, setDate] = useState("");
+  const [type, setType] = useState("");
 
   interface File {
     id: string;
@@ -165,10 +172,22 @@ export default function FoldersPage() {
               file.name.toLowerCase().includes(searchText.toLowerCase())
             );
           };
-          
-          
-          
 
+          const handleFilter = () => {
+            const filtered = filterFiles(allFiles, type)
+            setFiles(filtered);
+            setIsFilterModalOpen(false);
+          }
+          
+          const filterFiles = (files: File[], type: string): File[] => {
+            if (type === "All types" || type === "") {
+              return files;
+            }
+          
+            return files.filter(file => file.type === type);
+          };
+          
+        
     return (
         <div className='main-page flex flex-col bg-black'>
           <div className='top-bar h-12 flex flex-row justify-between items-center px-4 border-b border-gray-700'>
@@ -179,7 +198,10 @@ export default function FoldersPage() {
             <Sidebar onUploadSuccess={updateTable} />
             <div className="page-content w-full flex flex-col h-screen px-10 py-8">
               <div className="flex justify-end mb-4 gap-2">
-                <ButtonTable text="Filters" icon={faFilter} />
+                <ButtonTable
+                  text="Filters"
+                  icon={faFilter}
+                  handleFilterClick={() => setIsFilterModalOpen(true)} />
                 <Input
                   type="text"
                   placeholder='Search...'
@@ -196,6 +218,96 @@ export default function FoldersPage() {
                 onFolderClick={(id) => navigate(`/folders/${id}`)} />
             </div>
           </div>
+          {isFilterModalOpen && (
+            <Modal
+              modalTitle="Filters"
+              onClose={() => {
+                  setIsFilterModalOpen(false);
+              }}
+              >
+                <div className='w-full pt-3 py-3'>
+                  <div className='flex flex-col justify-start gap-3'>
+                    <p className='font-bold text-sm text-white'>Type</p>
+                    <Selector
+                      options={[
+                        {
+                          value: "All types",
+                          name: "All types",
+                        },
+                        {
+                          value: "doc",
+                          name: "doc",
+                        },
+                        {
+                          value: "docx",
+                          name: "docx",
+                        },
+                        {
+                          value: "xls",
+                          name: "xls",
+                        },
+                        {
+                          value: "xlsx",
+                          name: "xlsx",
+                        },
+                        {
+                          value: "csv",
+                          name: "csv",
+                        },
+                        {
+                          value: "txt",
+                          name: "txt",
+                        },
+                        {
+                          value: "pdf",
+                          name: "pdf",
+                        },
+                        {
+                          value: "jpg",
+                          name: "jpg",
+                        },
+                        {
+                          value: "png",
+                          name: "png",
+                        },
+                        {
+                          value: "gif",
+                          name: "gif",
+                        },
+                        {
+                          value: "bmp",
+                          name: "bmp",
+                        },
+                        {
+                          value: "svg",
+                          name: "svg",
+                        },
+                        {
+                          value: "webp",
+                          name: "webp",
+                        },
+                      ]}
+                      value={type}
+                      onChange={(newType) => setType(newType)}
+                      />
+                      <hr className="border-t border-white my-4" />
+                      <p className='font-bold text-sm text-white'>Created after</p>
+                    <DatePicker
+                      date={date}
+                      handleDateChange={(newDate) => setDate(newDate)}
+                      />
+                  </div>
+                </div>
+                <div className='flex flex-row gap-4 mt-3'>
+                  <Button
+                    buttonText='Cancel'
+                    onClick={() => setIsFilterModalOpen(false)} />
+                  <Button
+                    buttonText='Apply filters'
+                    onClick={handleFilter} />
+                </div>
+              </Modal>
+          )}
         </div>
     );
 };
