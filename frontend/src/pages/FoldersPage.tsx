@@ -27,7 +27,7 @@ export default function FoldersPage() {
   const [searcherValue, setSearcherValue] = useState<string>("");
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [date, setDate] = useState("");
-  const [type, setType] = useState("");
+  const [type, setType] = useState("All types");
 
   interface File {
     id: string;
@@ -174,18 +174,17 @@ export default function FoldersPage() {
           };
 
           const handleFilter = () => {
-            const filtered = filterFiles(allFiles, type)
+            const filtered = filterFiles(allFiles, type, date)
             setFiles(filtered);
             setIsFilterModalOpen(false);
           }
           
-          const filterFiles = (files: File[], type: string): File[] => {
-            if (type === "All types" || type === "") {
-              return files;
-            }
-          
-            return files.filter(file => file.type === type);
-          };
+          const filterFiles = (files: File[], type: string, date: string): File[] => {
+            return files.filter(file =>
+              (type === "All types" || file.type === type) &&
+              new Date(file.createdAt) >= new Date(date)
+            );
+          };          
           
         
     return (
