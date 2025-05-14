@@ -391,7 +391,7 @@ const handleCopyURL = async () => {
                     >
                         <>
                             <div className="mb-6">
-                                <LabelInput onValueChange={setNewItemName} type="text" label="New name" name="newName" />
+                                <LabelInput inputSize='sm' onValueChange={setNewItemName} type="text" label="New name" name="newName" />
                             </div>
                         <div className="flex flex-row gap-4">
                             <Button

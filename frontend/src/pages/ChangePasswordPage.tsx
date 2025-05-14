@@ -73,10 +73,10 @@ export default function ChangePasswordPage() {
             <Form errorMsg={errorMsg} title="Change password" buttonText="Change password" handleSubmit={handleSubmit}>
                 <p className="text-xs text-center">You can now set your new password</p>
                 <div className="relative w-full">
-                    <LabelInput label="Password" name="password" type={showPassword ? "text" : "password"} error={passwordError} value={password} onChange={(e) => setPassword(e.target.value)} onBlur={handlePasswordBlur} />
-                    <FontAwesomeIcon onClick={toggleShowPassword} className="text-xs absolute top-6.5 left-70 cursor-pointer" icon={showPassword ? faEye : faEyeSlash} />
+                    <LabelInput inputSize="md" label="Password" name="password" type={showPassword ? "text" : "password"} error={passwordError} value={password} onChange={(e) => setPassword(e.target.value)} onBlur={handlePasswordBlur} />
+                    <FontAwesomeIcon onClick={toggleShowPassword} className="text-xs absolute top-7.5 left-70 cursor-pointer" icon={showPassword ? faEye : faEyeSlash} />
                 </div>
-                <LabelInput name="repeatPassword" label="Repeat password" type={showRepeatPassword ? "text" : "password"} error={repeatPasswordError} value={repeatPassword} onChange={(e) => setRepeatPassword(e.target.value)} onBlur={handleRepeatPasswordBlur} />
+                <LabelInput inputSize="md" name="repeatPassword" label="Repeat password" type={showRepeatPassword ? "text" : "password"} error={repeatPasswordError} value={repeatPassword} onChange={(e) => setRepeatPassword(e.target.value)} onBlur={handleRepeatPasswordBlur} />
             </Form>
         </div>
     )

@@ -109,7 +109,7 @@ export default function Sidebar({ onUploadSuccess }: { onUploadSuccess: () => vo
                 {
                     <>
                         <div className='mb-6'>
-                            <LabelInput onValueChange={setNewFolderName} type='text' label='New folder name' name='newFolderName' />
+                            <LabelInput inputSize='sm' onValueChange={setNewFolderName} type='text' label='New folder name' name='newFolderName' />
                         </div>
                         <div className="flex flex-row gap-4">
                             <Button

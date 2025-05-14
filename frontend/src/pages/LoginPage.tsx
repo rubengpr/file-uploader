@@ -53,10 +53,10 @@ export default function LoginPage() {
             <img className="w-30 mb-6" src="/folded-logo.svg" alt="Folded logo" />
             <p className="mb-2">Welcome back to your file storage</p>
             <Form errorMsg={errorMsg} handleSubmit={handleSubmit} title="Log in" buttonText="Log in" belowButton={ <> or{" "} <u className="cursor-pointer"> <Link to="/signup">sign up</Link> </u> </> }>
-                <LabelInput label="Email" name="email" type="text" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
+                <LabelInput inputSize="md" label="Email" name="email" type="text" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
                 <div className="relative w-full">
-                    <LabelInput type={showPassword ? "text" : "password"} name="password" label="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-                    <FontAwesomeIcon onClick={toggleShowPassword} className="text-xs absolute top-6.5 left-70 cursor-pointer" icon={showPassword ? faEye : faEyeSlash} />
+                    <LabelInput inputSize="md" type={showPassword ? "text" : "password"} name="password" label="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                    <FontAwesomeIcon onClick={toggleShowPassword} className="text-xs absolute top-7.5 left-70 cursor-pointer" icon={showPassword ? faEye : faEyeSlash} />
                 </div>
                 <u className="cursor-pointer text-xs"> <Link to="/recover-password">Forgot your password, again?</Link> </u>
             </Form>

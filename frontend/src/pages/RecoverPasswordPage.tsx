@@ -32,7 +32,7 @@ export default function RecoverPasswordPage() {
         <div className="login-page flex flex-col justify-center items-center text-white bg-black min-h-screen">
             <Form errorMsg={errorMsg} title="Password recovery" buttonText="Send email" belowButton={ <> <u className="cursor-pointer"> <Link to="/login">Back to login</Link> </u> </> } handleSubmit={handleSubmit}>
                 <p className="text-xs text-center">We'll send you an email to recover your password. Hope it's the last time.</p>
-                <LabelInput type="text" label="Email" name="email" onChange={(e) => setEmail(e.target.value)} />
+                <LabelInput inputSize="md" type="text" label="Email" name="email" onChange={(e) => setEmail(e.target.value)} />
                 {isEmailSent && <p className="text-xs">We've sent you an email</p>}
             </Form>
         </div>
