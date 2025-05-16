@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser'
 import authRoutes from './routes/auth.js';
 import fileRoutes from './routes/fileRoutes.js';
 import folderRoutes from './routes/folderRoutes.js';
+import profileRoutes from './routes/profileRoutes.js';
 
 dotenv.config();
 const app = express();
@@ -47,6 +48,7 @@ app.use((req, res, next) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/file', fileRoutes);
 app.use('/api/folder', folderRoutes);
+app.use('/api/profile', profileRoutes);
 
 // ✅ Start server
 const PORT = process.env.PORT || 4000;

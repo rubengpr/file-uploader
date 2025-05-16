@@ -5,6 +5,7 @@ import SignupPage from "../pages/SignupPage"
 import FoldersPage from "../pages/FoldersPage";
 import RecoverPasswordPage from "../pages/RecoverPasswordPage";
 import ChangePasswordPage from "../pages/ChangePasswordPage";
+import ProfilePage from "../pages/ProfilePage";
 
 const router = createBrowserRouter([
     {
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
     {
       path: "folders",
       element: <FoldersPage />,
+    },
+    {
+      path: "profile",
+      element: <ProfilePage />,
     },
     {
       path: "folders/:folderId",

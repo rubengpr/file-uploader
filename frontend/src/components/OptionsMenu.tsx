@@ -15,7 +15,7 @@ export default function OptionsMenu({ options }: OptionsMenuProps) {
               e.stopPropagation();
               onClick?.(e);
             }}
-            className="w-full flex flex-row justify-start items-center py-1 hover:bg-neutral-300 text-neutral-800 px-3 gap-2"
+            className="w-full flex flex-row justify-start items-center py-1 hover:bg-neutral-300 text-neutral-800 px-3 gap-2 cursor-pointer"
           >
             {icon && <FontAwesomeIcon icon={icon} />}
             <p>{label}</p>

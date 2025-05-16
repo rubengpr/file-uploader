@@ -50,7 +50,7 @@ export default function FoldersPage() {
       email: string;
     };
   }
-        
+
   useEffect(() => {
     if (!isAuthenticated()) {
       navigate('/login');

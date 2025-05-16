@@ -61,6 +61,7 @@ router.post('/signup', async (req, res) => {
             data: {
                 email,
                 hashedPassword,
+                role: 'admin',
             },
         });
 

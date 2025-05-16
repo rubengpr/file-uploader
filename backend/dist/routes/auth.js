@@ -51,6 +51,7 @@ router.post('/signup', async (req, res) => {
             data: {
                 email,
                 hashedPassword,
+                role: 'admin',
             },
         });
         // 4. Create JWT token

@@ -1,6 +1,6 @@
 interface LabelInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     label: string;
-    name: string;
+    name?: string;
     type: string;
     error?: string;
     errorMsg?: string;
