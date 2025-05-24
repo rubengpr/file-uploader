@@ -8,11 +8,11 @@ interface MenuOption {
   onClick?: (e: MouseEvent<HTMLDivElement>) => void
 }
 
-interface OptionsMenuProps {
+interface DropdownMenuProps {
   options: MenuOption[]
 }
 
-export default function OptionsMenu({ options }: OptionsMenuProps) {
+export default function DropdownMenu({ options }: DropdownMenuProps) {
     return (
         <div className="absolute z-10 min-w-26 top-8 right-10 rounded-xs text-[10px] flex flex-col items-center justify-center bg-neutral-50">
           {options.map(({ label, icon, onClick }) => (

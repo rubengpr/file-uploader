@@ -2,7 +2,7 @@ import { faUser, faGear, faRightFromBracket } from '@fortawesome/free-solid-svg-
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Topbar from "@/components/Topbar";
-import OptionsMenu from "@/components/OptionsMenu";
+import DropdownMenu from "@/components/DropdownMenu";
 import useAvatar from "@/stores/useAvatar"
 
 export default function MainLayout({ children }) {
@@ -26,7 +26,7 @@ export default function MainLayout({ children }) {
           {children}
         </div>
       {openUserMenu && (
-        <OptionsMenu
+        <DropdownMenu
           options={[
             {
               label: "Profile",
