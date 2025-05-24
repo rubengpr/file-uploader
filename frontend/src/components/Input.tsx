@@ -1,12 +1,14 @@
 interface InputProps {
     type: string;
-    placeholder: string;
+    placeholder?: string;
+    name?: string;
+    id?: string;
     value: string;
     inputSize: "sm" | "md" | "lg";
-    handleInputChange: (value: string) => void;
+    onChange: (value: string) => void;
 }
 
-export default function Input ({ inputSize, type, placeholder, value, handleInputChange }: InputProps) {
+export default function Input ({ inputSize, type, placeholder, value, name, id, onChange }: InputProps) {
     const sizeClasses = {
         sm: "text-sm px-2 py-1",
         md: "text-base px-2 py-2",
@@ -15,10 +17,12 @@ export default function Input ({ inputSize, type, placeholder, value, handleInpu
     
     return (
         <input
-            className={`${sizeClasses} text-white text-xs border border-gray-400 rounded-sm caret-white focus:outline-none focus:ring focus:ring-white hover:border-white`}
+            className={`${sizeClasses} text-white border border-gray-400 rounded-sm caret-white focus:outline-none focus:ring focus:ring-white hover:border-white`}
             type={type}
+            name={name}
+            id={id}
             placeholder={placeholder}
             value={value}
-            onChange={(e) => handleInputChange(e.target.value)} />
+            onChange={(e) => onChange(e.target.value)} />
     )
 }

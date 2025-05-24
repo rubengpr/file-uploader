@@ -198,7 +198,7 @@ export default function FoldersPage() {
                   placeholder='Search...'
                   inputSize='sm'
                   value={searcherValue}
-                  handleInputChange={handleSearcherChange} />
+                  onChange={handleSearcherChange} />
               </div>
               <Table
                 files={files}
