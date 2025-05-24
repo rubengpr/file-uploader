@@ -1,95 +1,46 @@
 import { faFolder, faFile } from '@fortawesome/free-solid-svg-icons'
-import { useRef, useState, ChangeEvent } from 'react';
+import { useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { showSuccessToast, showErrorToast } from '@/utils/toast'
 import { isDisabled } from '@/utils/disabled';
-import { jwtDecode } from "jwt-decode";
 import { Toaster } from 'react-hot-toast';
-import axios from 'axios';
-import sanitize from 'sanitize-filename'
-import supabase from '@/utils/supabaseClient';
 import LabelInput from './LabelInput';
 import Button from './Button';
 import Modal from './Modal';
 import SidebarOption from './SidebarOption'
-
-type JwtPayload = {
-    id: string,
-    email: string,
-}
+import useUploadFile from '@/hooks/files/useUploadFile';
 
 export default function Sidebar({ onUploadSuccess }: { onUploadSuccess: () => void }) {
 
     const { folderId } = useParams<{ folderId: string }>();
+
+    const { handleFileChange } = useUploadFile({ folderId: folderId, onUploadSuccess });
     
     const [isNewFolderModalOpen, setIsNewFolderModalOpen] = useState(false);
     const [newFolderName, setNewFolderName] = useState('');
     
     const fileInputRef = useRef<HTMLInputElement>(null);
-
-    const token = localStorage.getItem('token');
-    const user = jwtDecode<JwtPayload>(token || '');
-    const userId = user.id
     
     const handleNewFileClick = () => {
         fileInputRef.current?.click()
     }
 
-    const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
-        //Recover uploaded file
-        const file = event.target.files?.[0];
-        if (!file) return
-
-        if (file.size > 20 * 1024 * 1024) {
-            showErrorToast("Max file size is 20MB");
-            return
-        }
-
-        const filename = sanitize(file.name);
-
-        const folderPath = folderId ? `${userId}/${folderId}` : `${userId}`
+    // const createFolder = async () => {
+    //     const folderName = sanitize(newFolderName);
         
-        //2. Upload file to Supabase
-        const { error } = await supabase.storage.from('files').upload(`${folderPath}/${filename}`, file)
-        if (error) {
-            showErrorToast("An error occured uploading the file");
-            return;
-        }
-
-        //3. If upload is successful, create database entry
-        try {
-            const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/file/create`, { createdBy: user.id, name: filename, size: file.size, folderId: folderId ?? null, type: file.type })
-            showSuccessToast(response.data.message);
-        } catch(error) {
-            if (axios.isAxiosError(error)) {
-                const message = error.response?.data?.error || "Something went wrong. Please, try again.";
-                showErrorToast(message);
-            } else {
-                showErrorToast("Unexpected error occurred.");
-            }
-        }
-
-        event.target.value = '';
-        onUploadSuccess();
-    }
-
-    const createFolder = async () => {
-        const folderName = sanitize(newFolderName);
-        
-        try {
-            const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/folder/create`, { createdBy: user.id, name: folderName });
-            showSuccessToast(response.data.message);
-        } catch(error) {
-            if (axios.isAxiosError(error)) {
-                const message = error.response?.data?.error || "Something went wrong. Please, try again.";
-                showErrorToast(message);
-            } else {
-                showErrorToast("Unexpected error occurred.");
-            }
-        }
-        setIsNewFolderModalOpen(false);
-        onUploadSuccess();
-    }
+    //     try {
+    //         const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/folder/create`, { createdBy: user.id, name: folderName });
+    //         showSuccessToast(response.data.message);
+    //     } catch(error) {
+    //         if (axios.isAxiosError(error)) {
+    //             const message = error.response?.data?.error || "Something went wrong. Please, try again.";
+    //             showErrorToast(message);
+    //         } else {
+    //             showErrorToast("Unexpected error occurred.");
+    //         }
+    //     }
+    //     setIsNewFolderModalOpen(false);
+    //     onUploadSuccess();
+    // }
     
     return(
         <div className='sidebar flex flex-col w-50 bg-black px-2 py-4 border-r border-gray-700 gap-1'>
@@ -124,7 +75,7 @@ export default function Sidebar({ onUploadSuccess }: { onUploadSuccess: () => vo
                                 type='button'
                                 disabled={isDisabled(newFolderName)}
                                 buttonText='Create folder'
-                                onClick={createFolder}
+                                //onClick={createFolder}
                             />
                         </div>
                     </>
