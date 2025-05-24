@@ -175,7 +175,13 @@ export default function FoldersPage() {
       (type === "All types" || file.type === type) &&
       new Date(file.createdAt) >= new Date(date)
     );
-  };     
+  };
+
+  function formatDate(date: Date): string {
+    return date.toISOString().split('T')[0];
+  }
+
+  const today = formatDate(new Date());
         
     return (
         <MainLayout>
@@ -280,7 +286,9 @@ export default function FoldersPage() {
                       <p className='font-bold text-sm text-white'>Created after</p>
                     <DatePicker
                       date={date}
-                      handleDateChange={(newDate) => setDate(newDate)}
+                      min='2025-01-01'
+                      max={today}
+                      onChange={(newDate) => setDate(newDate)}
                       />
                   </div>
                 </div>
