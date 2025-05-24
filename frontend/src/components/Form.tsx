@@ -1,13 +1,14 @@
+import { ReactNode, FormEventHandler } from 'react';
+import Button from "./Button";
+
 interface FormProps {
     title: string;
     buttonText: string;
-    belowButton?: React.ReactNode;
-    children: React.ReactNode;
+    belowButton?: ReactNode;
+    children: ReactNode;
     errorMsg?: string
-    handleSubmit: React.FormEventHandler<HTMLFormElement>;
+    handleSubmit: FormEventHandler<HTMLFormElement>;
   }
-
-import Button from "./Button";
 
 export default function Form({ children, title, buttonText, belowButton, errorMsg, handleSubmit }: FormProps) {
     return(

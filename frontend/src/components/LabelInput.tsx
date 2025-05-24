@@ -1,4 +1,6 @@
-interface LabelInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+import { InputHTMLAttributes } from "react";
+
+interface LabelInputProps extends InputHTMLAttributes<HTMLInputElement> {
     label: string;
     name?: string;
     type: string;

@@ -4,7 +4,7 @@ import useAvatar from "../stores/useAvatar"
 import { showSuccessToast, showErrorToast } from "../utils/toast";
 import supabase from '../utils/supabaseClient';
 import { jwtDecode } from "jwt-decode";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, FormEvent, ChangeEvent } from "react";
 import { Toaster } from 'react-hot-toast';
 import Button from "../components/Button";
 import { countryOptions } from "../constants/countries";
@@ -83,7 +83,7 @@ export default function ProfilePage() {
       }, [setAvatar]);
       
 
-    const handleAvatarChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleAvatarChange = async (event: ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (!file) return
         
@@ -128,7 +128,7 @@ export default function ProfilePage() {
         }
     }
 
-    const handleProfileSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleProfileSubmit = async (e: FormEvent<HTMLFormElement>) => {
         setFullnameError("")
         e.preventDefault();
 

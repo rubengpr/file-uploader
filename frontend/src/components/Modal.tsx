@@ -1,15 +1,15 @@
-import React from 'react';
+import { useEffect, MouseEvent, ReactNode } from 'react';
 
 interface ModalProps {
   modalTitle: string;
   modalText?: string;
-  children: React.ReactNode;
+  children: ReactNode;
   onClose: () => void;
 }
 
 export default function Modal({ modalTitle, modalText, children, onClose }: ModalProps) {
   
-  React.useEffect(() => {
+  useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         e.stopPropagation();
@@ -23,7 +23,7 @@ export default function Modal({ modalTitle, modalText, children, onClose }: Moda
     };
   }, [onClose]);
   
-  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleBackdropClick = (e: MouseEvent<HTMLDivElement>) => {
     if (e.currentTarget === e.target) onClose();
   };
 

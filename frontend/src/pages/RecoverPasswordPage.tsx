@@ -3,13 +3,14 @@ import Form from "../components/Form";
 import LabelInput from "../components/LabelInput";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { FormEvent } from "react";
 
 export default function RecoverPasswordPage() {
     const [email, setEmail] = useState("");
     const [errorMsg, setErrorMsg] = useState("");
     const [isEmailSent, setIsEmailSent] = useState(false);
     
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
 
         setIsEmailSent(true);

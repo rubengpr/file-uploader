@@ -12,6 +12,7 @@ import Button from './Button';
 import { useParams } from 'react-router-dom';
 import sanitize from 'sanitize-filename'
 import { isDisabled } from '../utils/disabled';
+import { ChangeEvent } from 'react';
 
 type JwtPayload = {
     id: string,
@@ -35,7 +36,7 @@ export default function Sidebar({ onUploadSuccess }: { onUploadSuccess: () => vo
         fileInputRef.current?.click()
     }
 
-    const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
         //Recover uploaded file
         const file = event.target.files?.[0];
         if (!file) return

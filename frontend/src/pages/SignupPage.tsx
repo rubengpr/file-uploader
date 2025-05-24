@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
-import { useState, FocusEvent, useEffect } from "react"
+import { useState, useEffect, FocusEvent, FormEvent } from "react"
 import LabelInput from "../components/LabelInput"
 import Form from "../components/Form"
 import axios from 'axios';
@@ -71,7 +71,7 @@ export default function SignupPage() {
         }
     }
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         setErrorMsg("");
 

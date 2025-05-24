@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { FormEvent } from "react";
 
 export default function ChangePasswordPage() {
 
@@ -47,7 +48,7 @@ export default function ChangePasswordPage() {
         }
     }
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         setErrorMsg("");
 

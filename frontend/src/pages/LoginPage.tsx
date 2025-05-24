@@ -6,6 +6,7 @@ import LabelInput from "../components/LabelInput";
 import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios'
 import { isAuthenticated } from "../utils/auth";
+import { FormEvent } from "react";
 
 
 export default function LoginPage() {
@@ -25,7 +26,7 @@ export default function LoginPage() {
 
     const toggleShowPassword = () => setShowPassword(prev => !prev);
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         setErrorMsg("");
 
