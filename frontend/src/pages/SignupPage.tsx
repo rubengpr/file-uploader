@@ -1,11 +1,11 @@
-import { Link, useNavigate } from "react-router-dom"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
+import { Link, useNavigate } from "react-router-dom"
 import { useState, useEffect, FocusEvent, FormEvent } from "react"
-import LabelInput from "../components/LabelInput"
-import Form from "../components/Form"
+import LabelInput from "@/components/LabelInput"
+import Form from "@/components/Form"
+import { isAuthenticated } from "@/utils/auth"
 import axios from 'axios';
-import { isAuthenticated } from "../utils/auth"
 
 export default function SignupPage() {
     

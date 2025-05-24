@@ -1,18 +1,18 @@
-import { useNavigate, useParams } from 'react-router-dom';
-import { isAuthenticated, isTokenExpired } from '../utils/auth.ts';
-import { useState, useEffect } from 'react';
 import { faFilter } from '@fortawesome/free-solid-svg-icons'
-import Table from '../components/Table.tsx';
-import Sidebar from '../components/Sidebar.tsx';
-import Input from '../components/Input.tsx';
-import { showErrorToast } from '../utils/toast.ts';
-import axios from 'axios';
-import ButtonTable from '../components/ButtonTable.tsx';
-import Modal from '../components/Modal.tsx';
-import Button from '../components/Button.tsx';
-import Selector from '../components/Selector.tsx';
-import DatePicker from '../components/DatePicker.tsx';
+import { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { isAuthenticated, isTokenExpired } from '@/utils/auth.ts';
+import { showErrorToast } from '@/utils/toast.ts';
+import ButtonTable from '@/components/ButtonTable.tsx';
+import Button from '@/components/Button.tsx';
+import DatePicker from '@/components/DatePicker.tsx';
+import Input from '@/components/Input.tsx';
 import MainLayout from './MainLayout.tsx';
+import Modal from '@/components/Modal.tsx';
+import Selector from '@/components/Selector.tsx';
+import Sidebar from '@/components/Sidebar.tsx';
+import Table from '@/components/Table.tsx';
+import axios from 'axios';
 
 export default function FoldersPage() {
 

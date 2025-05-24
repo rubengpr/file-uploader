@@ -1,11 +1,10 @@
-import Form from "../components/Form"
-import LabelInput from "../components/LabelInput"
-import { useState, useEffect } from "react";
+import Form from "@/components/Form"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
-import axios from "axios";
+import { useState, useEffect, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import { FormEvent } from "react";
+import LabelInput from "@/components/LabelInput"
+import axios from "axios";
 
 export default function ChangePasswordPage() {
 

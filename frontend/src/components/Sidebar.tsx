@@ -1,18 +1,17 @@
-import SidebarOption from './SidebarOption'
 import { faFolder, faFile } from '@fortawesome/free-solid-svg-icons'
-import { useRef, useState } from 'react';
+import { useRef, useState, ChangeEvent } from 'react';
+import { useParams } from 'react-router-dom';
+import { showSuccessToast, showErrorToast } from '@/utils/toast'
+import { isDisabled } from '@/utils/disabled';
 import { jwtDecode } from "jwt-decode";
-import supabase from '../utils/supabaseClient';
 import { Toaster } from 'react-hot-toast';
-import { showSuccessToast, showErrorToast } from '../utils/toast'
 import axios from 'axios';
-import Modal from './Modal';
+import sanitize from 'sanitize-filename'
+import supabase from '@/utils/supabaseClient';
 import LabelInput from './LabelInput';
 import Button from './Button';
-import { useParams } from 'react-router-dom';
-import sanitize from 'sanitize-filename'
-import { isDisabled } from '../utils/disabled';
-import { ChangeEvent } from 'react';
+import Modal from './Modal';
+import SidebarOption from './SidebarOption'
 
 type JwtPayload = {
     id: string,

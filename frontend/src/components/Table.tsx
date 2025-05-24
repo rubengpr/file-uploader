@@ -1,18 +1,18 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useState } from 'react'
 import { faEllipsisVertical, faCircleDown, faShareFromSquare, faPenToSquare, faTrash, faCaretDown, faCaretUp } from '@fortawesome/free-solid-svg-icons'
-import OptionsMenu from './OptionsMenu';
-import { showSuccessToast, showErrorToast } from '../utils/toast'
-import { downloadBlob } from '../utils/downloadBlob'
-import supabase from '../utils/supabaseClient';
-import Modal from './Modal';
-import Button from './Button';
-import LabelInput from './LabelInput';
-import axios from 'axios';
+import { useState } from 'react'
+import { showSuccessToast, showErrorToast } from '@/utils/toast'
+import { downloadBlob } from '@/utils/downloadBlob'
+import supabase from '@/utils/supabaseClient';
 import { useParams } from 'react-router-dom';
+import { isDisabled } from '@/utils/disabled';
+import { formatFileSize } from '@/utils/formatFileSize';
+import Button from './Button';
+import Modal from './Modal';
+import LabelInput from './LabelInput';
+import OptionsMenu from './OptionsMenu';
+import axios from 'axios';
 import sanitize from 'sanitize-filename';
-import { isDisabled } from '../utils/disabled';
-import { formatFileSize } from '../utils/formatFileSize';
 
 export interface AppFile {
     id: string;

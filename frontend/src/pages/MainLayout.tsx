@@ -1,9 +1,9 @@
+import { faUser, faGear, faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import Topbar from "../components/Topbar";
-import OptionsMenu from "../components/OptionsMenu";
-import { faUser, faGear, faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
-import useAvatar from "../stores/useAvatar"
+import Topbar from "@/components/Topbar";
+import OptionsMenu from "@/components/OptionsMenu";
+import useAvatar from "@/stores/useAvatar"
 
 export default function MainLayout({ children }) {
   const { avatar } = useAvatar();

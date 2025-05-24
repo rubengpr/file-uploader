@@ -1,11 +1,11 @@
 import { createBrowserRouter } from "react-router-dom";
-import LandingPage from "../pages/LandingPage";
-import LoginPage from "../pages/LoginPage"
-import SignupPage from "../pages/SignupPage"
-import ProfilePage from "../pages/ProfilePage";
-import FoldersPage from "../pages/FoldersPage";
-import RecoverPasswordPage from "../pages/RecoverPasswordPage";
-import ChangePasswordPage from "../pages/ChangePasswordPage";
+import LandingPage from "@/pages/LandingPage";
+import LoginPage from "@/pages/LoginPage"
+import SignupPage from "@/pages/SignupPage"
+import ProfilePage from "@/pages/ProfilePage";
+import FoldersPage from "@/pages/FoldersPage";
+import RecoverPasswordPage from "@/pages/RecoverPasswordPage";
+import ChangePasswordPage from "@/pages/ChangePasswordPage";
 
 const router = createBrowserRouter([
     {

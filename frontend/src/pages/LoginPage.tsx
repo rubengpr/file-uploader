@@ -1,13 +1,11 @@
-import { useState, useEffect } from "react"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
-import Form from "../components/Form"
-import LabelInput from "../components/LabelInput";
+import { useState, useEffect, FormEvent } from "react"
 import { Link, useNavigate } from "react-router-dom";
+import Form from "@/components/Form"
+import LabelInput from "@/components/LabelInput";
+import { isAuthenticated } from "@/utils/auth";
 import axios from 'axios'
-import { isAuthenticated } from "../utils/auth";
-import { FormEvent } from "react";
-
 
 export default function LoginPage() {
 

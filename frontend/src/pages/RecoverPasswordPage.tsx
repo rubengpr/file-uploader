@@ -1,9 +1,8 @@
-import { useState } from "react";
-import Form from "../components/Form";
-import LabelInput from "../components/LabelInput";
+import { useState, FormEvent } from "react";
 import { Link } from "react-router-dom";
+import Form from "@/components/Form";
+import LabelInput from "@/components/LabelInput";
 import axios from "axios";
-import { FormEvent } from "react";
 
 export default function RecoverPasswordPage() {
     const [email, setEmail] = useState("");

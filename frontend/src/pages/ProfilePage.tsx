@@ -1,17 +1,17 @@
-import MainLayout from "./MainLayout"
-import LabelInput from "../components/LabelInput"
-import useAvatar from "../stores/useAvatar"
-import { showSuccessToast, showErrorToast } from "../utils/toast";
-import supabase from '../utils/supabaseClient';
-import { jwtDecode } from "jwt-decode";
 import { useEffect, useRef, useState, FormEvent, ChangeEvent } from "react";
+import { showSuccessToast, showErrorToast } from "@/utils/toast";
+import supabase from '@/utils/supabaseClient';
+import { jwtDecode } from "jwt-decode";
 import { Toaster } from 'react-hot-toast';
-import Button from "../components/Button";
-import { countryOptions } from "../constants/countries";
-import Selector from "../components/Selector";
-import { languageOptions } from "../constants/languages";
-import { timezoneOptions } from "../constants/timezones";
-import useUser from "../stores/useUser";
+import Button from "@/components/Button";
+import Selector from "@/components/Selector";
+import LabelInput from "@/components/LabelInput"
+import MainLayout from "./MainLayout"
+import { countryOptions } from "@/constants/countries";
+import { languageOptions } from "@/constants/languages";
+import { timezoneOptions } from "@/constants/timezones";
+import useUser from "@/stores/useUser";
+import useAvatar from "@/stores/useAvatar"
 import axios from "axios";
 
 type JwtPayload = {

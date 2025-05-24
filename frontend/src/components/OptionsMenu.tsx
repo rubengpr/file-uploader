@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { MenuOption } from '../types';
+import { MenuOption } from '@/types';
 
 interface OptionsMenuProps {
     options: MenuOption[]
