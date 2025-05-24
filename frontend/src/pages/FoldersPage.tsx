@@ -186,7 +186,7 @@ export default function FoldersPage() {
                 <ButtonTable
                   text="Filters"
                   icon={faFilter}
-                  handleFilterClick={() => setIsFilterModalOpen(true)} />
+                  onClick={() => setIsFilterModalOpen(true)} />
                 <Input
                   type="text"
                   placeholder='Search...'
