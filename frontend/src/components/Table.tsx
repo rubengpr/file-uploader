@@ -395,12 +395,14 @@ const handleCopyURL = async () => {
                             </div>
                         <div className="flex flex-row gap-4">
                             <Button
+                                type='button'
                                 buttonText='Cancel'
                                 onClick={() => {
                                 setIsRenameModalOpen(false)
                                 setNewItemName("");
                                 }}/>
                             <Button
+                                type='button'
                                 disabled={isDisabled(newItemName)}
                                 buttonText="Save"
                                 onClick={() => {
@@ -423,8 +425,12 @@ const handleCopyURL = async () => {
                         onClose={() => setIsConfirmModalOpen(false)}
                     >
                         <div className="flex flex-row gap-4">
-                        <Button buttonText="Cancel" onClick={() => setIsConfirmModalOpen(false)} />
                         <Button
+                            type='button'
+                            buttonText="Cancel"
+                            onClick={() => setIsConfirmModalOpen(false)} />
+                        <Button
+                            type='button'
                             buttonText="Delete"
                             onClick={() => {
                             if (selectedItem.type === 'file') {
@@ -449,6 +455,7 @@ const handleCopyURL = async () => {
                     >
                         <div className='flex flex-col items-center gap-4'>
                             <Button
+                                type='button'
                                 buttonText='Copy URL to clipboard'
                                 onClick={handleCopyURL}
                                 />

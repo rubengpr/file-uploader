@@ -190,7 +190,9 @@ export default function ProfilePage() {
                         <div className="grid grid-cols-3">
                             <div></div>
                             <div></div>
-                            <Button buttonText="Save" />
+                            <Button
+                                type='button'
+                                buttonText="Save" />
                         </div>
                     </form>
                 </div>

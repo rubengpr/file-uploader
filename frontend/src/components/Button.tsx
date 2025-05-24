@@ -1,7 +1,7 @@
 interface ButtonProps {
     disabled?: boolean;
     buttonText: string;
-    type: 'button' | 'submit' | 'reset'
+    type: 'button' | 'submit';
     onClick?: () => void;
   }
 

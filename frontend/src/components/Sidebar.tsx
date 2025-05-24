@@ -113,6 +113,7 @@ export default function Sidebar({ onUploadSuccess }: { onUploadSuccess: () => vo
                         </div>
                         <div className="flex flex-row gap-4">
                             <Button
+                                type='button'
                                 buttonText='Cancel'
                                 onClick={() => {
                                 setIsNewFolderModalOpen(false)
@@ -120,6 +121,7 @@ export default function Sidebar({ onUploadSuccess }: { onUploadSuccess: () => vo
                                 }}
                             />
                             <Button
+                                type='button'
                                 disabled={isDisabled(newFolderName)}
                                 buttonText='Create folder'
                                 onClick={createFolder}

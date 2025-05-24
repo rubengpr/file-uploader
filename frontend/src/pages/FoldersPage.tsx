@@ -294,9 +294,11 @@ export default function FoldersPage() {
                 </div>
                 <div className='flex flex-row gap-4 mt-3'>
                   <Button
+                    type='button'
                     buttonText='Cancel'
                     onClick={() => setIsFilterModalOpen(false)} />
                   <Button
+                    type='button'
                     buttonText='Apply filters'
                     onClick={handleFilter} />
                 </div>
