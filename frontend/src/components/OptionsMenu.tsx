@@ -1,9 +1,16 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { MenuOption } from '@/types';
+import { IconDefinition } from '@fortawesome/fontawesome-svg-core'
+import { MouseEvent } from 'react'
+
+interface MenuOption {
+  label: string
+  icon: IconDefinition
+  onClick?: (e: MouseEvent<HTMLDivElement>) => void
+}
 
 interface OptionsMenuProps {
-    options: MenuOption[]
-  }
+  options: MenuOption[]
+}
 
 export default function OptionsMenu({ options }: OptionsMenuProps) {
     return (
