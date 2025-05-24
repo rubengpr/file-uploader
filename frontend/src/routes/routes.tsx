@@ -1,16 +1,16 @@
 import { createBrowserRouter } from "react-router-dom";
-import App from "../App"
+import LandingPage from "../pages/LandingPage";
 import LoginPage from "../pages/LoginPage"
 import SignupPage from "../pages/SignupPage"
+import ProfilePage from "../pages/ProfilePage";
 import FoldersPage from "../pages/FoldersPage";
 import RecoverPasswordPage from "../pages/RecoverPasswordPage";
 import ChangePasswordPage from "../pages/ChangePasswordPage";
-import ProfilePage from "../pages/ProfilePage";
 
 const router = createBrowserRouter([
     {
       path: "/",
-      element: <App />,
+      element: <LandingPage />,
     },
     {
       path: "login",

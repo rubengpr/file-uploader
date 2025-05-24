@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom"
 
-function App() {
-
+export default function LandingPage() {
   return (
     <div className="bg-black min-h-screen">
       <nav className="navbar w-full h-14 flex items-center p-4">
@@ -30,5 +29,3 @@ function App() {
     </div>
   )
 };
-
-export default App
