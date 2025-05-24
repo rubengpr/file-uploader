@@ -51,7 +51,7 @@ export default function LoginPage() {
         <div className="login-page flex flex-col justify-center items-center text-white bg-black min-h-screen">
             <img className="w-30 mb-6" src="/folded-logo.svg" alt="Folded logo" />
             <p className="mb-2">Welcome back to your file storage</p>
-            <Form errorMsg={errorMsg} handleSubmit={handleSubmit} title="Log in" buttonText="Log in" belowButton={ <> or{" "} <u className="cursor-pointer"> <Link to="/signup">sign up</Link> </u> </> }>
+            <Form errorMsg={errorMsg} onSubmit={handleSubmit} title="Log in" buttonText="Log in" belowButton={ <> or{" "} <u className="cursor-pointer"> <Link to="/signup">sign up</Link> </u> </> }>
                 <LabelInput inputSize="md" label="Email" name="email" type="text" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
                 <div className="relative w-full">
                     <LabelInput inputSize="md" type={showPassword ? "text" : "password"} name="password" label="Password" value={password} onChange={(e) => setPassword(e.target.value)} />

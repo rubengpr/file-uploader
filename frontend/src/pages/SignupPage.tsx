@@ -96,7 +96,7 @@ export default function SignupPage() {
         <div className="signup-page flex flex-col justify-center items-center text-white bg-black min-h-screen">
             <img className="w-30 mb-6" src="/folded-logo.svg" alt="Folded logo" />
             <p className="mb-2">One more step to store your files</p>
-            <Form handleSubmit={handleSubmit} title="Sign up" buttonText="Sign up" belowButton={ <> or{" "} <u className="cursor-pointer"> <Link to="/login">log in</Link> </u> </> }>
+            <Form onSubmit={handleSubmit} title="Sign up" buttonText="Sign up" belowButton={ <> or{" "} <u className="cursor-pointer"> <Link to="/login">log in</Link> </u> </> }>
                 <LabelInput inputSize="md" label="Email" type="text" name="email" error={emailError} errorMsg={errorMsg} value={email} onChange={(e) => setEmail(e.target.value)} onBlur={handleEmailBlur} />
                 <div className="relative w-full">
                     <LabelInput inputSize="md" label="Password" name="password" type={showPassword ? "text" : "password"} error={passwordError} value={password} onChange={(e) => setPassword(e.target.value)} onBlur={handlePasswordBlur} />

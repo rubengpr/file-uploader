@@ -70,7 +70,7 @@ export default function ChangePasswordPage() {
     
     return(
         <div className="login-page flex flex-col justify-center items-center text-white bg-black min-h-screen">
-            <Form errorMsg={errorMsg} title="Change password" buttonText="Change password" handleSubmit={handleSubmit}>
+            <Form errorMsg={errorMsg} title="Change password" buttonText="Change password" onSubmit={handleSubmit}>
                 <p className="text-xs text-center">You can now set your new password</p>
                 <div className="relative w-full">
                     <LabelInput inputSize="md" label="Password" name="password" type={showPassword ? "text" : "password"} error={passwordError} value={password} onChange={(e) => setPassword(e.target.value)} onBlur={handlePasswordBlur} />
