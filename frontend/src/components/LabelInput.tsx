@@ -12,8 +12,8 @@ interface LabelInputProps extends InputHTMLAttributes<HTMLInputElement> {
 
   export default function LabelInput({ label, inputSize, type, error, errorMsg, name, onValueChange, ...props }: LabelInputProps) {
     const sizeClasses = {
-      sm: "text-sm px-2 py-1",
-      md: "text-base px-2 py-2",
+      sm: "text-xs px-2 py-1",
+      md: "text-xs px-2 py-2",
       lg: "text-lg px-3 py-4",
     }[inputSize];
     
