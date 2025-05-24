@@ -23,6 +23,7 @@ export default function Form({ children, title, buttonText, belowButton, errorMs
                 {errorMsg && <p className="text-red-400 text-xs mt-1 mb-1">{errorMsg}</p>}
                 <div className="flex flex-col justify-center items-center py-3 mt-6">
                     <Button
+                        type='submit'
                         buttonText={buttonText} />
                     {belowButton && <p className="text-xs">{belowButton}</p>}
                 </div>
