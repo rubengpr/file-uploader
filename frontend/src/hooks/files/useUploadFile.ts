@@ -16,7 +16,7 @@ interface UploadFileProps {
     onUploadSuccess: () => void;
 }
 
-export default function useUplodFile({ folderId, onUploadSuccess }: UploadFileProps) {
+export default function useUploadFile({ folderId, onUploadSuccess }: UploadFileProps) {
     const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
         //Recover uploaded file
         const file = event.target.files?.[0];
@@ -38,14 +38,14 @@ export default function useUplodFile({ folderId, onUploadSuccess }: UploadFilePr
         const filename = sanitize(file.name);
         const folderPath = folderId ? `${userId}/${folderId}` : `${userId}`;
         
-        //2. Upload file to Supabase
+        //Upload file to Supabase
         const { error } = await supabase.storage.from('files').upload(`${folderPath}/${filename}`, file)
         if (error) {
             showErrorToast("An error occured uploading the file");
             return;
         }
 
-        //3. If upload is successful, create database entry
+        //If upload is successful, create database entry
         try {
             const response = await createFile(file, filename, userId, folderId);
             showSuccessToast(response.data.message);
