@@ -1,5 +1,5 @@
 import { faFolder, faFile } from '@fortawesome/free-solid-svg-icons'
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { isDisabled } from '@/utils/disabled';
 import { Toaster } from 'react-hot-toast';
@@ -8,39 +8,20 @@ import Button from './Button';
 import Modal from './Modal';
 import SidebarOption from './SidebarOption'
 import useUploadFile from '@/hooks/files/useUploadFile';
+import useCreateFolder from '@/hooks/folders/useCreateFolder';
 
 export default function Sidebar({ onUploadSuccess }: { onUploadSuccess: () => void }) {
 
     const { folderId } = useParams<{ folderId: string }>();
-
-    const { handleFileChange } = useUploadFile({ folderId: folderId, onUploadSuccess });
     
-    const [isNewFolderModalOpen, setIsNewFolderModalOpen] = useState(false);
-    const [newFolderName, setNewFolderName] = useState('');
+    const { handleFileChange } = useUploadFile({ folderId: folderId, onUploadSuccess });
+    const { createFolder, newFolderName, setNewFolderName, isNewFolderModalOpen, setIsNewFolderModalOpen } = useCreateFolder({ onUploadSuccess })
     
     const fileInputRef = useRef<HTMLInputElement>(null);
     
     const handleNewFileClick = () => {
         fileInputRef.current?.click()
     }
-
-    // const createFolder = async () => {
-    //     const folderName = sanitize(newFolderName);
-        
-    //     try {
-    //         const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/folder/create`, { createdBy: user.id, name: folderName });
-    //         showSuccessToast(response.data.message);
-    //     } catch(error) {
-    //         if (axios.isAxiosError(error)) {
-    //             const message = error.response?.data?.error || "Something went wrong. Please, try again.";
-    //             showErrorToast(message);
-    //         } else {
-    //             showErrorToast("Unexpected error occurred.");
-    //         }
-    //     }
-    //     setIsNewFolderModalOpen(false);
-    //     onUploadSuccess();
-    // }
     
     return(
         <div className='sidebar flex flex-col w-50 bg-black px-2 py-4 border-r border-gray-700 gap-1'>
@@ -75,12 +56,13 @@ export default function Sidebar({ onUploadSuccess }: { onUploadSuccess: () => vo
                                 type='button'
                                 disabled={isDisabled(newFolderName)}
                                 buttonText='Create folder'
-                                //onClick={createFolder}
+                                onClick={createFolder}
                             />
                         </div>
                     </>
                 }
-            </Modal>)}
+                </Modal>
+            )}
         </div>
     )
 }
