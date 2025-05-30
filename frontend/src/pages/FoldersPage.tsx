@@ -28,6 +28,7 @@ export default function FoldersPage() {
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [date, setDate] = useState("");
   const [type, setType] = useState("All types");
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   
   interface File {
     id: string;
@@ -182,6 +183,10 @@ export default function FoldersPage() {
   }
 
   const today = formatDate(new Date());
+
+  const toggleShareModal = () => {
+    return setIsShareModalOpen(!isShareModalOpen)
+  }
         
     return (
         <MainLayout>
@@ -207,7 +212,9 @@ export default function FoldersPage() {
                 sortDirection={sortDirection}
                 onHeaderClick={handleSort}
                 onUpdate={updateTable}
-                onFolderClick={(id) => navigate(`/folders/${id}`)} />
+                onFolderClick={(id) => navigate(`/folders/${id}`)}
+                isShareModalOpen={isShareModalOpen}
+                toggleShareModal={toggleShareModal} />
             </div>
           </div>
           {isFilterModalOpen && (

@@ -7,14 +7,14 @@ import LabelInput from './LabelInput';
 import Button from './Button';
 import Modal from './Modal';
 import SidebarOption from './SidebarOption'
-import useUploadFile from '@/hooks/files/useUploadFile';
+import useFileOperations from '@/hooks/useFileOperations';
 import useCreateFolder from '@/hooks/folders/useCreateFolder';
 
 export default function Sidebar({ onUploadSuccess }: { onUploadSuccess: () => void }) {
 
     const { folderId } = useParams<{ folderId: string }>();
     
-    const { handleFileChange } = useUploadFile({ folderId: folderId, onUploadSuccess });
+    const { handleFileChange } = useFileOperations();
     const { createFolder, newFolderName, setNewFolderName, isNewFolderModalOpen, setIsNewFolderModalOpen } = useCreateFolder({ onUploadSuccess })
     
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -27,7 +27,7 @@ export default function Sidebar({ onUploadSuccess }: { onUploadSuccess: () => vo
         <div className='sidebar flex flex-col w-50 bg-black px-2 py-4 border-r border-gray-700 gap-1'>
             <SidebarOption onClick={handleNewFileClick} icon={faFile} text="New file" />
             <SidebarOption onClick={() => setIsNewFolderModalOpen(true)} icon={faFolder} text="New folder" />
-            <input onChange={handleFileChange} ref={fileInputRef} className='hidden' type="file" accept='.doc, .docx, .xls, .xlsx, .csv, .txt, .pdf, image/*' />
+            <input onChange={(e) => handleFileChange(e, folderId, onUploadSuccess)} ref={fileInputRef} className='hidden' type="file" accept='.doc, .docx, .xls, .xlsx, .csv, .txt, .pdf, image/*' />
             <Toaster />
             {isNewFolderModalOpen && (
                 <Modal

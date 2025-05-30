@@ -11,17 +11,21 @@ type JwtPayload = {
   email: string;
 };
 
-interface UploadFileProps {
-    folderId: string | undefined;
-    onUploadSuccess: () => void;
+interface AppFile {
+    id: string;
+    name: string;
+    createdAt: string;
+    type: string;
+    size: number;
+    createdBy: string;
+    user: {
+        email: string;
+    };
 }
 
-export default function useUploadFile({ folderId, onUploadSuccess }: UploadFileProps) {
-    const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
-        //Recover uploaded file
-        const file = event.target.files?.[0];
-        if (!file) return
+export default function useFileOperations() {
 
+    const uploadFile = async (file: File, folderId: string | undefined, onUploadSuccess: () => void) => {
         if (file.size > 20 * 1024 * 1024) {
             showErrorToast("Max file size is 20MB");
             return
@@ -45,7 +49,6 @@ export default function useUploadFile({ folderId, onUploadSuccess }: UploadFileP
             return;
         }
 
-        //If upload is successful, create database entry
         try {
             const response = await createFile(file, filename, userId, folderId);
             showSuccessToast(response.data.message);
@@ -57,9 +60,30 @@ export default function useUploadFile({ folderId, onUploadSuccess }: UploadFileP
             showErrorToast("Unexpected error occurred.");
         }}
 
-        event.target.value = '';
         onUploadSuccess();
     }
 
-    return { handleFileChange };
+    const handleFileChange = async (e: ChangeEvent<HTMLInputElement>, folderId: string | undefined, onUploadSuccess: () => void) => {
+        const file = e.target.files?.[0];
+        if (file) await uploadFile(file, folderId, onUploadSuccess);
+        e.target.value = "";
+    }
+
+    const shareFile = async (file: AppFile) => {
+        const userId = file.createdBy;
+        const fileName = file.name;
+        const filePath = `${userId}/${fileName}`
+        
+        const { data, error } = await supabase.storage.from('files').createSignedUrl(`${filePath}`, 86400)
+        
+        if (error) {
+            return null
+        }
+        
+        if (data) {
+            return data.signedUrl
+        }
+    }
+
+    return { handleFileChange, uploadFile, shareFile };
 }

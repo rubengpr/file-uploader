@@ -13,6 +13,7 @@ import LabelInput from './LabelInput';
 import DropdownMenu from './DropdownMenu';
 import axios from 'axios';
 import sanitize from 'sanitize-filename';
+import useFileOperations from '@/hooks/useFileOperations'
 
 export interface AppFile {
     id: string;
@@ -44,36 +45,33 @@ interface TableProps {
     onUpdate: (folderId: string) => void;
     onFolderClick: (folderId: string) => void;
     onHeaderClick: (key: keyof AppFile) => void;
+    isShareModalOpen: boolean;
+    toggleShareModal: () => void;
 }
 
-export default function Table({ files, folders, sortDirection, sortKey, onUpdate, onFolderClick, onHeaderClick }: TableProps ) {
+export default function Table({ files, folders, sortDirection, sortKey, onUpdate, onFolderClick, onHeaderClick, isShareModalOpen, toggleShareModal }: TableProps ) {
     
-    const { folderId } = useParams<{ folderId?: string }>();
+    const { folderId } = useParams<{ folderId?: string }>()
+
+    const { shareFile } = useFileOperations()
     
     const [openOptionsMenu, setOpenOptionsMenu] = useState<{ id: string; type: 'file' | 'folder' } | null>(null);
     const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-    const [isShareModalOpen, setIsShareModalOpen] = useState(false);
     const [newItemName, setNewItemName] = useState("");
     const [selectedItem, setSelectedItem] = useState<{ type: 'file' | 'folder'; data: AppFile | AppFolder } | null>(null);
     const [signedUrl, setSignedUrl] = useState<string | null>(null);
-
-
+    
     const handleShare = async (file: AppFile) => {
+        setOpenOptionsMenu(null)
 
-        const userId = file.createdBy;
-        const fileName = file.name;
-        const filePath = `${userId}/${fileName}`
-        
-        const { data, error } = await supabase.storage.from('files').createSignedUrl(`${filePath}`, 86400)
+        const sharedUrl = await shareFile(file)
 
-        if (data) {
-            setSignedUrl(data.signedUrl);
-            setIsShareModalOpen(true);
-        }
-
-        if (error) {
-            showErrorToast("Something went wrong")
+        if (sharedUrl) {
+            setSignedUrl(sharedUrl)
+            toggleShareModal()
+        } else {
+            showErrorToast("An error happened while generating the URL")
         }
     }
     
@@ -109,95 +107,94 @@ export default function Table({ files, folders, sortDirection, sortKey, onUpdate
     }
     setIsRenameModalOpen(false);
 
-};
+    }
 
-const handleDelete = async (file: AppFile) => {
-    const fileId = file.id
-    const fileName = file.name
-    const userId = file.createdBy
+    const handleDelete = async (file: AppFile) => {
+        const fileId = file.id
+        const fileName = file.name
+        const userId = file.createdBy
 
-    //Delete file on Supabase Storage
-    const { error } = await supabase.storage.from('files').remove([`${userId}/${fileName}`]);
+        //Delete file on Supabase Storage
+        const { error } = await supabase.storage.from('files').remove([`${userId}/${fileName}`]);
 
-    //Delete file from database
-    if (!error) {
-        try {
-            const response = await axios.delete(`${import.meta.env.VITE_API_URL}/api/file/delete`, { data: { fileId, userId } });
-            showSuccessToast(response.data.message);
-        } catch(error) {
-            if (axios.isAxiosError(error)) {
-                const message = error.response?.data?.error || "Something went wrong. Please, try again.";
-                showErrorToast(message);
-            } else {
-                showErrorToast("Unexpected error occurred.");
+        //Delete file from database
+        if (!error) {
+            try {
+                const response = await axios.delete(`${import.meta.env.VITE_API_URL}/api/file/delete`, { data: { fileId, userId } });
+                showSuccessToast(response.data.message);
+            } catch(error) {
+                if (axios.isAxiosError(error)) {
+                    const message = error.response?.data?.error || "Something went wrong. Please, try again.";
+                    showErrorToast(message);
+                } else {
+                    showErrorToast("Unexpected error occurred.");
+                }
             }
-        }
-        setIsConfirmModalOpen(false);
-        onUpdate(folderId ?? "root");
-    }
-
-}
-
-const handleDownload = async (file: AppFile) => {
-    const userId = file?.createdBy
-    const fileName = file?.name
-
-    if (!userId || !fileName) {
-        showErrorToast("Missing file info");
-        return;
-      }
-
-    const { data, error } = await supabase.storage.from('files').download(`${userId}/${fileName}`);
-
-    if (error) {
-        showErrorToast(error.message);
-    }
-
-    if (data) {
-        downloadBlob(data, `${fileName}`);
-        showSuccessToast("File downloaded successfully");
-    } else {
-        showErrorToast("Failed to download the file.");
-    }
-}
-
-const handleRenameFolder = async (folder: AppFolder) => {
-    const oldFolderName = folder.name;
-    const userId = folder.createdBy;
-    const folderId = folder.id;
-
-    const itemName = sanitize(newItemName);
-
-    //Files is an array of objects, containing files paths
-    const { data, error } = await supabase.storage.from('files').list(oldFolderName);
-    if (data) {
-        for (const file of data) {
-            await supabase.storage.from('files').copy(`${userId}/${oldFolderName}/${file.name}`, `${userId}/${itemName}/${file.name}`);
-        }
-    }
-
-    if (!error) {
-        await supabase.storage.from('files').remove([`${userId}/${oldFolderName}`]);
-
-        try {
-            const response = await axios.patch(`${import.meta.env.VITE_API_URL}/api/folder/rename`, { folderId, itemName });
-            showSuccessToast(response.data.message);
+            setIsConfirmModalOpen(false);
             onUpdate(folderId ?? "root");
-        } catch(error) {
-            if (axios.isAxiosError(error)) {
-                const message = error.response?.data?.error || "Something went wrong. Please, try again.";
-                showErrorToast(message);
-            } else {
-                showErrorToast("Unexpected error occurred.");
-            }
         }
     }
 
-    setIsRenameModalOpen(false);
-    
-}
+    const handleDownload = async (file: AppFile) => {
+        const userId = file?.createdBy
+        const fileName = file?.name
 
-const handleDeleteFolder = async (folder: AppFolder) => {
+        if (!userId || !fileName) {
+            showErrorToast("Missing file info");
+            return;
+        }
+
+        const { data, error } = await supabase.storage.from('files').download(`${userId}/${fileName}`);
+
+        if (error) {
+            showErrorToast(error.message);
+        }
+
+        if (data) {
+            downloadBlob(data, `${fileName}`);
+            showSuccessToast("File downloaded successfully");
+        } else {
+            showErrorToast("Failed to download the file.");
+        }
+    }
+
+    const handleRenameFolder = async (folder: AppFolder) => {
+        const oldFolderName = folder.name;
+        const userId = folder.createdBy;
+        const folderId = folder.id;
+
+        const itemName = sanitize(newItemName);
+
+        //Files is an array of objects, containing files paths
+        const { data, error } = await supabase.storage.from('files').list(oldFolderName);
+        if (data) {
+            for (const file of data) {
+                await supabase.storage.from('files').copy(`${userId}/${oldFolderName}/${file.name}`, `${userId}/${itemName}/${file.name}`);
+            }
+        }
+
+        if (!error) {
+            await supabase.storage.from('files').remove([`${userId}/${oldFolderName}`]);
+
+            try {
+                const response = await axios.patch(`${import.meta.env.VITE_API_URL}/api/folder/rename`, { folderId, itemName });
+                showSuccessToast(response.data.message);
+                onUpdate(folderId ?? "root");
+            } catch(error) {
+                if (axios.isAxiosError(error)) {
+                    const message = error.response?.data?.error || "Something went wrong. Please, try again.";
+                    showErrorToast(message);
+                } else {
+                    showErrorToast("Unexpected error occurred.");
+                }
+            }
+        }
+
+        setIsRenameModalOpen(false);
+        
+    }
+
+    const handleDeleteFolder = async (folder: AppFolder) => {
     //1. Get userId and folderId
     const userId = folder.createdBy
     const folderId = folder.id
@@ -228,15 +225,15 @@ const handleDeleteFolder = async (folder: AppFolder) => {
     }
     
     setIsConfirmModalOpen(false);
-}
+    }
     
-const toggleMenu = (id: string, type: 'file' | 'folder') => {
+    const toggleMenu = (id: string, type: 'file' | 'folder') => {
     setOpenOptionsMenu((prev) =>
       prev?.id === id && prev?.type === type ? null : { id, type }
     );
-  };
+    }
 
-const handleCopyURL = async () => {
+    const handleCopyURL = async () => {
     if (signedUrl) {
         try {
           await navigator.clipboard.writeText(signedUrl);
@@ -245,8 +242,7 @@ const handleCopyURL = async () => {
           showErrorToast('Failed to copy URL');
         }
       }
-    }
-      
+    }  
 
     return(
         <div className="w-full h-fit rounded-md shadow-md border border-gray-500">
@@ -342,11 +338,7 @@ const handleCopyURL = async () => {
                                 {
                                     label: "Share",
                                     icon: faShareFromSquare,
-                                    onClick: () => {
-                                        setOpenOptionsMenu(null);
-                                        handleShare(file);
-                                        setIsShareModalOpen(true);
-                                    },
+                                    onClick: () => {handleShare(file)}
                                 },
                                 {
                                     label: "Download",
@@ -449,7 +441,7 @@ const handleCopyURL = async () => {
                         modalTitle='Share file'
                         modalText='Share the URL with anyone & give them access to your file'
                         onClose={() => {
-                            setIsShareModalOpen(false);
+                            toggleShareModal();
                             setNewItemName('');
                         }}
                     >
