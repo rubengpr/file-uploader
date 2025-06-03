@@ -96,13 +96,13 @@ export default function ProfilePage() {
         if (avatar === "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?t=st=1746998854~exp=1747002454~hmac=bff075006ec87a7387029eaa590f690c79816854fb86feb9eafe3c354b0480a1&w=740") {
             const { data: uploadData, error: uploadError } = await supabase.storage.from('files').upload(avatarPath, file);
             if (uploadError) {
-                showErrorToast("An error occured uploading the file");
+                showErrorToast("An error occurred uploading the file");
                 return;
             }
             
             const { data: signedUrlData, error: signedUrlError } = await supabase.storage.from('files').createSignedUrl(uploadData.path, 60);
             if (signedUrlError) {
-                showErrorToast("An error occured uploading the file");
+                showErrorToast("An error occurred uploading the file");
                 return;
             }
 
@@ -113,13 +113,13 @@ export default function ProfilePage() {
             
             const { data: uploadData, error: uploadError } = await supabase.storage.from('files').upload(avatarPath, file);
             if (uploadError) {
-                showErrorToast("An error occured uploading the file");
+                showErrorToast("An error occurred uploading the file");
                 return;
             }
             
             const { data: signedUrlData, error: signedUrlError } = await supabase.storage.from('files').createSignedUrl(uploadData.path, 60);
             if (signedUrlError) {
-                showErrorToast("An error occured uploading the file");
+                showErrorToast("An error occurred uploading the file");
                 return;
             }
 
