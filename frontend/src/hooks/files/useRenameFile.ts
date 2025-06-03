@@ -1,1 +1,1 @@
-//RENAME file
+// TODO: implement hook for renaming files
