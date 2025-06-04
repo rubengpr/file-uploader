@@ -29,6 +29,8 @@ export default function FoldersPage() {
   const [date, setDate] = useState("");
   const [type, setType] = useState("All types");
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   
   interface File {
     id: string;
@@ -187,6 +189,14 @@ export default function FoldersPage() {
   const toggleShareModal = () => {
     return setIsShareModalOpen(!isShareModalOpen)
   }
+
+  const toggleRenameModal = () => {
+    return setIsRenameModalOpen(!isRenameModalOpen)
+  }
+
+  const toggleDeleteModal = () => {
+    return setIsDeleteModalOpen(!isDeleteModalOpen)
+  }
         
     return (
         <MainLayout>
@@ -214,7 +224,12 @@ export default function FoldersPage() {
                 onUpdate={updateTable}
                 onFolderClick={(id) => navigate(`/folders/${id}`)}
                 isShareModalOpen={isShareModalOpen}
-                toggleShareModal={toggleShareModal} />
+                toggleShareModal={toggleShareModal}
+                isRenameModalOpen={isRenameModalOpen}
+                toggleRenameModal={toggleRenameModal}
+                isDeleteModalOpen={isDeleteModalOpen}
+                toggleDeleteModal={toggleDeleteModal}
+                />
             </div>
           </div>
           {isFilterModalOpen && (

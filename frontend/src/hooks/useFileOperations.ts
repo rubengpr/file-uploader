@@ -85,5 +85,62 @@ export default function useFileOperations() {
         }
     }
 
-    return { handleFileChange, uploadFile, shareFile };
+    const renameFile = async (file: AppFile, newItemName: string) => {
+
+        const oldFileName = file.name
+        const userId = file.createdBy
+        const fileId = file.id;
+
+        const itemName = sanitize(newItemName);
+
+        const newFilePath = `${userId}/${itemName}`;
+        
+        const { error } = await supabase.storage.from('files').copy(`${userId}/${oldFileName}`, `${newFilePath}`);
+
+        //Delete file with old name on Supabase storage
+        if (!error) {
+            await supabase.storage.from('files').remove([`${userId}/${oldFileName}`]);
+
+            //Update file name on database
+            try {
+                const response = await axios.patch(`${import.meta.env.VITE_API_URL}/api/file/rename`, { fileId, itemName });
+                return response.data.message
+            } catch(error) {
+                if (axios.isAxiosError(error)) {
+                    const message = error.response?.data?.error || "Something went wrong. Please, try again.";
+                    showErrorToast(message);
+                } else {
+                    showErrorToast("Unexpected error occurred.");
+                }
+            }
+        }
+    }
+
+    const deleteFile = async (file: AppFile) => {
+        const fileId = file.id
+        const fileName = file.name
+        const userId = file.createdBy
+
+        //Delete file on Supabase Storage
+        const { error } = await supabase.storage.from('files').remove([`${userId}/${fileName}`]);
+
+        //Delete file from database
+        if (!error) {
+            try {
+                const response = await axios.delete(`${import.meta.env.VITE_API_URL}/api/file/delete`, { data: { fileId, userId } });
+                return response.data.message
+            } catch(error) {
+                if (axios.isAxiosError(error)) {
+                    const message = error.response?.data?.error || "Something went wrong. Please, try again.";
+                    showErrorToast(message);
+                    return false
+                } else {
+                    showErrorToast("Unexpected error occurred.");
+                    return false
+                }
+            }
+        }
+    }
+
+    return { handleFileChange, uploadFile, shareFile, renameFile, deleteFile };
 }

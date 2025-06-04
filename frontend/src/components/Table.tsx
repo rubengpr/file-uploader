@@ -47,17 +47,19 @@ interface TableProps {
     onHeaderClick: (key: keyof AppFile) => void;
     isShareModalOpen: boolean;
     toggleShareModal: () => void;
+    isRenameModalOpen: boolean;
+    toggleRenameModal: () => void;
+    isDeleteModalOpen: boolean;
+    toggleDeleteModal: () => void;
 }
 
-export default function Table({ files, folders, sortDirection, sortKey, onUpdate, onFolderClick, onHeaderClick, isShareModalOpen, toggleShareModal }: TableProps ) {
+export default function Table({ files, folders, sortDirection, sortKey, onUpdate, onFolderClick, onHeaderClick, isShareModalOpen, toggleShareModal, isRenameModalOpen, toggleRenameModal, isDeleteModalOpen, toggleDeleteModal }: TableProps ) {
     
     const { folderId } = useParams<{ folderId?: string }>()
 
-    const { shareFile } = useFileOperations()
+    const { shareFile, renameFile, deleteFile } = useFileOperations()
     
     const [openOptionsMenu, setOpenOptionsMenu] = useState<{ id: string; type: 'file' | 'folder' } | null>(null);
-    const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
-    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
     const [newItemName, setNewItemName] = useState("");
     const [selectedItem, setSelectedItem] = useState<{ type: 'file' | 'folder'; data: AppFile | AppFolder } | null>(null);
     const [signedUrl, setSignedUrl] = useState<string | null>(null);
@@ -76,63 +78,30 @@ export default function Table({ files, folders, sortDirection, sortKey, onUpdate
     }
     
     const handleRename = async (file: AppFile) => {
-        //Get old file name, from the file.name id
-        const oldFileName = file.name
-        const userId = file.createdBy
-        const fileId = file.id;
 
-        const itemName = sanitize(newItemName);
+        const rename = await renameFile(file, newItemName)
 
-        const newFilePath = `${userId}/${itemName}`;
+        if (rename) {
+            showSuccessToast("File renamed successfully")
+        } else {
+            showErrorToast("An error happened while renaming the file")
+        }
         
-        const { error } = await supabase.storage.from('files').copy(`${userId}/${oldFileName}`, `${newFilePath}`);
-
-        //Delete file with old name on Supabase storage
-        if (!error) {
-            await supabase.storage.from('files').remove([`${userId}/${oldFileName}`]);
-
-            //Update file name on database
-            try {
-                const response = await axios.patch(`${import.meta.env.VITE_API_URL}/api/file/rename`, { fileId, itemName });
-                showSuccessToast(response.data.message);
-                onUpdate(folderId ?? "root");
-            } catch(error) {
-                if (axios.isAxiosError(error)) {
-                    const message = error.response?.data?.error || "Something went wrong. Please, try again.";
-                    showErrorToast(message);
-                } else {
-                    showErrorToast("Unexpected error occurred.");
-                }
-            }
-    }
-    setIsRenameModalOpen(false);
-
+        onUpdate(folderId ?? "root");
+        toggleRenameModal()
     }
 
     const handleDelete = async (file: AppFile) => {
-        const fileId = file.id
-        const fileName = file.name
-        const userId = file.createdBy
+        const result = await deleteFile(file)
 
-        //Delete file on Supabase Storage
-        const { error } = await supabase.storage.from('files').remove([`${userId}/${fileName}`]);
-
-        //Delete file from database
-        if (!error) {
-            try {
-                const response = await axios.delete(`${import.meta.env.VITE_API_URL}/api/file/delete`, { data: { fileId, userId } });
-                showSuccessToast(response.data.message);
-            } catch(error) {
-                if (axios.isAxiosError(error)) {
-                    const message = error.response?.data?.error || "Something went wrong. Please, try again.";
-                    showErrorToast(message);
-                } else {
-                    showErrorToast("Unexpected error occurred.");
-                }
-            }
-            setIsConfirmModalOpen(false);
-            onUpdate(folderId ?? "root");
+        if (result) {
+            showSuccessToast("File deleted successfully")
+        } else {
+            showErrorToast("An error occurred deleting the file")
         }
+        
+        onUpdate(folderId ?? "root");
+        toggleDeleteModal()
     }
 
     const handleDownload = async (file: AppFile) => {
@@ -189,8 +158,8 @@ export default function Table({ files, folders, sortDirection, sortKey, onUpdate
                 }
             }
         }
-
-        setIsRenameModalOpen(false);
+        onUpdate(folderId ?? "root");
+        toggleRenameModal()
         
     }
 
@@ -224,7 +193,7 @@ export default function Table({ files, folders, sortDirection, sortKey, onUpdate
         }
     }
     
-    setIsConfirmModalOpen(false);
+    toggleDeleteModal()
     }
     
     const toggleMenu = (id: string, type: 'file' | 'folder') => {
@@ -246,8 +215,8 @@ export default function Table({ files, folders, sortDirection, sortKey, onUpdate
 
     return(
         <div className="w-full h-fit rounded-md shadow-md border border-gray-500">
-            <table className="w-full text-white rounded-md bg-neutral-900">
-                <thead className="text-xs border-b border-white">
+            <table className="w-full text-white bg-neutral-900">
+                <thead className="text-xs border-b border-white overflow-hidden">
                     <tr className='bg-neutral-700'>
                         <th className="pl-6 pr-1 py-2 text-left cursor-pointer" onClick={() => onHeaderClick("name")}>
                             <div className="flex flex-row items-center gap-1">
@@ -308,7 +277,7 @@ export default function Table({ files, folders, sortDirection, sortKey, onUpdate
                                     onClick: () => {
                                         setSelectedItem({ type: 'folder', data: folder });
                                         setOpenOptionsMenu(null);
-                                        setIsRenameModalOpen(true);
+                                        toggleRenameModal()
                                     }
                                 },
                                 {
@@ -317,7 +286,7 @@ export default function Table({ files, folders, sortDirection, sortKey, onUpdate
                                     onClick: () => {
                                       setSelectedItem({ type: 'folder', data: folder });
                                       setOpenOptionsMenu(null);
-                                      setIsConfirmModalOpen(true);
+                                      toggleDeleteModal()
                                     },
                                   },
                             ]} />)}
@@ -353,9 +322,9 @@ export default function Table({ files, folders, sortDirection, sortKey, onUpdate
                                     icon: faPenToSquare,
                                     onClick: () => {
                                         setSelectedItem({ type: 'file', data: file });
-                                        setOpenOptionsMenu(null);
-                                        setIsRenameModalOpen(true);
-                                      },
+                                        setOpenOptionsMenu(null)
+                                        toggleRenameModal()
+                                    },
                                 },
                                 {
                                     label: "Delete",
@@ -363,7 +332,7 @@ export default function Table({ files, folders, sortDirection, sortKey, onUpdate
                                     onClick: () => {
                                         setSelectedItem({ type: 'file', data: file });
                                         setOpenOptionsMenu(null);
-                                        setIsConfirmModalOpen(true);
+                                        toggleDeleteModal()
                                       },
                                 }
                             ]}
@@ -377,7 +346,7 @@ export default function Table({ files, folders, sortDirection, sortKey, onUpdate
                     modalTitle={`Rename ${selectedItem.type}`}
                     modalText={`Select the new name for your ${selectedItem.type}. This will change its name.`}
                     onClose={() => {
-                        setIsRenameModalOpen(false);
+                        toggleRenameModal()
                         setNewItemName('');
                     }}
                     >
@@ -390,7 +359,8 @@ export default function Table({ files, folders, sortDirection, sortKey, onUpdate
                                 type='button'
                                 buttonText='Cancel'
                                 onClick={() => {
-                                setIsRenameModalOpen(false)
+                                setOpenOptionsMenu(null)
+                                toggleRenameModal()
                                 setNewItemName("");
                                 }}/>
                             <Button
@@ -410,17 +380,17 @@ export default function Table({ files, folders, sortDirection, sortKey, onUpdate
                     </Modal>
                     )}
 
-                {isConfirmModalOpen && selectedItem && (
+                {isDeleteModalOpen && selectedItem && (
                     <Modal
                         modalTitle={`Delete ${selectedItem.type}`}
                         modalText={`Are you sure you want to delete this ${selectedItem.type}? You will not be able to recover it.`}
-                        onClose={() => setIsConfirmModalOpen(false)}
+                        onClose={toggleDeleteModal}
                     >
                         <div className="flex flex-row gap-4">
                         <Button
                             type='button'
                             buttonText="Cancel"
-                            onClick={() => setIsConfirmModalOpen(false)} />
+                            onClick={toggleDeleteModal} />
                         <Button
                             type='button'
                             buttonText="Delete"
