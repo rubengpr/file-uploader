@@ -45,7 +45,7 @@ export default function useFileOperations() {
         //Upload file to Supabase
         const { error } = await supabase.storage.from('files').upload(`${folderPath}/${filename}`, file)
         if (error) {
-            showErrorToast("An error occured uploading the file");
+            showErrorToast("An error occurred uploading the file");
             return;
         }
 
