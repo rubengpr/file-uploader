@@ -13,6 +13,7 @@ import { timezoneOptions } from "@/constants/timezones";
 import useUser from "@/stores/useUser";
 import useAvatar from "@/stores/useAvatar"
 import axios from "axios";
+import fetchSignedUrl from "@/utils/supabaseFetch";
 
 type JwtPayload = {
     id: string,
@@ -68,63 +69,69 @@ export default function ProfilePage() {
     }
 
     useEffect(() => {
-        const fetchSignedUrl = async () => {
-          const { data: signedUrlData, error: signedUrlError } = await supabase.storage.from('files').createSignedUrl(avatarPath, 60);
-      
-          if (signedUrlError) {
-            showErrorToast("An error occurred uploading the file");
-            return;
-          }
-      
-          setAvatar(signedUrlData.signedUrl);
-        };
-      
         fetchSignedUrl();
-      }, [setAvatar]);
+      }, [avatar]);
       
 
     const handleAvatarChange = async (event: ChangeEvent<HTMLInputElement>) => {
+        //Check if a file has been uploaded
         const file = event.target.files?.[0];
         if (!file) return
         
+        //File size validation
         if (file.size > 20 * 1024 * 1024) {
             showErrorToast("Max file size is 20MB");
             return
         }
 
-        //Upload avatar to Supabase
-        if (avatar === "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?t=st=1746998854~exp=1747002454~hmac=bff075006ec87a7387029eaa590f690c79816854fb86feb9eafe3c354b0480a1&w=740") {
-            const { data: uploadData, error: uploadError } = await supabase.storage.from('files').upload(avatarPath, file);
-            if (uploadError) {
-                showErrorToast("An error occurred uploading the file");
+        const defaultAvatar = "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?t=st=1746998854~exp=1747002454~hmac=bff075006ec87a7387029eaa590f690c79816854fb86feb9eafe3c354b0480a1&w=740"
+
+        //Upload avatar to Supabase Storage
+        //If there was no avatar yet, just upload the avatar
+        if (avatar === defaultAvatar) {
+
+            const { data: uploadData, error: uploadError } = await supabase.storage.from('files').upload(avatarPath, file)
+            
+            if (uploadError || !uploadData?.path) {
+                showErrorToast("Failed to upload avatar")
                 return;
             }
             
-            const { data: signedUrlData, error: signedUrlError } = await supabase.storage.from('files').createSignedUrl(uploadData.path, 60);
-            if (signedUrlError) {
-                showErrorToast("An error occurred uploading the file");
+            const { data: signedUrlData, error: signedUrlError } = await supabase.storage.from('files').createSignedUrl(uploadData.path, 86400)
+            
+            if (signedUrlError || !signedUrlData?.signedUrl) {
+                showErrorToast("Failed to upload avatar")
                 return;
             }
 
             setAvatar(signedUrlData.signedUrl);
-            showSuccessToast("Avatar updated successfully");
+            showSuccessToast("Avatar updated successfully")
+
         } else {
-            await supabase.storage.from('files').remove([avatarPath]);
-            
-            const { data: uploadData, error: uploadError } = await supabase.storage.from('files').upload(avatarPath, file);
-            if (uploadError) {
-                showErrorToast("An error occurred uploading the file");
-                return;
+            //Remove previous avatar file
+            const { error: deleteError } = await supabase.storage.from('files').remove([avatarPath])
+
+            if (deleteError) {
+                showErrorToast("Failed to upload avatar")
             }
             
-            const { data: signedUrlData, error: signedUrlError } = await supabase.storage.from('files').createSignedUrl(uploadData.path, 60);
+            //Upload new avatar
+            const { data: uploadData, error: uploadError } = await supabase.storage.from('files').upload(avatarPath, file)
+
+            if (uploadError) {
+                showErrorToast("Failed to upload avatar")
+                return
+            }
+            
+            const { data: signedUrlData, error: signedUrlError } = await supabase.storage.from('files').createSignedUrl(uploadData.path, 86400)
+
             if (signedUrlError) {
-                showErrorToast("An error occurred uploading the file");
-                return;
+                showErrorToast("An error occurred uploading the file")
+                return
             }
 
-            setAvatar(signedUrlData.signedUrl);
-            showSuccessToast("Avatar updated successfully");
+            setAvatar(signedUrlData.signedUrl)
+            showSuccessToast("Avatar updated successfully")
         }
     }
 

@@ -13,9 +13,12 @@ import Selector from '@/components/Selector.tsx';
 import Sidebar from '@/components/Sidebar.tsx';
 import Table from '@/components/Table.tsx';
 import axios from 'axios';
+import useAvatar from '@/stores/useAvatar.tsx';
+import fetchSignedUrl from '@/utils/supabaseFetch.ts';
 
 export default function FoldersPage() {
 
+  const { avatar } = useAvatar()
   const { folderId } = useParams<{ folderId?: string }>();
   const navigate = useNavigate();
 
@@ -42,7 +45,7 @@ export default function FoldersPage() {
     user: {
       email: string;
     }
-  };
+  }
 
   interface Folder {
     id: string;
@@ -54,6 +57,14 @@ export default function FoldersPage() {
     };
   }
 
+  const defaultAvatar= "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?t=st=1746998854~exp=1747002454~hmac=bff075006ec87a7387029eaa590f690c79816854fb86feb9eafe3c354b0480a1&w=740"
+
+  useEffect (() => {
+    if (avatar === defaultAvatar) {
+      fetchSignedUrl();
+    }
+  })
+  
   useEffect(() => {
     if (!isAuthenticated()) {
       navigate('/login');
