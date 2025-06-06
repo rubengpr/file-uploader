@@ -198,7 +198,7 @@ export default function ProfilePage() {
                             <div></div>
                             <div></div>
                             <Button
-                                type='button'
+                                type='submit'
                                 buttonText="Save" />
                         </div>
                     </form>
