@@ -21,12 +21,14 @@ export default function LoginPage() {
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     const toggleShowPassword = () => setShowPassword(prev => !prev);
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         setErrorMsg("");
+        setIsLoading(true)
 
         try {
             const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, { email, password }, { withCredentials: true });
@@ -43,6 +45,8 @@ export default function LoginPage() {
             } else {
                 setErrorMsg("Unexpected error occurred.");
             }
+        } finally {
+            setIsLoading(false)
         }
     }
 
@@ -51,7 +55,14 @@ export default function LoginPage() {
         <div className="login-page flex flex-col justify-center items-center text-white bg-black min-h-screen">
             <img className="w-30 mb-6" src="/folded-logo.svg" alt="Folded logo" />
             <p className="mb-2">Welcome back to your file storage</p>
-            <Form errorMsg={errorMsg} onSubmit={handleSubmit} title="Log in" buttonText="Log in" belowButton={ <> or{" "} <u className="cursor-pointer"> <Link to="/signup">sign up</Link> </u> </> }>
+            <Form
+                errorMsg={errorMsg}
+                onSubmit={handleSubmit}
+                title="Log in"
+                buttonText="Log in"
+                belowButton={ <> or{" "} <u className="cursor-pointer"> <Link to="/signup">sign up</Link> </u> </> }
+                loading={isLoading}
+                >
                 <LabelInput inputSize="md" label="Email" name="email" type="text" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
                 <div className="relative w-full">
                     <LabelInput inputSize="md" type={showPassword ? "text" : "password"} name="password" label="Password" value={password} onChange={(e) => setPassword(e.target.value)} />

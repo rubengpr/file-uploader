@@ -30,6 +30,7 @@ export default function ProfilePage() {
     const [draftTimezone, setDraftTimezone] = useState('');
     const [fullnameError, setFullnameError] = useState('');
     const [errorMsg, setErrorMsg] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     const token = localStorage.getItem('token')
     const user = jwtDecode<JwtPayload>(token || '')
@@ -138,6 +139,7 @@ export default function ProfilePage() {
     const handleProfileSubmit = async (e: FormEvent<HTMLFormElement>) => {
         setFullnameError("")
         e.preventDefault();
+        setIsLoading(true)
 
         const isFullnameValid = /^[a-zA-Z ]{3,15}$/.test(draftFullname);
 
@@ -164,6 +166,8 @@ export default function ProfilePage() {
                 setErrorMsg("Unexpected error occurred.");
             }
             showErrorToast(errorMsg);
+        } finally {
+            setIsLoading(false)
         }
     }
 
@@ -199,7 +203,8 @@ export default function ProfilePage() {
                             <div></div>
                             <Button
                                 type='submit'
-                                buttonText="Save" />
+                                buttonText="Save"
+                                loading={isLoading} />
                         </div>
                     </form>
                 </div>
