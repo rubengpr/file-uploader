@@ -16,6 +16,7 @@ export default function ChangePasswordPage() {
     const [repeatPasswordError, setRepeatPasswordError] = useState("");
     const [errorMsg, setErrorMsg] = useState("");
     const [token, setToken] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
     
     const [showPassword, setShowPassword] = useState(false);
     const [showRepeatPassword, setShowRepeatPassword] = useState(false);
@@ -48,8 +49,9 @@ export default function ChangePasswordPage() {
     }
 
     const handleSubmit = async (e: FormEvent) => {
-        e.preventDefault();
-        setErrorMsg("");
+        e.preventDefault()
+        setErrorMsg("")
+        setIsLoading(true)
 
         try {
             const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/change-password`, { password, token });
@@ -65,12 +67,20 @@ export default function ChangePasswordPage() {
             } else {
                 setErrorMsg("Unexpected error occurred.");
             }
+        } finally {
+            setIsLoading(false)
         }
     }
     
     return(
         <div className="login-page flex flex-col justify-center items-center text-white bg-black min-h-screen">
-            <Form errorMsg={errorMsg} title="Change password" buttonText="Change password" onSubmit={handleSubmit}>
+            <Form
+                errorMsg={errorMsg}
+                title="Change password"
+                buttonText="Change password"
+                onSubmit={handleSubmit}
+                loading={isLoading}
+                >
                 <p className="text-xs text-center">You can now set your new password</p>
                 <div className="relative w-full">
                     <LabelInput inputSize="md" label="Password" name="password" type={showPassword ? "text" : "password"} error={passwordError} value={password} onChange={(e) => setPassword(e.target.value)} onBlur={handlePasswordBlur} />

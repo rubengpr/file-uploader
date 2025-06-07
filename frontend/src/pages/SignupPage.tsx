@@ -24,6 +24,7 @@ export default function SignupPage() {
     const [email, setEmail] = useState("");
     const [emailError, setEmailError] = useState("");
     const [errorMsg, setErrorMsg] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     const [showPassword, setShowPassword] = useState(false)
     const [showRepeatPassword, setShowRepeatPassword] = useState(false)
@@ -74,6 +75,7 @@ export default function SignupPage() {
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         setErrorMsg("");
+        setIsLoading(false)
 
         try {
             const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/signup`, { email, password });
@@ -89,6 +91,8 @@ export default function SignupPage() {
             } else {
                 setErrorMsg("Unexpected error occurred.");
             }
+        } finally {
+            setIsLoading(true)
         }
     }
 
@@ -96,7 +100,13 @@ export default function SignupPage() {
         <div className="signup-page flex flex-col justify-center items-center text-white bg-black min-h-screen">
             <img className="w-30 mb-6" src="/folded-logo.svg" alt="Folded logo" />
             <p className="mb-2">One more step to store your files</p>
-            <Form onSubmit={handleSubmit} title="Sign up" buttonText="Sign up" belowButton={ <> or{" "} <u className="cursor-pointer"> <Link to="/login">log in</Link> </u> </> }>
+            <Form
+                onSubmit={handleSubmit}
+                title="Sign up"
+                buttonText="Sign up"
+                belowButton={ <> or{" "} <u className="cursor-pointer"> <Link to="/login">log in</Link> </u> </> }
+                loading={isLoading}
+                >
                 <LabelInput inputSize="md" label="Email" type="text" name="email" error={emailError} errorMsg={errorMsg} value={email} onChange={(e) => setEmail(e.target.value)} onBlur={handleEmailBlur} />
                 <div className="relative w-full">
                     <LabelInput inputSize="md" label="Password" name="password" type={showPassword ? "text" : "password"} error={passwordError} value={password} onChange={(e) => setPassword(e.target.value)} onBlur={handlePasswordBlur} />
