@@ -6,9 +6,12 @@ import Form from "@/components/Form"
 import LabelInput from "@/components/LabelInput";
 import { isAuthenticated } from "@/utils/auth";
 import axios from 'axios'
+import useUser from '@/stores/useUser';
 
 export default function LoginPage() {
 
+    const { setUserId } = useUser()
+    
     const navigate = useNavigate();
     
     useEffect(() => {
@@ -31,9 +34,13 @@ export default function LoginPage() {
         try {
             const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, { email, password }, { withCredentials: true });
 
-            const { token, stoken } = response.data;
+            const { token, stoken, userId } = response.data;
+            setUserId(userId)
+            
             localStorage.setItem('token', token);
             localStorage.setItem('stoken', stoken);
+
+            console.log(useUser.getState())
 
             navigate('/folders');
         } catch (error) {

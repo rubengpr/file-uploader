@@ -15,6 +15,7 @@ router.post('/login', async (req, res) => {
     try {
         // 1. Find the user
         const user = await prisma.user.findUnique({ where: { email } });
+        const userId = user.id
         if (!user) {
             res.status(401).json({ error: 'Invalid email or password' });
             return;
@@ -36,7 +37,7 @@ router.post('/login', async (req, res) => {
         
         // 5. Send token
         res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, sameSite: 'none', maxAge: 7 * 24 * 60 * 60 * 1000 });
-        res.status(200).json({ token, stoken });
+        res.status(200).json({ token, stoken, userId });
     } catch (err) {
         res.status(500).json({ error: 'Something went wrong. Try again, or contact us' });
     }

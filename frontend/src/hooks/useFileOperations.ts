@@ -2,14 +2,9 @@ import { ChangeEvent } from "react";
 import supabase from "@/utils/supabaseClient";
 import { createFile } from "@/api/files";
 import sanitize from "sanitize-filename";
-import { jwtDecode } from 'jwt-decode';
 import axios from "axios";
 import { showSuccessToast, showErrorToast } from "@/utils/toast";
-
-type JwtPayload = {
-  id: string;
-  email: string;
-};
+import useUser from "@/stores/useUser";
 
 interface AppFile {
     id: string;
@@ -25,20 +20,13 @@ interface AppFile {
 
 export default function useFileOperations() {
 
+    const { userId } = useUser()
+
     const uploadFile = async (file: File, folderId: string | undefined, onUploadSuccess: () => void) => {
         if (file.size > 20 * 1024 * 1024) {
             showErrorToast("Max file size is 20MB");
             return
         }
-
-        const token = localStorage.getItem('token');
-        const user = token ? jwtDecode<JwtPayload>(token) : null;
-        if (!user) {
-            showErrorToast('Invalid user token');
-            return;
-        }
-
-        const userId = user.id;
         const filename = sanitize(file.name);
         const folderPath = folderId ? `${userId}/${folderId}` : `${userId}`;
         

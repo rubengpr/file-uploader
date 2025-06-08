@@ -2,29 +2,17 @@ import sanitize from "sanitize-filename";
 import { showSuccessToast, showErrorToast } from "@/utils/toast";
 import axios from "axios";
 import { useState } from "react";
-import { jwtDecode } from 'jwt-decode';
-import createNewFolder from "@/api/folders";
-
-type JwtPayload = {
-  id: string;
-  email: string;
-};
+import createNewFolder from "@/api/folders"
+import useUser from "@/stores/useUser";
 
 export default function useCreateFolder({ onUploadSuccess }) {
+    const { userId } = useUser()
+    
     const [isNewFolderModalOpen, setIsNewFolderModalOpen] = useState(false);
     const [newFolderName, setNewFolderName] = useState('');
     
     const createFolder = async () => {
-        
-        const token = localStorage.getItem('token')
-        const user = token ? jwtDecode<JwtPayload>(token) : null;
-        if (!user) {
-            showErrorToast('Invalid user token')
-            return;
-        }
 
-        const userId = user.id
-        
         const folderName = sanitize(newFolderName)
         
         try {

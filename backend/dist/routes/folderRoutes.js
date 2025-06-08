@@ -11,7 +11,7 @@ router.post('/create', async (req, res) => {
     try {
         await prisma.folder.create({
             data: {
-                name,
+                name: folderName,
                 createdBy,
             }
         });

@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState, FormEvent, ChangeEvent } from "react";
 import { showSuccessToast, showErrorToast } from "@/utils/toast";
 import supabase from '@/utils/supabaseClient';
-import { jwtDecode } from "jwt-decode";
 import { Toaster } from 'react-hot-toast';
 import Button from "@/components/Button";
 import Selector from "@/components/Selector";
@@ -15,13 +14,9 @@ import useAvatar from "@/stores/useAvatar"
 import axios from "axios";
 import fetchSignedUrl from "@/utils/supabaseFetch";
 
-type JwtPayload = {
-    id: string,
-    email: string,
-}
-
 export default function ProfilePage() {
     const { avatar, setAvatar } = useAvatar();
+    const { userId } = useUser()
     const { fullname, email, country, role, language, timezone, setFullname, setCountry, setLanguage, setTimezone } = useUser();
 
     const [draftFullname, setDraftFullname] = useState('');
@@ -32,9 +27,6 @@ export default function ProfilePage() {
     const [errorMsg, setErrorMsg] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
-    const token = localStorage.getItem('token')
-    const user = jwtDecode<JwtPayload>(token || '')
-    const userId = user.id
     const avatarPath = `${userId}/avatar`
 
     useEffect(() => {
