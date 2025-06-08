@@ -24,7 +24,6 @@ export default function SignupPage() {
     const [email, setEmail] = useState("");
     const [emailError, setEmailError] = useState("");
     const [errorMsg, setErrorMsg] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
 
     const [showPassword, setShowPassword] = useState(false)
     const [showRepeatPassword, setShowRepeatPassword] = useState(false)
@@ -75,7 +74,6 @@ export default function SignupPage() {
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         setErrorMsg("");
-        setIsLoading(false)
 
         try {
             const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/signup`, { email, password });
@@ -91,8 +89,6 @@ export default function SignupPage() {
             } else {
                 setErrorMsg("Unexpected error occurred.");
             }
-        } finally {
-            setIsLoading(true)
         }
     }
 
@@ -105,7 +101,6 @@ export default function SignupPage() {
                 title="Sign up"
                 buttonText="Sign up"
                 belowButton={ <> or{" "} <u className="cursor-pointer"> <Link to="/login">log in</Link> </u> </> }
-                loading={isLoading}
                 >
                 <LabelInput inputSize="md" label="Email" type="text" name="email" error={emailError} errorMsg={errorMsg} value={email} onChange={(e) => setEmail(e.target.value)} onBlur={handleEmailBlur} />
                 <div className="relative w-full">

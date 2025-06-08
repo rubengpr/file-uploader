@@ -8,12 +8,10 @@ export default function RecoverPasswordPage() {
     const [email, setEmail] = useState("");
     const [errorMsg, setErrorMsg] = useState("");
     const [isEmailSent, setIsEmailSent] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
     
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault()
         setIsEmailSent(true)
-        setIsLoading(true)
 
         try {
             await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/recover-password`, { email })
@@ -24,8 +22,6 @@ export default function RecoverPasswordPage() {
             } else {
                 setErrorMsg("Unexpected error occurred.");
             }
-        } finally {
-            setIsLoading(false)
         }
     }
 
@@ -37,7 +33,6 @@ export default function RecoverPasswordPage() {
                 buttonText="Send email"
                 belowButton={ <> <u className="cursor-pointer"> <Link to="/login">Back to login</Link> </u> </> }
                 onSubmit={handleSubmit}
-                loading={isLoading}
                 >
                 <p className="text-xs text-center">We'll send you an email to recover your password. Hope it's the last time.</p>
                 <LabelInput inputSize="md" type="text" label="Email" name="email" onChange={(e) => setEmail(e.target.value)} />
