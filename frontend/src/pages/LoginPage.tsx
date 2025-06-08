@@ -10,7 +10,7 @@ import useUser from '@/stores/useUser';
 
 export default function LoginPage() {
 
-    const { setUserId } = useUser()
+    const { userId, setUserId } = useUser()
     
     const navigate = useNavigate();
     
@@ -40,8 +40,6 @@ export default function LoginPage() {
             localStorage.setItem('token', token);
             localStorage.setItem('stoken', stoken);
 
-            console.log(useUser.getState())
-
             navigate('/folders');
         } catch (error) {
             if (axios.isAxiosError(error)) {
@@ -51,8 +49,21 @@ export default function LoginPage() {
                 setErrorMsg("Unexpected error occurred.");
             }
         }
-    }
 
+        try {
+            const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/profile/get/${userId}`)
+            const user = response.data.user
+            useUser.getState().setUser(user)
+    
+          } catch(error) {
+            if (axios.isAxiosError(error)) {
+                const message = error.response?.data?.error || "Error getting the files.";
+                setErrorMsg(message);
+            } else {
+                setErrorMsg("Unexpected error occurred.");
+            }
+          }
+    }
     
     return(
         <div className="login-page flex flex-col justify-center items-center text-white bg-black min-h-screen">
