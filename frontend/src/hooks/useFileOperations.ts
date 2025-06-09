@@ -31,7 +31,7 @@ export default function useFileOperations() {
         const folderPath = folderId ? `${userId}/${folderId}` : `${userId}`;
         
         //Upload file to Supabase
-        const { error } = await supabase.storage.from('files').upload(`${folderPath}/${filename}`, file)
+        const { error } = await supabase().storage.from('files').upload(`${folderPath}/${filename}`, file)
         if (error) {
             showErrorToast("An error occurred uploading the file");
             return;
@@ -62,7 +62,7 @@ export default function useFileOperations() {
         const fileName = file.name;
         const filePath = `${userId}/${fileName}`
         
-        const { data, error } = await supabase.storage.from('files').createSignedUrl(`${filePath}`, 86400)
+        const { data, error } = await supabase().storage.from('files').createSignedUrl(`${filePath}`, 86400)
         
         if (error) {
             return null
@@ -83,11 +83,11 @@ export default function useFileOperations() {
 
         const newFilePath = `${userId}/${itemName}`;
         
-        const { error } = await supabase.storage.from('files').copy(`${userId}/${oldFileName}`, `${newFilePath}`);
+        const { error } = await supabase().storage.from('files').copy(`${userId}/${oldFileName}`, `${newFilePath}`);
 
         //Delete file with old name on Supabase storage
         if (!error) {
-            await supabase.storage.from('files').remove([`${userId}/${oldFileName}`]);
+            await supabase().storage.from('files').remove([`${userId}/${oldFileName}`]);
 
             //Update file name on database
             try {
@@ -110,7 +110,7 @@ export default function useFileOperations() {
         const userId = file.createdBy
 
         //Delete file on Supabase Storage
-        const { error } = await supabase.storage.from('files').remove([`${userId}/${fileName}`]);
+        const { error } = await supabase().storage.from('files').remove([`${userId}/${fileName}`]);
 
         //Delete file from database
         if (!error) {

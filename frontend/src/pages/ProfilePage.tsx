@@ -63,14 +63,14 @@ export default function ProfilePage() {
         //If there was no avatar yet, just upload the avatar
         if (avatar === defaultAvatar) {
 
-            const { data: uploadData, error: uploadError } = await supabase.storage.from('files').upload(avatarPath, file)
+            const { data: uploadData, error: uploadError } = await supabase().storage.from('files').upload(avatarPath, file)
             
             if (uploadError || !uploadData?.path) {
                 showErrorToast("Failed to upload avatar")
                 return;
             }
             
-            const { data: signedUrlData, error: signedUrlError } = await supabase.storage.from('files').createSignedUrl(uploadData.path, 86400)
+            const { data: signedUrlData, error: signedUrlError } = await supabase().storage.from('files').createSignedUrl(uploadData.path, 86400)
             
             if (signedUrlError || !signedUrlData?.signedUrl) {
                 showErrorToast("Failed to upload avatar")
@@ -82,21 +82,21 @@ export default function ProfilePage() {
 
         } else {
             //Remove previous avatar file
-            const { error: deleteError } = await supabase.storage.from('files').remove([avatarPath])
+            const { error: deleteError } = await supabase().storage.from('files').remove([avatarPath])
 
             if (deleteError) {
                 showErrorToast("Failed to upload avatar")
             }
             
             //Upload new avatar
-            const { data: uploadData, error: uploadError } = await supabase.storage.from('files').upload(avatarPath, file)
+            const { data: uploadData, error: uploadError } = await supabase().storage.from('files').upload(avatarPath, file)
 
             if (uploadError) {
                 showErrorToast("Failed to upload avatar")
                 return
             }
             
-            const { data: signedUrlData, error: signedUrlError } = await supabase.storage.from('files').createSignedUrl(uploadData.path, 86400)
+            const { data: signedUrlData, error: signedUrlError } = await supabase().storage.from('files').createSignedUrl(uploadData.path, 86400)
 
             if (signedUrlError) {
                 showErrorToast("An error occurred uploading the file")

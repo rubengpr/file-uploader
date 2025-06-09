@@ -113,7 +113,7 @@ export default function Table({ files, folders, sortDirection, sortKey, onUpdate
             return;
         }
 
-        const { data, error } = await supabase.storage.from('files').download(`${userId}/${fileName}`);
+        const { data, error } = await supabase().storage.from('files').download(`${userId}/${fileName}`);
 
         if (error) {
             showErrorToast(error.message);
@@ -135,15 +135,15 @@ export default function Table({ files, folders, sortDirection, sortKey, onUpdate
         const itemName = sanitize(newItemName);
 
         //Files is an array of objects, containing files paths
-        const { data, error } = await supabase.storage.from('files').list(oldFolderName);
+        const { data, error } = await supabase().storage.from('files').list(oldFolderName);
         if (data) {
             for (const file of data) {
-                await supabase.storage.from('files').copy(`${userId}/${oldFolderName}/${file.name}`, `${userId}/${itemName}/${file.name}`);
+                await supabase().storage.from('files').copy(`${userId}/${oldFolderName}/${file.name}`, `${userId}/${itemName}/${file.name}`);
             }
         }
 
         if (!error) {
-            await supabase.storage.from('files').remove([`${userId}/${oldFolderName}`]);
+            await supabase().storage.from('files').remove([`${userId}/${oldFolderName}`]);
 
             try {
                 const response = await axios.patch(`${import.meta.env.VITE_API_URL}/api/folder/rename`, { folderId, itemName });
@@ -169,12 +169,12 @@ export default function Table({ files, folders, sortDirection, sortKey, onUpdate
     const folderId = folder.id
 
     //2. Supabase: call list into the folderId
-    const { data, error } = await supabase.storage.from('files').list(`${userId}/${folderId}`)
+    const { data, error } = await supabase().storage.from('files').list(`${userId}/${folderId}`)
     
     //3. Supabase: call delete into the files list
     if (data) {
         for (const folder of data) {
-            await supabase.storage.from('files').remove([`${userId}/${folderId}/${folder.name}`]);
+            await supabase().storage.from('files').remove([`${userId}/${folderId}/${folder.name}`]);
         }
     }
 
