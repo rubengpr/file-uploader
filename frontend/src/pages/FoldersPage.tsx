@@ -91,9 +91,7 @@ export default function FoldersPage() {
 
   useEffect(() => {
     if (avatar === defaultAvatar && userId) {
-      fetchSignedUrl().catch(() => {
-        showErrorToast("Failed to load avatar");
-      });
+      fetchSignedUrl()
     }
   }, [avatar, userId]);
 
