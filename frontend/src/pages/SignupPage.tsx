@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 import { Link, useNavigate } from "react-router-dom"
-import { useState, useEffect, FocusEvent, FormEvent } from "react"
+import { useState, useEffect, FormEvent } from "react"
 import LabelInput from "@/components/LabelInput"
 import Form from "@/components/Form"
 import { isAuthenticated } from "@/utils/auth"
@@ -17,12 +17,13 @@ export default function SignupPage() {
             }
           }, [navigate]);
     
+    
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [repeatPassword, setRepeatPassword] = useState("");
+    const [emailError, setEmailError] = useState("");
     const [passwordError, setPasswordError] = useState("");
     const [repeatPasswordError, setRepeatPasswordError] = useState("");
-    const [email, setEmail] = useState("");
-    const [emailError, setEmailError] = useState("");
     const [errorMsg, setErrorMsg] = useState("");
 
     const [showPassword, setShowPassword] = useState(false)
@@ -33,47 +34,49 @@ export default function SignupPage() {
         setShowRepeatPassword(prev => !prev)
     }
 
-    function handlePasswordBlur(e: FocusEvent<HTMLInputElement>) {
-        validatePassword(e.target.value)
-    }
-    
-    function validatePassword(password: string) {
-        const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/
-        if (!passwordRegex.test(password)) {
-            setPasswordError("One capital letter, number and special character")
-        } else {
-            setPasswordError("")
-        }
-    }
-
-    function handleEmailBlur(e: FocusEvent<HTMLInputElement>) {
-        validateEmail(e.target.value)
-    }
-    
     function validateEmail(email: string) {
         const emailRegex = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/
         if (!emailRegex.test(email)) {
             setEmailError("Should be a valid email address")
+            return false
         } else {
             setEmailError("")
+            return true
         }
     }
 
-    function handleRepeatPasswordBlur(e: FocusEvent<HTMLInputElement>) {
-        validateRepeatPassword(e.target.value)
+    function validatePassword(password: string) {
+        const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/
+        if (!passwordRegex.test(password)) {
+            setPasswordError("One capital letter, number and special character")
+            return false
+        } else {
+            setPasswordError("")
+            return true
+        }
     }
 
     function validateRepeatPassword(repeatPassword: string) {
         if (password !== repeatPassword) {
             setRepeatPasswordError("Passwords don't match")
+            return false
         } else {
             setRepeatPasswordError("")
+            return true
         }
     }
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         setErrorMsg("");
+
+        const emailIsValid = validateEmail(email)
+        const passwordIsValid = validatePassword(password)
+        const repeatPasswordIsValid = validateRepeatPassword(repeatPassword)
+
+        if (!emailIsValid || !passwordIsValid || !repeatPasswordIsValid) {
+            return
+        }
 
         try {
             const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/signup`, { email, password });
@@ -102,12 +105,12 @@ export default function SignupPage() {
                 buttonText="Sign up"
                 belowButton={ <> or{" "} <u className="cursor-pointer"> <Link to="/login">log in</Link> </u> </> }
                 >
-                <LabelInput inputSize="md" label="Email" type="text" name="email" error={emailError} errorMsg={errorMsg} value={email} onChange={(e) => setEmail(e.target.value)} onBlur={handleEmailBlur} />
+                <LabelInput inputSize="md" label="Email" type="text" name="email" error={emailError} errorMsg={errorMsg} value={email} onChange={(e) => setEmail(e.target.value)} />
                 <div className="relative w-full">
-                    <LabelInput inputSize="md" label="Password" name="password" type={showPassword ? "text" : "password"} error={passwordError} value={password} onChange={(e) => setPassword(e.target.value)} onBlur={handlePasswordBlur} />
+                    <LabelInput inputSize="md" label="Password" name="password" type={showPassword ? "text" : "password"} error={passwordError} value={password} onChange={(e) => setPassword(e.target.value)} />
                     <FontAwesomeIcon onClick={toggleShowPassword} className="text-xs absolute top-7.5 left-70 cursor-pointer" icon={showPassword ? faEye : faEyeSlash} />
                 </div>
-                <LabelInput inputSize="md" name="repeatPassword" label="Repeat password" type={showRepeatPassword ? "text" : "password"} error={repeatPasswordError} value={repeatPassword} onChange={(e) => setRepeatPassword(e.target.value)} onBlur={handleRepeatPasswordBlur} />
+                <LabelInput inputSize="md" name="repeatPassword" label="Repeat password" type={showRepeatPassword ? "text" : "password"} error={repeatPasswordError} value={repeatPassword} onChange={(e) => setRepeatPassword(e.target.value)} />
             </Form>
         </div>
     )
