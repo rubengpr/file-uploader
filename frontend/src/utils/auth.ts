@@ -27,5 +27,6 @@ export const isTokenExpired = () => {
   
 export const logout = () => {
   localStorage.removeItem('token');
+  localStorage.removeItem('stoken');
   window.location.href = '/login'; // optional redirect
 };
