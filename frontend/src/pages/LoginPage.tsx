@@ -9,16 +9,13 @@ import axios from 'axios'
 import useUser from '@/stores/useUser';
 
 export default function LoginPage() {
-
-    const { setUserId } = useUser()
-    
     const navigate = useNavigate();
     
     useEffect(() => {
         if (isAuthenticated()) {
-          navigate("/folders");
+          navigate("/folders", { replace: true });
         }
-      }, [navigate]);
+    }, [navigate]);
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -34,13 +31,12 @@ export default function LoginPage() {
         try {
             const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, { email, password }, { withCredentials: true })
 
-            const { token, stoken, userId } = response.data
-            setUserId(userId)
+            const { token, stoken } = response.data
             localStorage.setItem('token', token)
             localStorage.setItem('stoken', stoken)
 
             try {
-                const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/profile/get/${userId}`)
+                const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/profile/get/${email}`)
                 const user = response.data.user
                 useUser.getState().setUser(user)
         

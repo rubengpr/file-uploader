@@ -4,13 +4,13 @@ import { PrismaClient } from '@prisma/client';
 const router = Router()
 const prisma = new PrismaClient();
 
-router.get('/get/:userId', async (req, res) => {
-    const { userId } = req.params;
+router.get('/get/:email', async (req, res) => {
+    const { email } = req.params;
     
     try {
         const user = await prisma.user.findUnique({
             where: {
-                id: userId,
+                email,
             },
             select: {
                 id: true,

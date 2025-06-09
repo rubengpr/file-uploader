@@ -12,7 +12,7 @@ const fetchSignedUrl = async () => {
     const { data: signedUrlData, error: signedUrlError } = await supabase.storage.from('files').createSignedUrl(avatarPath, 86400)
 
     if (signedUrlError) {
-      showErrorToast("An error occurred uploading the file")
+      showErrorToast("Failed to load avatar")
       return;
     }
 

@@ -15,9 +15,11 @@ import Table from '@/components/Table.tsx';
 import axios from 'axios';
 import useAvatar from '@/stores/useAvatar.tsx';
 import fetchSignedUrl from '@/utils/supabaseFetch.ts';
+import useUser from '@/stores/useUser.tsx';
+import { jwtDecode } from 'jwt-decode';
 
 export default function FoldersPage() {
-
+  const { userId } = useUser()
   const { avatar } = useAvatar()
   const { folderId } = useParams<{ folderId?: string }>();
   const navigate = useNavigate();
@@ -57,19 +59,43 @@ export default function FoldersPage() {
     };
   }
 
-  const defaultAvatar= "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?t=st=1746998854~exp=1747002454~hmac=bff075006ec87a7387029eaa590f690c79816854fb86feb9eafe3c354b0480a1&w=740"
+  const defaultAvatar= "https://upload.wikimedia.org/wikipedia/commons/2/2c/Default_pfp.svg"
 
-  useEffect (() => {
-    if (avatar === defaultAvatar) {
-      fetchSignedUrl();
-    }
-  })
-  
   useEffect(() => {
-    if (!isAuthenticated()) {
-      navigate('/login');
+    const fetchUser = async(email: string) => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/profile/get/${email}`)
+        useUser.getState().setUser(response.data.user)
+      } catch(error) {
+        if (axios.isAxiosError(error)) {
+          const message = error.response?.data?.error || "Error fetching user data";
+          showErrorToast(message);
+          localStorage.removeItem("token")
+          localStorage.removeItem("stoken")
+        }
+      }
     }
+
+    if (!isAuthenticated()) {
+      localStorage.removeItem("token")
+      localStorage.removeItem("stoken")
+      navigate('/login', { replace: true })
+      return
+    }
+
+    const token = localStorage.getItem("token")!
+    const decoded = jwtDecode<{ email: string }>(token)
+    const email = decoded.email
+    fetchUser(email)
   }, [navigate]);
+
+  useEffect(() => {
+    if (avatar === defaultAvatar && userId) {
+      fetchSignedUrl().catch(() => {
+        showErrorToast("Failed to load avatar");
+      });
+    }
+  }, [avatar, userId]);
 
   useEffect(() => {
     const refreshToken = async () => {
