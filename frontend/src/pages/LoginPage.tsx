@@ -10,7 +10,7 @@ import useUser from '@/stores/useUser';
 
 export default function LoginPage() {
 
-    const { userId, setUserId } = useUser()
+    const { setUserId } = useUser()
     
     const navigate = useNavigate();
     
@@ -32,37 +32,36 @@ export default function LoginPage() {
         setErrorMsg("")
 
         try {
-            const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, { email, password }, { withCredentials: true });
+            const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, { email, password }, { withCredentials: true })
 
-            const { token, stoken, userId } = response.data;
+            const { token, stoken, userId } = response.data
             setUserId(userId)
-            
-            localStorage.setItem('token', token);
-            localStorage.setItem('stoken', stoken);
+            localStorage.setItem('token', token)
+            localStorage.setItem('stoken', stoken)
 
-            navigate('/folders');
+            try {
+                const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/profile/get/${userId}`)
+                const user = response.data.user
+                useUser.getState().setUser(user)
+        
+            } catch(error) {
+                if (axios.isAxiosError(error)) {
+                    const message = error.response?.data?.error || "Error getting the files.";
+                    setErrorMsg(message);
+                } else {
+                    setErrorMsg("Unexpected error occurred.");
+                }
+            }
+
+            navigate('/folders')
         } catch (error) {
             if (axios.isAxiosError(error)) {
-                const message = error.response?.data?.error || "Something went wrong. Please, try again.";
-                setErrorMsg(message);
+                const message = error.response?.data?.error || "Something went wrong. Please, try again."
+                setErrorMsg(message)
             } else {
-                setErrorMsg("Unexpected error occurred.");
+                setErrorMsg("Unexpected error occurred.")
             }
         }
-
-        try {
-            const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/profile/get/${userId}`)
-            const user = response.data.user
-            useUser.getState().setUser(user)
-    
-          } catch(error) {
-            if (axios.isAxiosError(error)) {
-                const message = error.response?.data?.error || "Error getting the files.";
-                setErrorMsg(message);
-            } else {
-                setErrorMsg("Unexpected error occurred.");
-            }
-          }
     }
     
     return(

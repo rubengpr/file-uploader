@@ -16,15 +16,14 @@ type UserState = {
     setLanguage: (newLanguage: string) => void,
     setTimezone: (newTimezone: string) => void,
     setUser: (user: {
-        userId: string;
+        id: string;
         fullname: string;
         email: string;
         country: string;
         role: string;
         language: string;
         timezone: string;
-      }) => void;
-      
+    }) => void;     
 }
 
 const useUser = create<UserState>((set) => ({
@@ -46,7 +45,7 @@ const useUser = create<UserState>((set) => ({
   
     setUser: (user) =>
       set({
-        userId: user.userId,
+        userId: user.id,
         fullname: user.fullname,
         email: user.email,
         country: user.country,

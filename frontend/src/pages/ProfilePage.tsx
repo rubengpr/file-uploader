@@ -15,9 +15,8 @@ import axios from "axios";
 import fetchSignedUrl from "@/utils/supabaseFetch";
 
 export default function ProfilePage() {
-    const { avatar, setAvatar } = useAvatar();
-    const { userId } = useUser()
-    const { fullname, email, country, role, language, timezone, setFullname, setCountry, setLanguage, setTimezone } = useUser();
+    const { avatar, setAvatar } = useAvatar()
+    const { userId, fullname, email, country, role, language, timezone, setFullname, setCountry, setLanguage, setTimezone } = useUser()
 
     const [draftFullname, setDraftFullname] = useState('');
     const [draftCountry, setDraftCountry] = useState('');
@@ -28,25 +27,6 @@ export default function ProfilePage() {
     const [isLoading, setIsLoading] = useState(false);
 
     const avatarPath = `${userId}/avatar`
-
-    useEffect(() => {
-        const fetchUserData = async () => {
-          try {
-            const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/profile/get/${userId}`)
-            const user = response.data.user
-            useUser.getState().setUser(user)
-    
-          } catch(error) {
-            if (axios.isAxiosError(error)) {
-                const message = error.response?.data?.error || "Error getting the files.";
-                showErrorToast(message);
-            } else {
-                showErrorToast("Unexpected error occurred.");
-            }
-          }
-        }
-        fetchUserData()
-      }, [])
     
     useEffect(() => {
         setDraftFullname(fullname)
