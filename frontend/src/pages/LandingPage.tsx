@@ -5,7 +5,7 @@ export default function LandingPage() {
     <div className="bg-black min-h-screen">
       <nav className="navbar w-full h-14 flex items-center p-4">
         <div className="w-full h-full flex justify-start items-center">
-          <img className="w-24 h-auto pr-6" src="/folded-logo.svg" alt="Website logo" />
+          <img className="w-28 h-auto pr-6" src="/folded-logo.svg" alt="Website logo" />
         </div>
         <div className="w-full h-full flex justify-end items-center">
           <button className="cursor-pointer hover:bg-gray-800 text-white px-4 py-1.5 rounded-sm text-sm border border-white"><Link to="login">Log in</Link></button>
