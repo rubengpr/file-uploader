@@ -25,9 +25,9 @@ export default function LandingPage() {
           </div>
       </div>
       <div className="footer w-full h-14 flex flex-row justify-center items-center p-4">
-      <a href="https://github.com/rubengpr"><div className="container flex flex-row justify-center items-center gap-2">
-          <img className="w-8" src="/github-logo.png" alt="Github logo" />
-          <p className="text-md text-white">Made by rubengpr</p>
+      <a href="https://github.com/rubengpr" target="_blank" rel="noopener noreferrer"><div className="container flex flex-row justify-center items-center gap-2">
+          <img className="w-6" src="/github-gradient.svg" alt="Github logo" />
+          <p className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-b from-white to-neutral-700">Made by rubengpr</p>
         </div></a>
       </div>
     </div>
