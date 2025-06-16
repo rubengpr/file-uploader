@@ -11,12 +11,16 @@ export default function LandingPage() {
           <button className="cursor-pointer hover:bg-gray-800 text-white px-4 py-1.5 rounded-sm text-sm border border-white"><Link to="login">Log in</Link></button>
         </div>
       </nav>
-      <div className="hero-page w-full mt-30 h-60 justify-center items-center">
+      <div className="hero-page w-full mt-10 justify-center items-center">
           <div className="flex flex-col justify-center items-center">
-            <h1 className="text-4xl font-bold text-white mb-6 tracking-tighter">Store your files (if you dare).</h1>
+            <h1 className="text-5xl font-bold text-white mb-6 tracking-tighter">Save file storage for everyone.</h1>
             <div className="w-150">
               <h3 className="text-md text-gray-200 text-center tracking-tighter mb-1">Store your files safely (I believe) & support a young pal.</h3>
-              <h3 className="text-md text-gray-200 text-center tracking-tighter">Google is spying you.</h3>
+              <h3 className="text-md text-gray-200 text-center tracking-tighter mb-6">Google is spying you.</h3>
+            </div>
+            <div className="relative flex flex-row justify-center items-center w-full mb-6">
+              <img className="z-1 w-150" src="/folder.svg" alt="A folder's illustration" />
+              <div className="absolute bg-purple-700 w-150 h-90 animate-[pulse_3s_ease-in-out_infinite] rounded-lg opacity-0 blur-lg"></div>
             </div>
           </div>
       </div>
