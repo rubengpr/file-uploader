@@ -17,6 +17,9 @@ export default function LoginPage() {
         }
     }, [navigate]);
 
+    const TEST_EMAIL = "beffjezos@atmyzone.com"
+    const TEST_PASSWORD = "Amazonia12!"
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
@@ -59,6 +62,39 @@ export default function LoginPage() {
             }
         }
     }
+
+    const handleLoginTestAccount = async () => {
+        try {
+            const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, { email: TEST_EMAIL, password: TEST_PASSWORD }, { withCredentials: true })
+
+            const { token, stoken } = response.data
+            localStorage.setItem('token', token)
+            localStorage.setItem('stoken', stoken)
+
+            try {
+                const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/profile/get/${TEST_EMAIL}`)
+                const user = response.data.user
+                useUser.getState().setUser(user)
+        
+            } catch(error) {
+                if (axios.isAxiosError(error)) {
+                    const message = error.response?.data?.error || "Error getting the files.";
+                    setErrorMsg(message);
+                } else {
+                    setErrorMsg("Unexpected error occurred.");
+                }
+            }
+
+            navigate('/folders')
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                const message = error.response?.data?.error || "Something went wrong. Please, try again."
+                setErrorMsg(message)
+            } else {
+                setErrorMsg("Unexpected error occurred.")
+            }
+        }
+    }
     
     return(
         <div className="login-page flex flex-col justify-center items-center text-white bg-black min-h-screen">
@@ -71,6 +107,7 @@ export default function LoginPage() {
                 buttonText="Log in"
                 belowButton={ <> or{" "} <u className="cursor-pointer"> <Link to="/signup">sign up</Link> </u> </> }
                 >
+                <button type='button' onClick={handleLoginTestAccount} className="font-bold flex items-center justify-center gap-2 cursor-pointer w-full hover:bg-gray-800 text-white px-4 py-1.5 rounded-full text-sm border border-white mb-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-inherit">✨ Use test account</button>
                 <LabelInput inputSize="md" label="Email" name="email" type="text" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
                 <div className="relative w-full">
                     <LabelInput inputSize="md" type={showPassword ? "text" : "password"} name="password" label="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
