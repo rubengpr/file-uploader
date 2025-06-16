@@ -13,7 +13,7 @@ export default function LandingPage() {
       </nav>
       <div className="hero-page w-full mt-10 justify-center items-center">
           <div className="flex flex-col justify-center items-center">
-            <h1 className="text-5xl font-bold text-white mb-6 tracking-tighter">Save file storage for everyone.</h1>
+            <h1 className="text-5xl font-bold text-white mb-6 tracking-tighter">Safe file storage for everyone.</h1>
             <div className="w-150">
               <h3 className="text-md text-gray-200 text-center tracking-tighter mb-1">Store your files safely (I believe) & support a young pal.</h3>
               <h3 className="text-md text-gray-200 text-center tracking-tighter mb-6">Google is spying you.</h3>
