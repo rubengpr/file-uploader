@@ -38,6 +38,10 @@ app.use('/api/auth', authRoutes);
 app.use('/api/file', fileRoutes);
 app.use('/api/folder', folderRoutes);
 app.use('/api/profile', profileRoutes);
+// Catch-all for unknown routes
+app.use((req, res) => {
+    res.status(404).json({ message: 'Not Found' });
+});
 // ✅ Start server
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
