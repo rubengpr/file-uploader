@@ -73,32 +73,65 @@ router.post('/create', async (req: any, res: any) => {
     }
 });
 
-router.get('/get/:folderId', async (req, res) => {
+router.get('/get/:folderId', async (req: any, res: any) => {
     const { folderId } = req.params;
     const actualFolderId = folderId === 'root' ? null : folderId;
   
     try {
-      const files = await prisma.file.findMany({
-        where: { folderId: actualFolderId },
-        include: {
-          user: {
-            select: { email: true },
-          },
-        },
-      });
+        if (actualFolderId) {
+            const folder = await prisma.folder.findFirst({
+              where: { 
+                id: actualFolderId,
+                createdBy: req.user.id,
+              }
+            });
+            
+            if (!folder) {
+              return res.status(403).json({ message: "Access denied to folder" });
+            }
+          }
+
+        const files = await prisma.file.findMany({
+            where: { folderId: actualFolderId },
+            include: {
+                user: {
+                    select: { email: true },
+                },
+            },
+        });
   
-      res.status(200).json(files);
+        res.status(200).json(files);
     } catch (error) {
       res.status(500).json({ message: "Something went wrong" });
     }
   });
 
-router.patch('/rename', async (req, res) => {
+router.patch('/rename', async (req: any, res: any) => {
     const { fileId, itemName } = req.body;
+
+    if (!fileId || !itemName) {
+        return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    if (itemName.length > 60) {
+        return res.status(400).json({ message: "File name must be under 60 characters" });
+    }
 
     const sanitizedItemName = sanitize(itemName);
 
     try {
+        // Check if user owns the file before allowing rename
+        const file = await prisma.file.findFirst({
+            where: {
+                id: fileId,
+                createdBy: req.user.id,
+            }
+        });
+
+        if (!file) {
+            return res.status(403).json({ message: "Access denied to file" });
+        }
+
         await prisma.file.update({
             where: {
                 id: fileId,
@@ -114,10 +147,26 @@ router.patch('/rename', async (req, res) => {
     }
 });
 
-router.delete('/delete', async (req, res) => {
+router.delete('/delete', async (req: any, res: any) => {
     const { fileId } = req.body;
 
+    if (!fileId) {
+        return res.status(400).json({ message: "Missing required fields" });
+    }
+
     try {
+        // Check if user owns the file before allowing deletion
+        const file = await prisma.file.findFirst({
+            where: {
+                id: fileId,
+                createdBy: req.user.id,
+            }
+        });
+
+        if (!file) {
+            return res.status(403).json({ message: "Access denied to file" });
+        }
+
         await prisma.file.delete({
             where: {
                 id: fileId
