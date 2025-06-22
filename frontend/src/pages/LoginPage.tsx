@@ -39,7 +39,12 @@ export default function LoginPage() {
             localStorage.setItem('stoken', stoken)
 
             try {
-                const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/profile/get/${email}`)
+                const token = localStorage.getItem('token')
+                const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/profile/get/${email}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
                 const user = response.data.user
                 useUser.getState().setUser(user)
         
@@ -72,7 +77,12 @@ export default function LoginPage() {
             localStorage.setItem('stoken', stoken)
 
             try {
-                const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/profile/get/${TEST_EMAIL}`)
+                const token = localStorage.getItem('token')
+                const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/profile/get/${TEST_EMAIL}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
                 const user = response.data.user
                 useUser.getState().setUser(user)
         

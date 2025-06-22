@@ -64,7 +64,11 @@ export default function FoldersPage() {
   useEffect(() => {
     const fetchUser = async(email: string) => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/profile/get/${email}`)
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/profile/get/${email}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        })
         useUser.getState().setUser(response.data.user)
       } catch(error) {
         if (axios.isAxiosError(error)) {

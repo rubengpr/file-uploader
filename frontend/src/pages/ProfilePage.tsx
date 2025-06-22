@@ -121,7 +121,12 @@ export default function ProfilePage() {
         }
 
         try {
-            const response = await axios.patch(`${import.meta.env.VITE_API_URL}/api/profile/update`, { userId, draftFullname, draftCountry, draftLanguage, draftTimezone })
+            const token = localStorage.getItem('token')
+            const response = await axios.patch(`${import.meta.env.VITE_API_URL}/api/profile/update`, { userId, draftFullname, draftCountry, draftLanguage, draftTimezone }, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
 
             setFullname(draftFullname)
             setCountry(draftCountry)

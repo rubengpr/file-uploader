@@ -1,8 +1,11 @@
 import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
+import authenticateToken from '../middleware/authMiddleware.js';
 
 const router = Router()
 const prisma = new PrismaClient();
+
+router.use(authenticateToken);
 
 router.get('/get/:email', async (req, res) => {
     const { email } = req.params;
