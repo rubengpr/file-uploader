@@ -1,9 +1,12 @@
 import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
 import sanitize from 'sanitize-filename'
+import authenticateToken from '../middleware/authMiddleware.js';
 
 const router = Router();
 const prisma = new PrismaClient();
+
+router.use(authenticateToken);
 
 router.post('/create', async (req, res) => {
     //receive variables to create folder

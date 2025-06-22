@@ -118,7 +118,12 @@ export default function FoldersPage() {
   const getFiles = async (folderId: string) => {
     
     try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/file/get/${folderId}`);
+        const token = localStorage.getItem("token")
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/file/get/${folderId}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
         setFiles(response.data);
         setAllFiles(response.data);
     } catch(error) {
@@ -133,7 +138,12 @@ export default function FoldersPage() {
 
   const getFolders = async (folderId: string) => {
     try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/folder/get/${folderId}`);
+        const token = localStorage.getItem("token")
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/folder/get/${folderId}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
         setFolders(response.data);
     } catch(error) {
         if (axios.isAxiosError(error)) {

@@ -91,7 +91,12 @@ export default function useFileOperations() {
 
             //Update file name on database
             try {
-                const response = await axios.patch(`${import.meta.env.VITE_API_URL}/api/file/rename`, { fileId, itemName });
+                const token = localStorage.getItem('token')
+                const response = await axios.patch(`${import.meta.env.VITE_API_URL}/api/file/rename`, { fileId, itemName }, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
                 return response.data.message
             } catch(error) {
                 if (axios.isAxiosError(error)) {
@@ -115,7 +120,13 @@ export default function useFileOperations() {
         //Delete file from database
         if (!error) {
             try {
-                const response = await axios.delete(`${import.meta.env.VITE_API_URL}/api/file/delete`, { data: { fileId, userId } });
+                const token = localStorage.getItem('token')
+                const response = await axios.delete(`${import.meta.env.VITE_API_URL}/api/file/delete`, {
+                    data: { fileId, userId },
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
                 return response.data.message
             } catch(error) {
                 if (axios.isAxiosError(error)) {
