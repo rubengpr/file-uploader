@@ -146,7 +146,12 @@ export default function Table({ files, folders, sortDirection, sortKey, onUpdate
             await supabase().storage.from('files').remove([`${userId}/${oldFolderName}`]);
 
             try {
-                const response = await axios.patch(`${import.meta.env.VITE_API_URL}/api/folder/rename`, { folderId, itemName });
+                const token = localStorage.getItem('token')
+                const response = await axios.patch(`${import.meta.env.VITE_API_URL}/api/folder/rename`, { folderId, itemName }, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
                 showSuccessToast(response.data.message);
                 onUpdate(folderId ?? "root");
             } catch(error) {
@@ -180,7 +185,11 @@ export default function Table({ files, folders, sortDirection, sortKey, onUpdate
 
     if (!error) {
         try {
-            const response = await axios.delete(`${import.meta.env.VITE_API_URL}/api/folder/delete`, { data: { folderId } });
+            const token = localStorage.getItem('token')
+            const response = await axios.delete(`${import.meta.env.VITE_API_URL}/api/folder/delete`, {
+                data: { folderId },
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
             showSuccessToast(response.data.message);
             onUpdate(folderId ?? "root");
         } catch(error) {
