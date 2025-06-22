@@ -16,7 +16,6 @@ import axios from 'axios';
 import useAvatar from '@/stores/useAvatar.tsx';
 import fetchSignedUrl from '@/utils/supabaseFetch.ts';
 import useUser from '@/stores/useUser.tsx';
-import { jwtDecode } from 'jwt-decode';
 
 export default function FoldersPage() {
   const { userId } = useUser()
@@ -62,9 +61,10 @@ export default function FoldersPage() {
   const defaultAvatar= "https://upload.wikimedia.org/wikipedia/commons/2/2c/Default_pfp.svg"
 
   useEffect(() => {
-    const fetchUser = async(email: string) => {
+    const fetchUser = async() => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/profile/get/${email}`, {
+        const token = localStorage.getItem('token')
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/profile/me`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -86,11 +86,7 @@ export default function FoldersPage() {
       navigate('/login', { replace: true })
       return
     }
-
-    const token = localStorage.getItem("token")!
-    const decoded = jwtDecode<{ email: string }>(token)
-    const email = decoded.email
-    fetchUser(email)
+    fetchUser()
   }, [navigate]);
 
   useEffect(() => {

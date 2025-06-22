@@ -40,7 +40,7 @@ export default function LoginPage() {
 
             try {
                 const token = localStorage.getItem('token')
-                const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/profile/get/${email}`, {
+                const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/profile/me`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -78,7 +78,7 @@ export default function LoginPage() {
 
             try {
                 const token = localStorage.getItem('token')
-                const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/profile/get/${TEST_EMAIL}`, {
+                const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/profile/me`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }

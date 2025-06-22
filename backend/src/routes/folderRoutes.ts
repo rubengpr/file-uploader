@@ -8,34 +8,61 @@ const prisma = new PrismaClient();
 
 router.use(authenticateToken);
 
-router.post('/create', async (req, res) => {
-    //receive variables to create folder
-    const { name, createdBy } = req.body;
+router.post('/create', async (req: any, res: any) => {
+    const { name, parentId } = req.body;
+
+    if (!name) {
+        return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    if (name.length < 1 || name.length > 60) {
+        return res.status(400).json({ error: "Folder name must be between 1 and 60 characters" });
+    }
 
     const folderName = sanitize(name);
 
-    //create folder in database
+    if (!folderName.trim()) {
+        return res.status(400).json({ error: "Invalid folder name" });
+    }
+
     try {
+        if (parentId) {
+            const parentFolder = await prisma.folder.findFirst({
+                where: {
+                    id: parentId,
+                    createdBy: req.user.id
+                }
+            });
+            
+            if (!parentFolder) {
+                return res.status(404).json({ error: "Access denied" });
+            }
+        }
+
         await prisma.folder.create({
             data: {
                 name: folderName,
-                createdBy,
+                createdBy: req.user.id,
+                parentId: parentId || null
             }
         });
         
-        res.status(200).json({ message: "Folder has been created successfully" });
+        res.status(201).json({ message: "Folder created successfully" });
     } catch(err) {
-        res.status(500).json({ message: "Something went wrong" })
+        res.status(500).json({ error: "Something went wrong" })
     }
 });
 
-router.get('/get/:folderId', async (req, res) => {
+router.get('/get/:folderId', async (req: any, res: any) => {
     const { folderId } = req.params;
     const actualFolderId = folderId === 'root' ? null : folderId;
     
     try {
         const folders = await prisma.folder.findMany({
-            where: { parentId: actualFolderId },
+            where: { 
+                parentId: actualFolderId,
+                createdBy: req.user.id
+            },
             include: {
               user: {
                 select: { email: true }
@@ -45,17 +72,41 @@ router.get('/get/:folderId', async (req, res) => {
           
         res.status(200).json(folders);
     } catch(error) {
-        res.status(500).json({ message: "Something went wrong" });
+        res.status(500).json({ error: "Something went wrong" });
     }
 });
 
-router.patch('/rename', async (req, res) => {
+router.patch('/rename', async (req: any, res: any) => {
     const { folderId, itemName } = req.body;
+
+    // Validate required fields
+    if (!folderId || !itemName) {
+        return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    if (itemName.length < 1 || itemName.length > 60) {
+        return res.status(400).json({ error: "Folder name must be under 60 characters" });
+    }
 
     const sanitizedItemName = sanitize(itemName);
 
+    if (!sanitizedItemName.trim()) {
+        return res.status(400).json({ error: "Invalid folder name" });
+    }
+
     try {
-        const renameFolder = await prisma.folder.update({
+        const folder = await prisma.folder.findFirst({
+            where: {
+                id: folderId,
+                createdBy: req.user.id
+            }
+        });
+
+        if (!folder) {
+            return res.status(404).json({ error: "Folder not found or access denied" });
+        }
+
+        await prisma.folder.update({
             where: {
                 id: folderId
             },
@@ -63,24 +114,39 @@ router.patch('/rename', async (req, res) => {
                 name: sanitizedItemName,
             }
         });
-        res.status(200).json({ message: "Folder renamed successfully" })
+        res.status(200).json({ message: "Folder renamed successfully" });
     } catch(err) {
-        res.status(500).json({ message: "Something went wrong" })
+        res.status(500).json({ error: "Something went wrong" });
     }
 });
 
-router.delete('/delete', async (req, res) => {
+router.delete('/delete', async (req: any, res: any) => {
     const { folderId } = req.body;
 
+    if (!folderId) {
+        return res.status(400).json({ error: "Missing required fields" });
+    }
+
     try {
-        const deleteFolder = await prisma.folder.delete({
+        const folder = await prisma.folder.findFirst({
+            where: {
+                id: folderId,
+                createdBy: req.user.id
+            }
+        });
+
+        if (!folder) {
+            return res.status(404).json({ error: "Folder not found or access denied" });
+        }
+
+        await prisma.folder.delete({
             where: {
                 id: folderId
             },
         });
         res.status(200).json({ message: "Folder deleted successfully" });
     } catch(err) {
-        res.status(500).json({ message: "Something went wrong" })
+        res.status(500).json({ error: "Something went wrong" })
     }
 });
 

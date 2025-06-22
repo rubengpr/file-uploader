@@ -4,12 +4,12 @@ import authenticateToken from '../middleware/authMiddleware.js';
 const router = Router();
 const prisma = new PrismaClient();
 router.use(authenticateToken);
-router.get('/get/:email', async (req, res) => {
-    const { email } = req.params;
+router.get('/me', async (req, res) => {
     try {
+        const userId = req.user.id;
         const user = await prisma.user.findUnique({
             where: {
-                email,
+                id: userId,
             },
             select: {
                 id: true,
@@ -21,6 +21,9 @@ router.get('/get/:email', async (req, res) => {
                 timezone: true,
             }
         });
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
         res.status(200).json({ user });
     }
     catch (error) {
@@ -28,13 +31,12 @@ router.get('/get/:email', async (req, res) => {
     }
 });
 router.patch('/update', async (req, res) => {
-    //get variables from frontend
-    const { userId, draftFullname, draftCountry, draftLanguage, draftTimezone } = req.body;
-    //Create the query to patch the user
+    const requestingUserId = req.user.id;
+    const { draftFullname, draftCountry, draftLanguage, draftTimezone } = req.body;
     try {
-        const updateUser = await prisma.user.update({
+        await prisma.user.update({
             where: {
-                id: userId
+                id: requestingUserId
             },
             data: {
                 fullname: draftFullname,
