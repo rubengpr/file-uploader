@@ -2,10 +2,16 @@ import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
 import sanitize from 'sanitize-filename';
 import { mapMimeType } from '../utils/mapMimeType.js';
+import authenticateToken from '../middleware/authMiddleware.js';
 const router = Router();
 const prisma = new PrismaClient();
+router.use(authenticateToken);
 router.post('/create', async (req, res) => {
     const { name, size, createdBy, folderId, type } = req.body;
+    if (!name || !size || !createdBy || !type) {
+        res.status(400).json({ message: "Missing required files" });
+        return;
+    }
     const allowedTypes = [
         'application/msword',
         'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
