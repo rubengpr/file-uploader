@@ -27,6 +27,12 @@ export default function useFileOperations() {
             showErrorToast("Max file size is 20MB");
             return
         }
+
+        if (file.name.length > 60) {
+            showErrorToast("File name must be under 60 characters")
+            return
+        }
+
         const filename = sanitize(file.name);
         const folderPath = folderId ? `${userId}/${folderId}` : `${userId}`;
         

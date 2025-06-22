@@ -7,38 +7,43 @@ const router = Router();
 const prisma = new PrismaClient();
 router.use(authenticateToken);
 router.post('/create', async (req, res) => {
-    const { name, size, createdBy, folderId, type } = req.body;
+    const { name, size, folderId, type } = req.body;
+    const createdBy = req.user.id;
     if (!name || !size || !createdBy || !type) {
-        res.status(400).json({ message: "Missing required files" });
+        res.status(400).json({ message: "Missing required fields" });
         return;
     }
-    const allowedTypes = [
-        'application/msword',
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        'application/vnd.ms-excel',
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        'text/csv',
-        'text/plain',
-        'application/pdf',
-        'image/jpeg',
-        'image/png',
-        'image/gif',
-        'image/webp',
-        'image/bmp',
-        'image/svg+xml'
-    ];
-    if (!allowedTypes.includes(type)) {
-        res.status(400).json({ message: "File type not supported" });
+    if (name.length > 60) {
+        res.status(400).json({ message: "File name must be under 60 characters" });
         return;
     }
     if (size > 20 * 1024 * 1024) {
         res.status(400).json({ message: "Max file size is 20MB" });
         return;
     }
+    const getFileExtension = (filename) => {
+        return filename.split('.').pop()?.toLowerCase();
+    };
+    const allowedExtensions = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'csv', 'txt', 'jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg'];
+    const fileExtension = getFileExtension(name);
+    if (!fileExtension || !allowedExtensions.includes(fileExtension)) {
+        return res.status(400).json({ message: "File extension not supported" });
+    }
+    if (folderId) {
+        const folder = await prisma.folder.findFirst({
+            where: {
+                id: folderId,
+                createdBy: req.user.id,
+            }
+        });
+        if (!folder) {
+            return res.status(403).json({ message: "Access denied to folder" });
+        }
+    }
     const filename = sanitize(name);
     const fileType = mapMimeType(type);
     try {
-        const uploadFile = await prisma.file.create({
+        await prisma.file.create({
             data: {
                 name: filename,
                 size,
@@ -75,7 +80,7 @@ router.patch('/rename', async (req, res) => {
     const { fileId, itemName } = req.body;
     const sanitizedItemName = sanitize(itemName);
     try {
-        const renameFile = await prisma.file.update({
+        await prisma.file.update({
             where: {
                 id: fileId,
             },
@@ -90,7 +95,7 @@ router.patch('/rename', async (req, res) => {
     }
 });
 router.delete('/delete', async (req, res) => {
-    const { fileId, userId } = req.body;
+    const { fileId } = req.body;
     try {
         await prisma.file.delete({
             where: {
