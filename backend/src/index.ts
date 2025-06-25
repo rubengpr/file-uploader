@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser'
+import { rateLimit } from 'express-rate-limit'
 
 import authRoutes from './routes/auth.js';
 import fileRoutes from './routes/fileRoutes.js';
@@ -32,13 +33,19 @@ const isProd = process.env.NODE_ENV === 'production';
   credentials: true,
 };
 
-app.use(cookieParser());
+const limiter = rateLimit({
+	windowMs: 15 * 60 * 1000, // 15 minutes
+	limit: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+  message: 'Too many requests', //Error handler message
+	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+})
 
-app.use(cors(corsOptions));
-
-app.options('*', cors(corsOptions));
-
-app.use(express.json());
+app.use(limiter)
+app.use(cookieParser())
+app.use(cors(corsOptions))
+app.options('*', cors(corsOptions))
+app.use(express.json())
 
 app.use((req, res, next) => {
   next();
