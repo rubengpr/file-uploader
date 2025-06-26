@@ -38,25 +38,32 @@ router.post('/login', async (req, res) => {
 });
 router.post('/signup', async (req, res) => {
     const { email, password } = req.body;
+    // Input validation
+    if (!email || !password) {
+        return res.status(400).json({ error: 'Missing required fields' });
+    }
+    // Sanitize email
+    const sanitizedEmail = email.trim().toLowerCase();
     try {
         // 1. Check if user already exists
-        const existingEmail = await prisma.user.findUnique({ where: { email } });
+        const existingEmail = await prisma.user.findUnique({ where: { email: sanitizedEmail } });
         if (existingEmail) {
-            res.status(400).json({ error: 'Email is already registered' });
-            return;
+            return res.status(400).json({ error: 'Email is already registered' });
         }
-        // 2. Hash password
-        const hashedPassword = await bcrypt.hash(password, 10);
+        // 2. Hash password with stronger salt
+        const hashedPassword = await bcrypt.hash(password, 12);
         // 3. Create user
         const user = await prisma.user.create({
             data: {
-                email,
+                email: sanitizedEmail,
                 hashedPassword,
                 role: 'admin',
             },
         });
-        // 4. Create JWT token
+        // 4. Generate tokens (consistent with login)
         const token = signToken({ id: user.id, email: user.email });
+        const refreshToken = signRefreshToken({ id: user.id });
+        const stoken = supabaseToken({ sub: user.id, email: user.email, role: 'authenticated' });
         // 5. Respond with token
         res.status(201).json({ token });
     }
