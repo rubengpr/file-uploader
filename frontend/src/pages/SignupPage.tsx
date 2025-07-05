@@ -6,7 +6,7 @@ import LabelInput from "@/components/LabelInput"
 import Form from "@/components/Form"
 import { isAuthenticated } from "@/utils/auth"
 import axios from 'axios';
-import { validateEmail, validatePassword } from '../../../shared/validation.ts';
+import { validateEmail, validatePassword } from '@/utils/validation'
 
 export default function SignupPage() {
     

@@ -7,7 +7,7 @@ import sendEmail from '../utils/sendEmail.js';
 import { verifyRefreshToken } from '../utils/tokenUtils.js';
 import DOMPurify from "isomorphic-dompurify";
 import sanitizeInput from '../utils/sanitizeInput.js';
-import { validateEmail, validatePassword } from '../../../shared/validation.js';
+import { validateEmail, validatePassword } from '../utils/validation.js';
 const router = Router();
 const prisma = new PrismaClient();
 router.post('/login', async (req, res) => {
