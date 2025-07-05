@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
 import authenticateToken from '../middleware/authMiddleware.js';
+import sanitizeInput from '../utils/sanitizeInput.js';
 const router = Router();
 const prisma = new PrismaClient();
 router.use(authenticateToken);
@@ -33,16 +34,23 @@ router.get('/me', async (req, res) => {
 router.patch('/update', async (req, res) => {
     const requestingUserId = req.user.id;
     const { draftFullname, draftCountry, draftLanguage, draftTimezone } = req.body;
+    const sanitizedFullname = sanitizeInput(draftFullname);
+    const sanitizedCountry = sanitizeInput(draftCountry);
+    const sanitizedLanguage = sanitizeInput(draftLanguage);
+    const sanitizedTimezone = sanitizeInput(draftTimezone);
+    if (!sanitizedFullname || !sanitizedCountry || !sanitizedLanguage || !sanitizedTimezone) {
+        return res.status(400).json({ error: "Invalid field names" });
+    }
     try {
         await prisma.user.update({
             where: {
                 id: requestingUserId
             },
             data: {
-                fullname: draftFullname,
-                country: draftCountry,
-                language: draftLanguage,
-                timezone: draftTimezone,
+                fullname: sanitizedFullname,
+                country: sanitizedCountry,
+                language: sanitizedLanguage,
+                timezone: sanitizedTimezone,
             },
         });
         res.status(200).json({ message: "User updated successfully" });

@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
 import sanitize from 'sanitize-filename';
 import authenticateToken from '../middleware/authMiddleware.js';
+import DOMPurify from "isomorphic-dompurify";
 const router = Router();
 const prisma = new PrismaClient();
 router.use(authenticateToken);
@@ -13,7 +14,8 @@ router.post('/create', async (req, res) => {
     if (name.length < 1 || name.length > 60) {
         return res.status(400).json({ error: "Folder name must be between 1 and 60 characters" });
     }
-    const folderName = sanitize(name);
+    const sanitizedFolderName = DOMPurify.sanitize(name);
+    const folderName = sanitize(sanitizedFolderName);
     if (!folderName.trim()) {
         return res.status(400).json({ error: "Invalid folder name" });
     }
@@ -65,15 +67,15 @@ router.get('/get/:folderId', async (req, res) => {
 });
 router.patch('/rename', async (req, res) => {
     const { folderId, itemName } = req.body;
-    // Validate required fields
     if (!folderId || !itemName) {
         return res.status(400).json({ error: "Missing required fields" });
     }
     if (itemName.length < 1 || itemName.length > 60) {
         return res.status(400).json({ error: "Folder name must be under 60 characters" });
     }
-    const sanitizedItemName = sanitize(itemName);
-    if (!sanitizedItemName.trim()) {
+    const sanitizedFolderName = DOMPurify.sanitize(itemName);
+    const folderName = sanitize(sanitizedFolderName);
+    if (!folderName.trim()) {
         return res.status(400).json({ error: "Invalid folder name" });
     }
     try {
@@ -91,7 +93,7 @@ router.patch('/rename', async (req, res) => {
                 id: folderId
             },
             data: {
-                name: sanitizedItemName,
+                name: folderName,
             }
         });
         res.status(200).json({ message: "Folder renamed successfully" });

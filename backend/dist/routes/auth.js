@@ -9,10 +9,20 @@ const router = Router();
 const prisma = new PrismaClient();
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
+    if (!email || !password) {
+        return res.status(400).json({ error: 'Missing required fields' });
+    }
+    if (typeof email !== 'string' || typeof password !== 'string') {
+        return res.status(400).json({ error: 'Invalid fields value format' });
+    }
+    const sanitizedEmail = email.trim().toLowerCase();
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(sanitizedEmail)) {
+        return res.status(400).json({ error: 'Invalid email format' });
+    }
     try {
         // 1. Find the user
-        const user = await prisma.user.findUnique({ where: { email } });
-        const userId = user.id;
+        const user = await prisma.user.findUnique({ where: { email: sanitizedEmail } });
         if (!user) {
             res.status(401).json({ error: 'Invalid email or password' });
             return;
@@ -29,6 +39,7 @@ router.post('/login', async (req, res) => {
         //4. Supabase token
         const stoken = supabaseToken({ sub: user.id, email: user.email, role: 'authenticated' });
         // 5. Send token
+        const userId = user.id;
         res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, sameSite: 'none', maxAge: 7 * 24 * 60 * 60 * 1000 });
         res.status(200).json({ token, stoken, userId });
     }
@@ -38,11 +49,9 @@ router.post('/login', async (req, res) => {
 });
 router.post('/signup', async (req, res) => {
     const { email, password } = req.body;
-    // Input validation
     if (!email || !password) {
         return res.status(400).json({ error: 'Missing required fields' });
     }
-    // Sanitize email
     const sanitizedEmail = email.trim().toLowerCase();
     try {
         // 1. Check if user already exists
@@ -50,7 +59,7 @@ router.post('/signup', async (req, res) => {
         if (existingEmail) {
             return res.status(400).json({ error: 'Email is already registered' });
         }
-        // 2. Hash password with stronger salt
+        // 2. Hash password with salt
         const hashedPassword = await bcrypt.hash(password, 12);
         // 3. Create user
         const user = await prisma.user.create({
@@ -65,7 +74,7 @@ router.post('/signup', async (req, res) => {
         const refreshToken = signRefreshToken({ id: user.id });
         const stoken = supabaseToken({ sub: user.id, email: user.email, role: 'authenticated' });
         // 5. Respond with token
-        res.status(201).json({ token });
+        res.status(201).json({ token, stoken });
     }
     catch (err) {
         res.status(500).json({ error: 'Signup failed' });

@@ -3,6 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import sanitize from 'sanitize-filename';
 import { mapMimeType } from '../utils/mapMimeType.js';
 import authenticateToken from '../middleware/authMiddleware.js';
+import DOMPurify from "isomorphic-dompurify";
 const router = Router();
 const prisma = new PrismaClient();
 router.use(authenticateToken);
@@ -40,7 +41,11 @@ router.post('/create', async (req, res) => {
             return res.status(403).json({ message: "Access denied to folder" });
         }
     }
-    const filename = sanitize(name);
+    const sanitizedName = DOMPurify.sanitize(name);
+    const filename = sanitize(sanitizedName);
+    if (!filename.trim()) {
+        return res.status(400).json({ message: "Invalid file name" });
+    }
     const fileType = mapMimeType(type);
     try {
         await prisma.file.create({
@@ -95,7 +100,7 @@ router.patch('/rename', async (req, res) => {
     if (itemName.length > 60) {
         return res.status(400).json({ message: "File name must be under 60 characters" });
     }
-    const sanitizedItemName = sanitize(itemName);
+    const sanitizedFileName = DOMPurify.sanitize(itemName);
     try {
         // Check if user owns the file before allowing rename
         const file = await prisma.file.findFirst({
@@ -112,7 +117,7 @@ router.patch('/rename', async (req, res) => {
                 id: fileId,
             },
             data: {
-                name: sanitizedItemName,
+                name: sanitizedFileName,
             },
         });
         res.status(200).json({ message: "File renamed successfully" });
