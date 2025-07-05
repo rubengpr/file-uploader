@@ -1,7 +1,8 @@
 import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
 import sanitize from 'sanitize-filename'
-import authenticateToken from '../middleware/authMiddleware.js';
+import authenticateToken from '../middleware/authMiddleware.js'
+import DOMPurify from "isomorphic-dompurify"
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -19,7 +20,8 @@ router.post('/create', async (req: any, res: any) => {
         return res.status(400).json({ error: "Folder name must be between 1 and 60 characters" });
     }
 
-    const folderName = sanitize(name);
+    const sanitizedFolderName = DOMPurify.sanitize(name)
+    const folderName = sanitize(sanitizedFolderName)
 
     if (!folderName.trim()) {
         return res.status(400).json({ error: "Invalid folder name" });
@@ -79,7 +81,6 @@ router.get('/get/:folderId', async (req: any, res: any) => {
 router.patch('/rename', async (req: any, res: any) => {
     const { folderId, itemName } = req.body;
 
-    // Validate required fields
     if (!folderId || !itemName) {
         return res.status(400).json({ error: "Missing required fields" });
     }
@@ -88,10 +89,11 @@ router.patch('/rename', async (req: any, res: any) => {
         return res.status(400).json({ error: "Folder name must be under 60 characters" });
     }
 
-    const sanitizedItemName = sanitize(itemName);
+    const sanitizedFolderName = DOMPurify.sanitize(itemName);
+    const folderName = sanitize(sanitizedFolderName)
 
-    if (!sanitizedItemName.trim()) {
-        return res.status(400).json({ error: "Invalid folder name" });
+    if (!folderName.trim()) {
+        return res.status(400).json({ error: "Invalid folder name" })
     }
 
     try {
@@ -111,7 +113,7 @@ router.patch('/rename', async (req: any, res: any) => {
                 id: folderId
             },
             data: {
-                name: sanitizedItemName,
+                name: folderName,
             }
         });
         res.status(200).json({ message: "Folder renamed successfully" });

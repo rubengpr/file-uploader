@@ -65,8 +65,7 @@ router.post('/signup', async (req: any, res: any) => {
         return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    // Sanitize email
-    const sanitizedEmail = email.trim().toLowerCase();
+    const sanitizedEmail = email.trim().toLowerCase()
 
     try {
         // 1. Check if user already exists

@@ -3,6 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import sanitize from 'sanitize-filename';
 import { mapMimeType } from '../utils/mapMimeType.js';
 import authenticateToken from '../middleware/authMiddleware.js';
+import DOMPurify from "isomorphic-dompurify";
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -52,9 +53,14 @@ router.post('/create', async (req: any, res: any) => {
         }
     }
     
-    const filename = sanitize(name);
+    const sanitizedName = DOMPurify.sanitize(name)
+    const filename = sanitize(sanitizedName)
 
-    const fileType = mapMimeType(type);
+    if (!filename.trim()) {
+        return res.status(400).json({ message: "Invalid file name" });
+    }
+
+    const fileType = mapMimeType(type)
 
     try {
         await prisma.file.create({
@@ -117,7 +123,7 @@ router.patch('/rename', async (req: any, res: any) => {
         return res.status(400).json({ message: "File name must be under 60 characters" });
     }
 
-    const sanitizedItemName = sanitize(itemName);
+    const sanitizedFileName = DOMPurify.sanitize(itemName);
 
     try {
         // Check if user owns the file before allowing rename
@@ -137,7 +143,7 @@ router.patch('/rename', async (req: any, res: any) => {
                 id: fileId,
             },
             data: {
-                name: sanitizedItemName,
+                name: sanitizedFileName,
             },
         });
 
