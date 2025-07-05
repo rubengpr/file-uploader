@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./src",
+    "rootDir": "../",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "target": "ES2022",
@@ -9,6 +9,6 @@
     "sourceMap": true,
     "skipLibCheck": true
   },
-  "include": ["src"],
+  "include": ["src", "../shared/**/*"],
   "exclude": ["node_modules", "prisma"]
 }

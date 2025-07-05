@@ -6,6 +6,7 @@ import LabelInput from "@/components/LabelInput"
 import Form from "@/components/Form"
 import { isAuthenticated } from "@/utils/auth"
 import axios from 'axios';
+import { validateEmail, validatePassword } from '../../../shared/validation.ts';
 
 export default function SignupPage() {
     
@@ -34,28 +35,6 @@ export default function SignupPage() {
         setShowRepeatPassword(prev => !prev)
     }
 
-    function validateEmail(email: string) {
-        const emailRegex = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/
-        if (!emailRegex.test(email)) {
-            setEmailError("Should be a valid email address")
-            return false
-        } else {
-            setEmailError("")
-            return true
-        }
-    }
-
-    function validatePassword(password: string) {
-        const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/
-        if (!passwordRegex.test(password)) {
-            setPasswordError("One capital letter, number and special character")
-            return false
-        } else {
-            setPasswordError("")
-            return true
-        }
-    }
-
     function validateRepeatPassword(repeatPassword: string) {
         if (password !== repeatPassword) {
             setRepeatPasswordError("Passwords don't match")
@@ -71,7 +50,19 @@ export default function SignupPage() {
         setErrorMsg("");
 
         const emailIsValid = validateEmail(email)
+        setEmailError("")
+        if (!emailIsValid) {
+            setEmailError("Should be a valid email address")
+            return false
+        }
+
         const passwordIsValid = validatePassword(password)
+        setPasswordError("")
+        if (!passwordIsValid) {
+            setPasswordError("One capital letter, number and special character")
+            return false
+        }
+
         const repeatPasswordIsValid = validateRepeatPassword(repeatPassword)
 
         if (!emailIsValid || !passwordIsValid || !repeatPasswordIsValid) {
