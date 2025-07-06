@@ -82,6 +82,11 @@ router.post('/create', async (req: any, res: any) => {
 router.get('/get/:folderId', async (req: any, res: any) => {
     const { folderId } = req.params;
     const actualFolderId = folderId === 'root' ? null : folderId;
+
+    if (!folderId) {
+        res.status(400).json({ message: "Missing required fields" })
+        return
+    }
   
     try {
         if (actualFolderId) {

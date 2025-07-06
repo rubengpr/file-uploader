@@ -47,6 +47,10 @@ router.post('/create', async (req, res) => {
 router.get('/get/:folderId', async (req, res) => {
     const { folderId } = req.params;
     const actualFolderId = folderId === 'root' ? null : folderId;
+    if (!folderId) {
+        res.status(400).json({ message: "Missing required fields" });
+        return;
+    }
     try {
         const folders = await prisma.folder.findMany({
             where: {
