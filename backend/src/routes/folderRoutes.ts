@@ -16,6 +16,10 @@ router.post('/create', async (req: any, res: any) => {
         return res.status(400).json({ error: "Missing required fields" });
     }
 
+    if (typeof name !== 'string' || (parentId && typeof parentId !== 'string')) {
+        return res.status(400).json({ error: 'Invalid fields value format' })
+    }
+
     if (name.length < 1 || name.length > 60) {
         return res.status(400).json({ error: "Folder name must be between 1 and 60 characters" });
     }
@@ -63,6 +67,10 @@ router.get('/get/:folderId', async (req: any, res: any) => {
         res.status(400).json({ message: "Missing required fields" })
         return
     }
+
+    if (typeof folderId !== 'string') {
+        return res.status(400).json({ error: 'Invalid fields value format' })
+    }
     
     try {
         const folders = await prisma.folder.findMany({
@@ -88,6 +96,10 @@ router.patch('/rename', async (req: any, res: any) => {
 
     if (!folderId || !itemName) {
         return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    if (typeof folderId !== 'string' || typeof itemName !== 'string') {
+        return res.status(400).json({ error: 'Invalid fields value format' })
     }
 
     if (itemName.length < 1 || itemName.length > 60) {
@@ -132,6 +144,10 @@ router.delete('/delete', async (req: any, res: any) => {
 
     if (!folderId) {
         return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    if (typeof folderId !== 'string') {
+        return res.status(400).json({ error: 'Invalid fields value format' })
     }
 
     try {
