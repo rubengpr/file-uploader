@@ -246,23 +246,55 @@ router.post('/change-password', async (req: any, res: any) => {
     }
 });
 
-router.post('/refresh', async (req, res) => {
+router.post('/refresh', async (req: any, res: any) => {
     const refreshToken = req.cookies.refreshToken;
 
+    // 1. Check if refresh token exists
     if (!refreshToken) {
-        res.status(401).json({ message: "No refresh token found" });
+        return res.status(401).json({ error: 'No refresh token found' });
+    }
+
+    // 2. Validate token format (basic string validation)
+    if (typeof refreshToken !== 'string' || refreshToken.trim().length === 0) {
+        return res.status(401).json({ error: 'Invalid refresh token format' });
     }
 
     try {
+        // 3. Verify the refresh token
         const payload = verifyRefreshToken(refreshToken);
         
-        const user = await prisma.user.findUnique({ where: { id: payload.id } });
+        if (!payload || !payload.id) {
+            return res.status(401).json({ error: 'Invalid refresh token' });
+        }
 
+        // 4. Find the user
+        const user = await prisma.user.findUnique({ 
+            where: { id: payload.id } 
+        });
+
+        if (!user) {
+            return res.status(401).json({ error: 'User not found' });
+        }
+
+        // 5. Generate new access token
         const token = signToken({ id: user.id, email: user.email });
 
+        // 6. Generate new refresh token (optional - for better security)
+        const newRefreshToken = signRefreshToken({ id: user.id });
+
+        // 7. Set new refresh token cookie
+        res.cookie('refreshToken', newRefreshToken, { 
+            httpOnly: true, 
+            secure: true, 
+            sameSite: 'none', 
+            maxAge: 7 * 24 * 60 * 60 * 1000 
+        });
+
         res.status(200).json({ token });
-    } catch(err) {
-        res.status(500).json({ message: "Something went wrong refreshing the token" });
+    } catch (err) {
+        // 8. Clear invalid refresh token cookie
+        res.clearCookie('refreshToken');
+        res.status(401).json({ error: 'Invalid or expired refresh token' });
     }
 });
 
