@@ -17,9 +17,8 @@ router.post('/create', async (req, res) => {
     if (typeof name !== 'string' || typeof size !== 'number' || typeof createdBy !== 'string' || typeof type !== 'string') {
         return res.status(400).json({ error: 'Invalid fields value format' });
     }
-    if (name.length > 60) {
-        res.status(400).json({ message: "File name must be under 60 characters" });
-        return;
+    if (name.length < 1 || name.length > 60) {
+        return res.status(400).json({ message: "File name must be between 1 and 60 characters" });
     }
     if (size > 20 * 1024 * 1024) {
         res.status(400).json({ message: "Max file size is 20MB" });
@@ -110,8 +109,8 @@ router.patch('/rename', async (req, res) => {
     if (typeof fileId !== 'string' || typeof itemName !== 'string') {
         return res.status(400).json({ error: 'Invalid fields value format' });
     }
-    if (itemName.length > 60) {
-        return res.status(400).json({ message: "File name must be under 60 characters" });
+    if (itemName.length < 1 || itemName.length > 60) {
+        return res.status(400).json({ message: "File name must be between 1 and 60 characters" });
     }
     const sanitizedFileName = DOMPurify.sanitize(itemName);
     try {

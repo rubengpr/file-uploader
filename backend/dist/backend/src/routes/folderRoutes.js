@@ -84,7 +84,7 @@ router.patch('/rename', async (req, res) => {
         return res.status(400).json({ error: 'Invalid fields value format' });
     }
     if (itemName.length < 1 || itemName.length > 60) {
-        return res.status(400).json({ error: "Folder name must be under 60 characters" });
+        return res.status(400).json({ error: "Folder name must be between 1 and 60 characters" });
     }
     const sanitizedFolderName = DOMPurify.sanitize(itemName);
     const folderName = sanitize(sanitizedFolderName);
