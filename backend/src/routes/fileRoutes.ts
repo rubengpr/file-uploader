@@ -19,6 +19,10 @@ router.post('/create', async (req: any, res: any) => {
         return
     }
 
+    if (typeof name !== 'string' || typeof size !== 'number' || typeof createdBy !== 'string' || typeof type !== 'string') {
+        return res.status(400).json({ error: 'Invalid fields value format' })
+    }
+
     if (name.length > 60) {
         res.status(400).json({ message: "File name must be under 60 characters" })
         return
@@ -87,6 +91,10 @@ router.get('/get/:folderId', async (req: any, res: any) => {
         res.status(400).json({ message: "Missing required fields" })
         return
     }
+
+    if (typeof folderId !== 'string') {
+        return res.status(400).json({ error: 'Invalid fields value format' })
+    }
   
     try {
         if (actualFolderId) {
@@ -122,6 +130,10 @@ router.patch('/rename', async (req: any, res: any) => {
 
     if (!fileId || !itemName) {
         return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    if (typeof fileId !== 'string' || typeof itemName !== 'string') {
+        return res.status(400).json({ error: 'Invalid fields value format' })
     }
 
     if (itemName.length > 60) {
@@ -163,6 +175,10 @@ router.delete('/delete', async (req: any, res: any) => {
 
     if (!fileId) {
         return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    if (typeof fileId !== 'string') {
+        return res.status(400).json({ error: 'Invalid fields value format' })
     }
 
     try {
