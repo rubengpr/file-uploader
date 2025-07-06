@@ -97,30 +97,47 @@ router.post('/signup', async (req, res) => {
     }
 });
 router.post('/recover-password', async (req, res) => {
-    //1. Get email input value
     const { email } = req.body;
-    //2. Look up in the database if the email exists
-    const user = await prisma.user.findUnique({ where: { email } });
-    //If not, end the process and return a 200 status
-    if (user) {
-        //If so, create a randomized crypto token
-        const token = crypto.randomBytes(32).toString("hex");
-        //Optional: hash token to store it in the database
-        //Set expiration date
-        const expiresAt = new Date(Date.now() + 1000 * 60 * 60);
-        //Create a new row in the PasswordResetToken table
-        const passwordToken = await prisma.passwordResetToken.create({
-            data: {
-                token,
-                userId: user.id,
-                expiresAt,
-            }
-        });
-        //Add the token to the URL button & send an email to email value
-        sendEmail(email, token);
+    // 1. Input validation
+    if (!email) {
+        return res.status(400).json({ error: 'Missing required fields' });
     }
-    //Return a 200 success status, no matter if email exists
-    res.status(200).json({ message: "We've sent you an email" });
+    if (typeof email !== 'string') {
+        return res.status(400).json({ error: 'Invalid fields value format' });
+    }
+    // 2. Input sanitization
+    const purifiedEmail = DOMPurify.sanitize(email);
+    const sanitizedEmail = sanitizeInput(purifiedEmail);
+    // 3. Email validation
+    if (!validateEmail(sanitizedEmail)) {
+        return res.status(400).json({ error: 'Invalid email format' });
+    }
+    try {
+        // 4. Find the user
+        const user = await prisma.user.findUnique({ where: { email: sanitizedEmail } });
+        // 5. Process password recovery if user exists
+        if (user) {
+            // Create a randomized crypto token
+            const token = crypto.randomBytes(32).toString("hex");
+            // Set expiration date (1 hour from now)
+            const expiresAt = new Date(Date.now() + 1000 * 60 * 60);
+            // Create a new row in the PasswordResetToken table
+            const passwordToken = await prisma.passwordResetToken.create({
+                data: {
+                    token,
+                    userId: user.id,
+                    expiresAt,
+                }
+            });
+            // Send email with the token
+            sendEmail(sanitizedEmail, token);
+        }
+        // Return a 200 success status, no matter if email exists (security through obscurity)
+        res.status(200).json({ message: "We've sent you an email" });
+    }
+    catch (err) {
+        res.status(500).json({ error: 'Something went wrong. Try again, or contact us' });
+    }
 });
 router.post('/change-password', async (req, res) => {
     try {
