@@ -4,10 +4,10 @@ import sanitize from 'sanitize-filename'
 import authenticateToken from '../middleware/authMiddleware.js'
 import DOMPurify from "isomorphic-dompurify"
 
-const router = Router();
-const prisma = new PrismaClient();
+const router = Router()
+const prisma = new PrismaClient()
 
-router.use(authenticateToken);
+router.use(authenticateToken)
 
 router.post('/create', async (req: any, res: any) => {
     const { name, parentId } = req.body;
@@ -57,7 +57,7 @@ router.post('/create', async (req: any, res: any) => {
     } catch(err) {
         res.status(500).json({ error: "Something went wrong" })
     }
-});
+})
 
 router.get('/get/:folderId', async (req: any, res: any) => {
     const { folderId } = req.params;
@@ -89,7 +89,7 @@ router.get('/get/:folderId', async (req: any, res: any) => {
     } catch(error) {
         res.status(500).json({ error: "Something went wrong" });
     }
-});
+})
 
 router.patch('/rename', async (req: any, res: any) => {
     const { folderId, itemName } = req.body;
@@ -137,7 +137,7 @@ router.patch('/rename', async (req: any, res: any) => {
     } catch(err) {
         res.status(500).json({ error: "Something went wrong" });
     }
-});
+})
 
 router.delete('/delete', async (req: any, res: any) => {
     const { folderId } = req.body;
@@ -171,6 +171,13 @@ router.delete('/delete', async (req: any, res: any) => {
     } catch(err) {
         res.status(500).json({ error: "Something went wrong" })
     }
-});
+})
 
-export default router;
+router.use('*', (req, res) => {
+    res.status(405).json({ 
+      message: 'Method not allowed',
+      allowedMethods: ['GET', 'POST', 'PATCH', 'DELETE']
+    })
+})
+
+export default router

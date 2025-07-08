@@ -9,11 +9,11 @@ const router = Router()
 const prisma = new PrismaClient();
 
 // Valid dropdown values
-const validCountries = getValidCountryValues();
-const validLanguages = getValidLanguageValues();
-const validTimezones = getValidTimezoneValues();
+const validCountries = getValidCountryValues()
+const validLanguages = getValidLanguageValues()
+const validTimezones = getValidTimezoneValues()
 
-router.use(authenticateToken);
+router.use(authenticateToken)
 
 router.get('/me', async (req: any, res: any) => {
     const userId = req.user.id
@@ -115,6 +115,13 @@ router.patch('/update', async (req: any, res: any) => {
     } catch(error) {
         res.status(500).json({ message: "Something went wrong" })
     }
+})
+
+router.use('*', (req, res) => {
+    res.status(405).json({ 
+      message: 'Method not allowed',
+      allowedMethods: ['GET', 'PATCH']
+    })
 })
 
 export default router

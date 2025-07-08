@@ -9,8 +9,8 @@ import DOMPurify from "isomorphic-dompurify";
 import sanitizeInput from '../utils/sanitizeInput.js';
 import { validateEmail, validatePassword } from '../utils/validation.js';
 
-const router = Router();
-const prisma = new PrismaClient();
+const router = Router()
+const prisma = new PrismaClient()
 
 router.post('/login', async (req: any, res: any) => {
     const { email, password } = req.body
@@ -63,7 +63,7 @@ router.post('/login', async (req: any, res: any) => {
     } catch (err) {
         res.status(500).json({ error: 'Something went wrong. Try again, or contact us' });
     }
-});
+})
 
 router.post('/signup', async (req: any, res: any) => {
     const { email, password } = req.body;
@@ -116,7 +116,7 @@ router.post('/signup', async (req: any, res: any) => {
     } catch (err) {
         res.status(500).json({ error: 'Signup failed' });
     }
-});
+})
 
 router.post('/recover-password', async (req: any, res: any) => {
     const { email } = req.body;
@@ -169,7 +169,7 @@ router.post('/recover-password', async (req: any, res: any) => {
     } catch (err) {
         res.status(500).json({ error: 'Something went wrong. Try again, or contact us' });
     }
-});
+})
 
 router.post('/change-password', async (req: any, res: any) => {
     const { password, token } = req.body;
@@ -244,7 +244,7 @@ router.post('/change-password', async (req: any, res: any) => {
     } catch (err) {
         res.status(500).json({ error: 'Something went wrong. Try again, or contact us' });
     }
-});
+})
 
 router.post('/refresh', async (req: any, res: any) => {
     const refreshToken = req.cookies.refreshToken;
@@ -296,7 +296,13 @@ router.post('/refresh', async (req: any, res: any) => {
         res.clearCookie('refreshToken');
         res.status(401).json({ error: 'Invalid or expired refresh token' });
     }
-});
+})
 
+router.use('*', (req, res) => {
+    res.status(405).json({ 
+      message: 'Method not allowed',
+      allowedMethods: ['POST']
+    })
+})
 
 export default router;
