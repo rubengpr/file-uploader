@@ -16,12 +16,12 @@ export default function Button({ disabled, buttonText, type, onClick, loading }:
             disabled={disabled || loading}
             onClick={onClick}
             className="flex items-center justify-center gap-2 cursor-pointer w-full hover:bg-gray-800 text-white px-4 py-1.5 rounded-sm text-sm border border-white mb-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-inherit">
-                {loading && (
-                    <div className="animate-spin">
-                        <FontAwesomeIcon icon={faSpinner} />
-                    </div>
-                )}
-                {buttonText}
+            {loading && (
+                <div className="animate-spin">
+                    <FontAwesomeIcon icon={faSpinner} />
+                </div>
+            )}
+            {buttonText}
         </button>
     )
 }

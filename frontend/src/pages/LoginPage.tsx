@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
+import { faEye, faEyeSlash, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import { useState, useEffect, FormEvent } from "react"
 import { Link, useNavigate } from "react-router-dom";
 import Form from "@/components/Form"
@@ -10,6 +10,8 @@ import useUser from '@/stores/useUser';
 
 export default function LoginPage() {
     const navigate = useNavigate();
+    
+    const [isLoading, setIsLoading] = useState(false)
     
     useEffect(() => {
         if (isAuthenticated()) {
@@ -69,6 +71,7 @@ export default function LoginPage() {
     }
 
     const handleLoginTestAccount = async () => {
+        setIsLoading(true)
         try {
             const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, { email: TEST_EMAIL, password: TEST_PASSWORD }, { withCredentials: true })
 
@@ -103,6 +106,8 @@ export default function LoginPage() {
             } else {
                 setErrorMsg("Unexpected error occurred.")
             }
+        } finally {
+            setIsLoading(false)
         }
     }
     
@@ -117,7 +122,18 @@ export default function LoginPage() {
                 buttonText="Log in"
                 belowButton={ <> or{" "} <u className="cursor-pointer"> <Link to="/signup">sign up</Link> </u> </> }
                 >
-                <button type='button' onClick={handleLoginTestAccount} className="font-bold flex items-center justify-center gap-2 cursor-pointer w-full hover:bg-gray-800 text-white px-4 py-1.5 rounded-full text-sm border border-white mb-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-inherit">✨ Use test account</button>
+                <button
+                    type='button'
+                    onClick={handleLoginTestAccount}
+                    disabled={isLoading}
+                    className="font-bold flex items-center justify-center gap-2 cursor-pointer w-full hover:bg-gray-800 text-white px-4 py-1.5 rounded-full text-sm border border-white mb-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-inherit">
+                    {isLoading && (
+                        <div className="animate-spin">
+                            <FontAwesomeIcon icon={faSpinner} />
+                        </div>
+                    )}
+                    ✨ Use test account
+                </button>
                 <LabelInput inputSize="md" label="Email" name="email" type="text" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
                 <div className="relative w-full">
                     <LabelInput inputSize="md" type={showPassword ? "text" : "password"} name="password" label="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
