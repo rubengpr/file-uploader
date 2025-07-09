@@ -28,7 +28,12 @@ interface LabelInputProps extends InputHTMLAttributes<HTMLInputElement> {
             }}
         id={name}
         name={name}
-        className={`${sizeClasses} border border-gray-400 rounded-sm caret-white focus:outline-none focus:ring focus:ring-white hover:border-white`}
+        className={
+          `${sizeClasses}
+          border border-gray-400 rounded-sm caret-white
+          focus:outline-none focus:ring focus:ring-white
+          hover:border-white
+          disabled:cursor-not-allowed disabled:bg-neutral-900 disabled:hover:border-gray-400`}
         type={type}
         />
           
