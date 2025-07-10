@@ -1,4 +1,5 @@
-import { faFilter } from '@fortawesome/free-solid-svg-icons'
+import { faFilter, faFile } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { isAuthenticated, isTokenExpired } from '@/utils/auth.ts';
@@ -248,34 +249,43 @@ export default function FoldersPage() {
           <div className='main-page flex flex-row bg-black'>
             <Sidebar onUploadSuccess={updateTable} />
             <div className="page-content w-full flex flex-col h-screen px-10 py-8">
-              <div className="flex justify-end mb-4 gap-2">
-                <ButtonTable
-                  text="Filters"
-                  icon={faFilter}
-                  onClick={() => setIsFilterModalOpen(true)} />
-                <Input
-                  type="text"
-                  placeholder='Search...'
-                  inputSize='sm'
-                  value={searcherValue}
-                  onChange={handleSearcherChange} />
-              </div>
-              <Table
-                files={files}
-                folders={folders}
-                sortKey={sortKey}
-                sortDirection={sortDirection}
-                onHeaderClick={handleSort}
-                onUpdate={updateTable}
-                onFolderClick={(id) => navigate(`/folders/${id}`)}
-                isShareModalOpen={isShareModalOpen}
-                toggleShareModal={toggleShareModal}
-                isRenameModalOpen={isRenameModalOpen}
-                toggleRenameModal={toggleRenameModal}
-                isDeleteModalOpen={isDeleteModalOpen}
-                toggleDeleteModal={toggleDeleteModal}
-                />
-            </div>
+              {files.length === 0 && folders.length === 0 ? (
+                <div className='flex flex-col justify-center items-center mt-10'>
+                  <FontAwesomeIcon className='text-white mb-4' icon={faFile} size='4x' />
+                  <p className='text-white'>Oops... This folder is empty</p>
+                </div>
+              ) : (
+                <>
+                  <div className="flex justify-end mb-4 gap-2">
+                    <ButtonTable
+                      text="Filters"
+                      icon={faFilter}
+                      onClick={() => setIsFilterModalOpen(true)} />
+                    <Input
+                      type="text"
+                      placeholder='Search...'
+                      inputSize='sm'
+                      value={searcherValue}
+                      onChange={handleSearcherChange} />
+                  </div>
+                    <Table
+                    files={files}
+                    folders={folders}
+                    sortKey={sortKey}
+                    sortDirection={sortDirection}
+                    onHeaderClick={handleSort}
+                    onUpdate={updateTable}
+                    onFolderClick={(id) => navigate(`/folders/${id}`)}
+                    isShareModalOpen={isShareModalOpen}
+                    toggleShareModal={toggleShareModal}
+                    isRenameModalOpen={isRenameModalOpen}
+                    toggleRenameModal={toggleRenameModal}
+                    isDeleteModalOpen={isDeleteModalOpen}
+                    toggleDeleteModal={toggleDeleteModal}
+                    />
+                  </>
+                  )}
+                </div>
           </div>
           {isFilterModalOpen && (
             <Modal
