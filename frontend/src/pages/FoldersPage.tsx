@@ -250,9 +250,9 @@ export default function FoldersPage() {
             <Sidebar onUploadSuccess={updateTable} />
             <div className="page-content w-full flex flex-col h-screen px-10 py-8">
               {files.length === 0 && folders.length === 0 ? (
-                <div className='flex flex-col justify-center items-center mt-10'>
-                  <FontAwesomeIcon className='text-white mb-4' icon={faFile} size='4x' />
-                  <p className='text-white'>Oops... This folder is empty</p>
+                <div className='flex flex-col justify-center items-center w-full mt-10'>
+                  <FontAwesomeIcon className='text-white mb-2' icon={faFile} size='4x' />
+                  <p className='text-white mb-6'>Oops... This folder is empty</p>
                 </div>
               ) : (
                 <>
