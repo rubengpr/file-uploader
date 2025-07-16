@@ -15,7 +15,10 @@ export default function Sidebar({ onUploadSuccess }: { onUploadSuccess: () => vo
     const { folderId } = useParams<{ folderId: string }>();
     
     const { handleFileChange } = useFileOperations();
-    const { createFolder, newFolderName, setNewFolderName, isNewFolderModalOpen, setIsNewFolderModalOpen } = useCreateFolder({ onUploadSuccess })
+    const { createFolder, newFolderName, setNewFolderName, isNewFolderModalOpen, setIsNewFolderModalOpen } = useCreateFolder({ 
+        onUploadSuccess,
+        currentFolderId: folderId // Pass the current folder ID
+    })
     
     const fileInputRef = useRef<HTMLInputElement>(null);
     

@@ -5,18 +5,22 @@ import { useState } from "react";
 import createNewFolder from "@/api/folders"
 import useUser from "@/stores/useUser";
 
-export default function useCreateFolder({ onUploadSuccess }) {
+interface UseCreateFolderProps {
+    onUploadSuccess: () => void;
+    currentFolderId?: string;
+}
+
+export default function useCreateFolder({ onUploadSuccess, currentFolderId }: UseCreateFolderProps) {
     const { userId } = useUser()
     
     const [isNewFolderModalOpen, setIsNewFolderModalOpen] = useState(false);
     const [newFolderName, setNewFolderName] = useState('');
     
     const createFolder = async () => {
-
         const folderName = sanitize(newFolderName)
         
         try {
-            const response = await createNewFolder(userId, folderName);
+            const response = await createNewFolder(userId, folderName, currentFolderId);
             showSuccessToast(response.data.message);
         } catch(error) {
             if (axios.isAxiosError(error)) {
