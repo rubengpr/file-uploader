@@ -37,7 +37,6 @@ export default function FoldersPage() {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [currentFolder, setCurrentFolder] = useState<Folder | null>(null);
   
   interface File {
     id: string;
@@ -247,7 +246,6 @@ export default function FoldersPage() {
   }
 
   const handleFolderClick = (folder: Folder) => {
-    setCurrentFolder(folder);
     navigate(`/folders/${folder.id}`);
   };
         
@@ -259,7 +257,6 @@ export default function FoldersPage() {
               {/* Add the Breadcrumbs component here */}
               <Breadcrumbs 
                 currentFolderId={folderId} 
-                currentFolderName={currentFolder?.name}
               />
               {files.length === 0 && folders.length === 0 ? (
                 <div className='flex flex-col justify-center items-center w-full mt-10'>

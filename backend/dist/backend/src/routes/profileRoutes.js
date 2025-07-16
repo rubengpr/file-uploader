@@ -96,5 +96,11 @@ router.patch('/update', async (req, res) => {
         res.status(500).json({ message: "Something went wrong" });
     }
 });
+router.use('*', (req, res) => {
+    res.status(405).json({
+        message: 'Method not allowed',
+        allowedMethods: ['GET', 'PATCH']
+    });
+});
 export default router;
 //# sourceMappingURL=profileRoutes.js.map

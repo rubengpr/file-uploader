@@ -242,5 +242,11 @@ router.post('/refresh', async (req, res) => {
         res.status(401).json({ error: 'Invalid or expired refresh token' });
     }
 });
+router.use('*', (req, res) => {
+    res.status(405).json({
+        message: 'Method not allowed',
+        allowedMethods: ['POST']
+    });
+});
 export default router;
 //# sourceMappingURL=auth.js.map

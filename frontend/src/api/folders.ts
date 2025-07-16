@@ -1,5 +1,17 @@
 import axios from "axios";
 
+export async function getFolderHierarchy(folderId: string) {
+    const token = localStorage.getItem('token')
+    return await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/folder/hierarchy/${folderId}`,
+        {
+            headers: { 
+                'Authorization': `Bearer ${token}`
+            }
+        }
+    );
+}
+
 export default async function createNewFolder(userId: string, folderName: string, parentId?: string) {
     const token = localStorage.getItem('token')
     return await axios.post(

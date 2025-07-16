@@ -144,5 +144,55 @@ router.delete('/delete', async (req, res) => {
         res.status(500).json({ error: "Something went wrong" });
     }
 });
+router.get('/hierarchy/:folderId', async (req, res) => {
+    const { folderId } = req.params;
+    if (!folderId) {
+        return res.status(400).json({ error: "Missing required fields" });
+    }
+    if (typeof folderId !== 'string') {
+        return res.status(400).json({ error: 'Invalid fields value format' });
+    }
+    try {
+        const folderHierarchy = [];
+        let currentFolder = await prisma.folder.findFirst({
+            where: {
+                id: folderId,
+                createdBy: req.user.id
+            }
+        });
+        // If folder not found or user doesn't have access
+        if (!currentFolder) {
+            return res.status(404).json({ error: "Folder not found or access denied" });
+        }
+        // Build the hierarchy from current folder up to root
+        while (currentFolder) {
+            folderHierarchy.unshift({
+                id: currentFolder.id,
+                name: currentFolder.name
+            });
+            if (currentFolder.parentId) {
+                currentFolder = await prisma.folder.findFirst({
+                    where: {
+                        id: currentFolder.parentId,
+                        createdBy: req.user.id
+                    }
+                });
+            }
+            else {
+                currentFolder = null;
+            }
+        }
+        res.status(200).json(folderHierarchy);
+    }
+    catch (err) {
+        res.status(500).json({ error: "Something went wrong" });
+    }
+});
+router.use('*', (req, res) => {
+    res.status(405).json({
+        message: 'Method not allowed',
+        allowedMethods: ['GET', 'POST', 'PATCH', 'DELETE']
+    });
+});
 export default router;
 //# sourceMappingURL=folderRoutes.js.map
