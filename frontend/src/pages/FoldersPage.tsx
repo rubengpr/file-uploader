@@ -17,6 +17,7 @@ import axios from 'axios';
 import useAvatar from '@/stores/useAvatar.tsx';
 import fetchSignedUrl from '@/utils/supabaseFetch.ts';
 import useUser from '@/stores/useUser.tsx';
+import Breadcrumbs from '@/components/Breadcrumbs';
 
 export default function FoldersPage() {
   const { userId } = useUser()
@@ -36,6 +37,7 @@ export default function FoldersPage() {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [currentFolder, setCurrentFolder] = useState<Folder | null>(null);
   
   interface File {
     id: string;
@@ -243,12 +245,22 @@ export default function FoldersPage() {
   const toggleDeleteModal = () => {
     return setIsDeleteModalOpen(!isDeleteModalOpen)
   }
+
+  const handleFolderClick = (folder: Folder) => {
+    setCurrentFolder(folder);
+    navigate(`/folders/${folder.id}`);
+  };
         
     return (
         <MainLayout>
           <div className='main-page flex flex-row bg-black'>
             <Sidebar onUploadSuccess={updateTable} />
             <div className="page-content w-full flex flex-col h-screen px-10 py-8">
+              {/* Add the Breadcrumbs component here */}
+              <Breadcrumbs 
+                currentFolderId={folderId} 
+                currentFolderName={currentFolder?.name}
+              />
               {files.length === 0 && folders.length === 0 ? (
                 <div className='flex flex-col justify-center items-center w-full mt-10'>
                   <FontAwesomeIcon className='text-white mb-2' icon={faFile} size='4x' />
@@ -275,7 +287,12 @@ export default function FoldersPage() {
                     sortDirection={sortDirection}
                     onHeaderClick={handleSort}
                     onUpdate={updateTable}
-                    onFolderClick={(id) => navigate(`/folders/${id}`)}
+                    onFolderClick={(id) => {
+                      const folder = folders.find(f => f.id === id);
+                      if (folder) {
+                        handleFolderClick(folder);
+                      }
+                    }}
                     isShareModalOpen={isShareModalOpen}
                     toggleShareModal={toggleShareModal}
                     isRenameModalOpen={isRenameModalOpen}
