@@ -11,12 +11,12 @@ export default function PricingPage() {
                     <img className="w-28 h-auto pr-6" src="/folded-logo.svg" alt="Website logo" />
                 </div>
                 <div className="w-full h-full flex justify-center items-center">
-                    <Link to="/pricing">
-                        <p className="px-4 py-2 rounded-sm text-white hover:cursor-pointer hover:bg-neutral-800">Pricing</p>
+                    <Link to="/">
+                        <p className="px-4 py-2 rounded-sm text-white hover:cursor-pointer hover:bg-neutral-800">Home</p>
                     </Link>
                 </div>
                 <div className="w-full h-full flex justify-end items-center">
-                    <button className="cursor-pointer hover:bg-gray-800 text-white px-4 py-1.5 rounded-sm text-sm border border-white"><Link to="login">Log in</Link></button>
+                    <button className="cursor-pointer hover:bg-gray-800 text-white px-4 py-1.5 rounded-sm text-sm border border-white"><Link to="/login">Log in</Link></button>
                 </div>
             </nav>
             <div className="flex flex-row w-full mt-10 justify-center items-center mb-20">
