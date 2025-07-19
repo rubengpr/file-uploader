@@ -6,9 +6,14 @@ import Button from "@/components/Button"
 export default function PricingPage() {
     return(
         <div className="bg-black min-h-screen">
-            <nav className="navbar w-full h-14 flex items-center p-4">
+            <nav className="navbar w-full h-14 flex items-center p-8">
                 <div className="w-full h-full flex justify-start items-center">
                     <img className="w-28 h-auto pr-6" src="/folded-logo.svg" alt="Website logo" />
+                </div>
+                <div className="w-full h-full flex justify-center items-center">
+                    <Link to="/pricing">
+                        <p className="px-4 py-2 rounded-sm text-white hover:cursor-pointer hover: hover:bg-neutral-800">Pricing</p>
+                    </Link>
                 </div>
                 <div className="w-full h-full flex justify-end items-center">
                     <button className="cursor-pointer hover:bg-gray-800 text-white px-4 py-1.5 rounded-sm text-sm border border-white"><Link to="login">Log in</Link></button>
@@ -94,7 +99,7 @@ export default function PricingPage() {
                 </div>
             </div>
             <div className="flex flex-row justify-center items-center">
-                <p className="text-white">Need an enterprise plan? <span className="underline cursor-pointer">Contact us</span>. Otherwise we won't believe it is real. Why would you pay us?</p>
+                <p className="text-white">Need an enterprise plan? <span className="underline cursor-pointer">Contact us</span>. Otherwise we won't believe it is real. Why would you pay for this?</p>
             </div>
         </div>
     )
