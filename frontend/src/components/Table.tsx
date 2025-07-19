@@ -238,7 +238,9 @@ export default function Table({ files, folders, sortDirection, sortKey, onUpdate
                         <th className="pl-6 pr-1 py-2 text-left cursor-pointer" onClick={() => onHeaderClick("createdAt")}>
                             <div className="flex flex-row items-center gap-1">
                             Created at
+                            {sortKey === "createdAt" && (
                                 <FontAwesomeIcon icon={sortDirection === "asc" ? faCaretUp : faCaretDown} />
+                            )}
                             </div>
                         </th>
                         <th className="pl-6 pr-1 py-2 text-left cursor-pointer" onClick={() => onHeaderClick("type")}>
