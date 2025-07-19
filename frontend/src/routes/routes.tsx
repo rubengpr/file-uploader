@@ -6,11 +6,16 @@ import ProfilePage from "@/pages/ProfilePage";
 import FoldersPage from "@/pages/FoldersPage";
 import RecoverPasswordPage from "@/pages/RecoverPasswordPage";
 import ChangePasswordPage from "@/pages/ChangePasswordPage";
+import PricingPage from "@/pages/PricingPage";
 
 const router = createBrowserRouter([
     {
       path: "/",
       element: <LandingPage />,
+    },
+    {
+      path: "pricing",
+      element: <PricingPage />
     },
     {
       path: "login",
