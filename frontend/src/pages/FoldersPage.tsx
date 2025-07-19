@@ -30,6 +30,7 @@ export default function FoldersPage() {
   const [allFiles, setAllFiles] = useState<File[]>([]);
   const [files, setFiles] = useState<File[]>([]);
   const [folders, setFolders] = useState<Folder[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searcherValue, setSearcherValue] = useState<string>("");
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [date, setDate] = useState("");
@@ -157,17 +158,23 @@ export default function FoldersPage() {
     }
   }
 
-  const updateTable = () => {
+  const updateTable = async () => {
     const id = folderId ?? "root";
-    getFiles(id);
-    getFolders(id);
+    setLoading(true);
+    await Promise.all([getFiles(id), getFolders(id)]);
+    setLoading(false);
     handleSort("createdAt");
   }
     
   useEffect(() => {
-    const id = folderId ?? "root";
-    getFiles(id);
-    getFolders(id);
+    const fetchData = async () => {
+      const id = folderId ?? "root";
+      setLoading(true);
+      await Promise.all([getFiles(id), getFolders(id)]);
+      setLoading(false);
+    };
+    
+    fetchData();
   }, [folderId]);
 
   const handleSort = (key: keyof File) => {
@@ -258,7 +265,12 @@ export default function FoldersPage() {
               <Breadcrumbs 
                 currentFolderId={folderId} 
               />
-              {files.length === 0 && folders.length === 0 ? (
+              {loading ? (
+                <div className='flex flex-col justify-center items-center w-full mt-10'>
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mb-4"></div>
+                  <p className='text-white'>Loading...</p>
+                </div>
+              ) : files.length === 0 && folders.length === 0 ? (
                 <div className='flex flex-col justify-center items-center w-full mt-10'>
                   <FontAwesomeIcon className='text-white mb-2' icon={faFile} size='4x' />
                   <p className='text-white mb-6'>Oops... This folder is empty</p>
