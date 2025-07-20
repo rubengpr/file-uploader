@@ -2,8 +2,21 @@ import { Link } from "react-router-dom"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFile, faFolder, faUser } from '@fortawesome/free-solid-svg-icons'
 import Button from "@/components/Button"
+import { useNavigate } from "react-router-dom"
+import { isAuthenticated } from "@/utils/auth"
 
 export default function PricingPage() {
+    const navigate = useNavigate()
+    
+    const handlePlanSelection = () => {
+        if (!isAuthenticated()) {
+            navigate('/login')
+            return
+        }
+
+        navigate('/settings')
+    }
+
     return(
         <div className="bg-black min-h-screen">
             <nav className="navbar w-full h-14 flex items-center p-8">
@@ -68,6 +81,7 @@ export default function PricingPage() {
                     <Button
                     buttonText="Get Starter"
                     type="button"
+                    onClick={handlePlanSelection}
                     />
                 </div>
                 <div className="bg-neutral-900 border border-neutral-700 rounded-lg px-6 py-6 min-w-80">
@@ -95,6 +109,7 @@ export default function PricingPage() {
                     <Button
                     buttonText="Get Max"
                     type="button"
+                    onClick={handlePlanSelection}
                     />
                 </div>
             </div>
