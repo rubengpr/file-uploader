@@ -7,6 +7,7 @@ import FoldersPage from "@/pages/FoldersPage";
 import RecoverPasswordPage from "@/pages/RecoverPasswordPage";
 import ChangePasswordPage from "@/pages/ChangePasswordPage";
 import PricingPage from "@/pages/PricingPage";
+import SettingsPage from "@/pages/SettingsPage";
 
 const router = createBrowserRouter([
     {
@@ -32,6 +33,10 @@ const router = createBrowserRouter([
     {
       path: "profile",
       element: <ProfilePage />,
+    },
+    {
+      path: "settings",
+      element: <SettingsPage />,
     },
     {
       path: "folders/:folderId",
