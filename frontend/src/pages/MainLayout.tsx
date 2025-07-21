@@ -49,7 +49,7 @@ export default function MainLayout({ children }) {
   const defaultAvatar= "https://upload.wikimedia.org/wikipedia/commons/2/2c/Default_pfp.svg"
 
   useEffect(() => {
-    if (avatar && avatar !== defaultAvatar && userId) {
+    if (avatar === defaultAvatar && userId) {
       fetchSignedUrl();
     }
   }, [avatar, userId]);
