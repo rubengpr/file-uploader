@@ -17,6 +17,12 @@ export default function MainLayout({ children }) {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!isAuthenticated()) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("stoken");
+      navigate("/login");
+      return;
+    }
     const fetchUser = async () => {
       try {
         const token = localStorage.getItem('token')
@@ -34,18 +40,17 @@ export default function MainLayout({ children }) {
         localStorage.removeItem("stoken");
         navigate("/login");
       }
-      }
-
-      if (!userId && isAuthenticated()) {
-        fetchUser();
-      }
-  }, [userId, setUser, navigate])
+    }
+    if (!userId) {
+      fetchUser();
+    }
+  }, [userId, setUser, navigate]);
 
   const defaultAvatar= "https://upload.wikimedia.org/wikipedia/commons/2/2c/Default_pfp.svg"
 
   useEffect(() => {
-    if (avatar === defaultAvatar && userId) {
-      fetchSignedUrl()
+    if (avatar && avatar !== defaultAvatar && userId) {
+      fetchSignedUrl();
     }
   }, [avatar, userId]);
   
