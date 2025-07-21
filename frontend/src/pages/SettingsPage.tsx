@@ -1,7 +1,6 @@
 import MainLayout from "./MainLayout"
 
 export default function SettingsPage() {
-
     return(
         <MainLayout>
             <div className="flex flex-row">
