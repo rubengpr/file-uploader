@@ -1,6 +1,9 @@
+//import useUser from "@/stores/useUser"
 import MainLayout from "./MainLayout"
 
 export default function SettingsPage() {
+    //const { userId } = useUser()
+
     return(
         <MainLayout>
             <div className="flex flex-row">

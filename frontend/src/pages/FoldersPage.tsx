@@ -2,7 +2,7 @@ import { faFilter, faFile } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { isAuthenticated, isTokenExpired } from '@/utils/auth.ts';
+import { isTokenExpired } from '@/utils/auth.ts';
 import { showErrorToast } from '@/utils/toast.ts';
 import ButtonTable from '@/components/ButtonTable.tsx';
 import Button from '@/components/Button.tsx';
@@ -14,14 +14,9 @@ import Selector from '@/components/Selector.tsx';
 import Sidebar from '@/components/Sidebar.tsx';
 import Table from '@/components/Table.tsx';
 import axios from 'axios';
-import useAvatar from '@/stores/useAvatar.tsx';
-import fetchSignedUrl from '@/utils/supabaseFetch.ts';
-import useUser from '@/stores/useUser.tsx';
 import Breadcrumbs from '@/components/Breadcrumbs';
 
 export default function FoldersPage() {
-  const { userId } = useUser()
-  const { avatar } = useAvatar()
   const { folderId } = useParams<{ folderId?: string }>();
   const navigate = useNavigate();
 
@@ -60,43 +55,6 @@ export default function FoldersPage() {
       email: string;
     };
   }
-
-  const defaultAvatar= "https://upload.wikimedia.org/wikipedia/commons/2/2c/Default_pfp.svg"
-
-  useEffect(() => {
-    const fetchUser = async() => {
-      try {
-        const token = localStorage.getItem('token')
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/profile/me`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        })
-        useUser.getState().setUser(response.data.user)
-      } catch(error) {
-        if (axios.isAxiosError(error)) {
-          const message = error.response?.data?.error || "Error fetching user data";
-          showErrorToast(message);
-          localStorage.removeItem("token")
-          localStorage.removeItem("stoken")
-        }
-      }
-    }
-
-    if (!isAuthenticated()) {
-      localStorage.removeItem("token")
-      localStorage.removeItem("stoken")
-      navigate('/login', { replace: true })
-      return
-    }
-    fetchUser()
-  }, [navigate]);
-
-  useEffect(() => {
-    if (avatar === defaultAvatar && userId) {
-      fetchSignedUrl()
-    }
-  }, [avatar, userId]);
 
   useEffect(() => {
     const refreshToken = async () => {
