@@ -29,7 +29,7 @@ export default function MainLayout({ children }) {
         })
         setUser(response.data.user)
       } catch {
-        showErrorToast?.("Failed to fetch user data");
+        showErrorToast("Failed to fetch user data");
         localStorage.removeItem("token");
         localStorage.removeItem("stoken");
         navigate("/login");
