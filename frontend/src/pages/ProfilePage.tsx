@@ -12,7 +12,6 @@ import { timezoneOptions } from "@/constants/timezones";
 import useUser from "@/stores/useUser";
 import useAvatar from "@/stores/useAvatar"
 import axios from "axios";
-import fetchSignedUrl from "@/utils/supabaseFetch";
 
 export default function ProfilePage() {
     const { avatar, setAvatar } = useAvatar()
@@ -39,12 +38,7 @@ export default function ProfilePage() {
 
     const handleAvatarClick = () => {
         avatarInputRef.current?.click()
-    }
-
-    useEffect(() => {
-        fetchSignedUrl();
-      }, [avatar]);
-      
+    } 
 
     const handleAvatarChange = async (event: ChangeEvent<HTMLInputElement>) => {
         //Check if a file has been uploaded
