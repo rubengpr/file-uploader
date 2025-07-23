@@ -1,4 +1,32 @@
 import MainLayout from "./MainLayout"
+import axios from "axios";
+import { showErrorToast } from "@/utils/toast";
+
+const handleSubscription = async (plan) => {
+    try {
+        const token = localStorage.getItem("token")
+        const response = await axios.post(
+            `${import.meta.env.VITE_API_URL}/api/stripe/create-checkout-session`, 
+            { plan },
+            {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            }
+        );
+        
+        if (response.data.url) {
+            window.location.href = response.data.url;
+        }
+    } catch(error) {
+        if (axios.isAxiosError(error)) {
+            const message = error.response?.data?.error || "Error creating checkout session.";
+            showErrorToast(message);
+        } else {
+            showErrorToast("Unexpected error occurred.");
+        }
+    }
+}
 
 export default function SettingsPage() {
     return(
@@ -22,14 +50,14 @@ export default function SettingsPage() {
                                 <p className="text-white text-lg">Standard</p>
                                 <span className="text-neutral-400 text-sm">20 files, 3 users and unlimited folders</span>
                             </div>
-                            <button className="text-white text-sm border px-4 py-1 bg-neutral-900 rounded-full hover:cursor-pointer hover:bg-neutral-800">Get Standard</button>
+                            <button onClick={() => handleSubscription('standard')} className="text-white text-sm border px-4 py-1 bg-neutral-900 rounded-full hover:cursor-pointer hover:bg-neutral-800">Get Standard</button>
                         </div>
                         <div className="flex flex-row justify-between items-center px-2 py-4">
                             <div className="flex flex-col">
                                 <p className="text-white text-lg">Max</p>
                                 <span className="text-neutral-400 text-sm">Unlimited everything</span>
                             </div>
-                            <button className="text-white text-sm border px-4 py-1 bg-neutral-900 rounded-full hover:cursor-pointer hover:bg-neutral-800">Get Max</button>
+                            <button onClick={() => handleSubscription('max')} className="text-white text-sm border px-4 py-1 bg-neutral-900 rounded-full hover:cursor-pointer hover:bg-neutral-800">Get Max</button>
                         </div>
                     </div>
                 </div>

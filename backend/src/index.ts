@@ -8,6 +8,7 @@ import authRoutes from './routes/auth.js';
 import fileRoutes from './routes/fileRoutes.js';
 import folderRoutes from './routes/folderRoutes.js';
 import profileRoutes from './routes/profileRoutes.js';
+import stripeRoutes from './routes/stripeRoutes.js'
 
 dotenv.config();
 const app = express();
@@ -61,6 +62,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/file', fileRoutes);
 app.use('/api/folder', folderRoutes);
 app.use('/api/profile', profileRoutes);
+app.use('/api/stripe', stripeRoutes);
 
 // Catch-all for unknown routes
 app.use((req, res) => {
