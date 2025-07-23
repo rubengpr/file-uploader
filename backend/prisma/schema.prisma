@@ -13,6 +13,12 @@ datasource db {
   url      = env("DATABASE_PUBLIC_URL")
 }
 
+enum Plan {
+  free
+  standard
+  max
+}
+
 model User {
   id String @id @default(uuid())
   email String @unique
@@ -27,6 +33,7 @@ model User {
   passwordTokens PasswordResetToken[]
   files File[]
   folders Folder[]
+  subscriptions Subscription[]
 }
 
 model PasswordResetToken {
@@ -62,4 +69,16 @@ model Folder {
   parentId String?
   parent Folder? @relation("FolderHierarchy", fields: [parentId], references: [id])
   children Folder[] @relation("FolderHierarchy")
+}
+
+model Subscription {
+  id String @id @default(uuid())
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+  plan String
+  status String
+  stripeId String ->> Check if its mandatory!
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @default(now())
+  changeRequestedAt DateTime
 }
