@@ -13,12 +13,16 @@ const planToPriceId = {
 }
 
 router.post('/create-checkout-session', async(req: any, res: any) => {
-    const { plan } = req.body
+    const { plan, userId } = req.body
 
     const priceId = planToPriceId[plan]
 
     if (!plan) {
-      return res.status(400).json({ error: 'Missing priceId' })
+      return res.status(400).json({ error: 'Missing plan required field' })
+    }
+
+    if (!userId) {
+      return res.status(400).json({ error: 'Missing userId required field' })
     }
   
     try {
@@ -32,6 +36,10 @@ router.post('/create-checkout-session', async(req: any, res: any) => {
               },
             ],
             mode: 'subscription',
+            metadata: {
+              userId,
+              plan
+            }
         })
 
         res.json({ url: session.url })

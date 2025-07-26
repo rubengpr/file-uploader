@@ -9,6 +9,7 @@ import fileRoutes from './routes/fileRoutes.js';
 import folderRoutes from './routes/folderRoutes.js';
 import profileRoutes from './routes/profileRoutes.js';
 import stripeRoutes from './routes/stripeRoutes.js'
+import webhookRoutes from './routes/webhookRoutes.js';
 
 dotenv.config();
 const app = express();
@@ -46,6 +47,7 @@ app.use(limiter)
 app.use(cookieParser())
 app.use(cors(corsOptions))
 app.options('*', cors(corsOptions))
+app.use('/webhooks', express.raw({ type: 'application/json' }), webhookRoutes);
 app.use(express.json())
 app.use(express.json({ limit: '10kb' })); // Limit JSON payload size
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
