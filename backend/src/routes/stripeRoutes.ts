@@ -21,6 +21,10 @@ router.post('/create-checkout-session', async(req: any, res: any) => {
       return res.status(400).json({ error: 'Missing plan required field' })
     }
 
+    if (!planToPriceId.hasOwnProperty(plan)) {
+      return res.status(400).json({ error: 'Invalid plan value' })
+    }
+
     if (!userId) {
       return res.status(400).json({ error: 'Missing userId required field' })
     }
