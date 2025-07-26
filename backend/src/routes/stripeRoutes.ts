@@ -3,7 +3,11 @@ import Stripe from 'stripe'
 import authenticateToken from '../middleware/authMiddleware.js';
 
 const router = Router()
-const stripe = new Stripe(process.env.STRIPE_SK_TEST);
+const stripeSecret = process.env.STRIPE_SK_TEST;
+if (!stripeSecret) {
+  throw new Error('Missing STRIPE_SK_TEST environment variable');
+}
+const stripe = new Stripe(stripeSecret);
 
 router.use(authenticateToken);
 
