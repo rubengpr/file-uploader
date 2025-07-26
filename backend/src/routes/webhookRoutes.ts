@@ -32,7 +32,7 @@ router.post('/stripe', async (req: any, res: any) => {
 async function fulfillCheckout(session) {
   const userId = session.metadata.userId
   const plan = session.metadata.plan
-  const stripeSubscriptionId = session.stripeSubscriptionId
+  const stripeSubscriptionId = session.subscription
 
   try {
     const subscription = await prisma.subscription.create({
