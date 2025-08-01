@@ -33,22 +33,29 @@ router.post('/stripe', async (req: any, res: any) => {
   res.json({ received: true });
 });
 
-async function fulfillCheckout(session) {
-  const userId = session.metadata.userId
-  const plan = session.metadata.plan
-  const stripeSubscriptionId = session.subscription
+async function fulfillCheckout(session: any) {
+  const userId = session.metadata.userId;
+  const planType = session.metadata.planType;
+  const stripeSubscriptionId = session.subscription;
 
   try {
-    const subscription = await prisma.subscription.create({
-      data: {
-        userId,
-        plan,
-        status: 'active',
-        stripeSubscriptionId 
-      }
-    })
+    await prisma.$transaction(async (tx) => {
+      await tx.plan.create({
+        data: {
+          userId,
+          planType,
+          status: 'active',
+          stripeSubscriptionId 
+        }
+      });
+      
+      await tx.user.update({
+        where: { id: userId },
+        data: { currentPlan: planType }
+      });
+    });
   } catch (err) {
-    console.log('something wnet wrong', err)
+    console.error('Error in transaction - plan creation or user update failed:', err);
   }
 }
 

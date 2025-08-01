@@ -103,6 +103,7 @@ router.post('/signup', async (req: any, res: any) => {
                 email: sanitizedEmail,
                 hashedPassword,
                 role: 'admin',
+                currentPlan: 'free',
             },
         });
 
