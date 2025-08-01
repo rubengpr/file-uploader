@@ -21,7 +21,8 @@ model User {
   files          File[]
   folders        Folder[]
   passwordTokens PasswordResetToken[]
-  subscriptions  Subscription[]
+  currentPlan    String
+  plans          Plan[]
 }
 
 model PasswordResetToken {
@@ -59,19 +60,19 @@ model Folder {
   children  Folder[] @relation("FolderHierarchy")
 }
 
-model Subscription {
+model Plan {
   id                   String    @id @default(uuid())
   userId               String
-  plan                 Plan
+  planType             Plans
   status               String
   createdAt            DateTime  @default(now())
   updatedAt            DateTime  @default(now()) @updatedAt
   changeRequestedAt    DateTime?
-  stripeSubscriptionId String
+  stripeSubscriptionId String?
   user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-enum Plan {
+enum Plans {
   free
   standard
   max
