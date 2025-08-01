@@ -35,20 +35,20 @@ router.post('/stripe', async (req: any, res: any) => {
 
 async function fulfillCheckout(session) {
   const userId = session.metadata.userId
-  const plan = session.metadata.plan
+  const planType = session.metadata.planType
   const stripeSubscriptionId = session.subscription
 
   try {
-    const subscription = await prisma.subscription.create({
+    const plan = await prisma.plan.create({
       data: {
         userId,
-        plan,
+        planType,
         status: 'active',
         stripeSubscriptionId 
       }
     })
   } catch (err) {
-    console.log('something wnet wrong', err)
+    console.error('Error creating plan:', err);
   }
 }
 
