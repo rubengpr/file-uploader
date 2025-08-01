@@ -22,7 +22,7 @@ model User {
   files          File[]
   folders        Folder[]
   passwordTokens PasswordResetToken[]
-  Plan           Plan[]
+  plans          Plan[]
 }
 
 model PasswordResetToken {
@@ -69,7 +69,7 @@ model Plan {
   updatedAt            DateTime  @default(now())
   changeRequestedAt    DateTime?
   stripeSubscriptionId String?
-  User                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 enum Plans {
