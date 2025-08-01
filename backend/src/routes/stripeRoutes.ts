@@ -17,15 +17,15 @@ const planToPriceId = {
 }
 
 router.post('/create-checkout-session', async(req: any, res: any) => {
-    const { plan, userId } = req.body
+    const { planType, userId } = req.body
 
-    const priceId = planToPriceId[plan]
+    const priceId = planToPriceId[planType]
 
-    if (!plan) {
+    if (!planType) {
       return res.status(400).json({ error: 'Missing plan required field' })
     }
 
-    if (!planToPriceId.hasOwnProperty(plan)) {
+    if (!planToPriceId.hasOwnProperty(planType)) {
       return res.status(400).json({ error: 'Invalid plan value' })
     }
 
@@ -46,7 +46,7 @@ router.post('/create-checkout-session', async(req: any, res: any) => {
             mode: 'subscription',
             metadata: {
               userId,
-              plan
+              planType
             }
         })
 

@@ -66,6 +66,7 @@ router.post('/login', async (req: any, res: any) => {
 })
 
 router.post('/signup', async (req: any, res: any) => {
+    
     const { email, password } = req.body;
 
     if (!email || !password) {
@@ -97,19 +98,34 @@ router.post('/signup', async (req: any, res: any) => {
         // 2. Hash password with salt
         const hashedPassword = await bcrypt.hash(password, 12);
 
-        // 3. Create user
-        const user = await prisma.user.create({
-            data: {
-                email: sanitizedEmail,
-                hashedPassword,
-                role: 'admin',
-            },
+        // 3. Create user and plan in a transaction
+        const result = await prisma.$transaction(async (tx) => {
+            // Create user
+            const user = await tx.user.create({
+                data: {
+                    email: sanitizedEmail,
+                    hashedPassword,
+                    role: 'admin',
+                    currentPlan: 'free',
+                },
+            });
+
+            // Create plan record
+            const plan = await tx.plan.create({
+                data: {
+                    userId: user.id,
+                    planType: 'free',
+                    status: 'active',
+                },
+            });
+
+            return { user, plan };
         });
 
         // 4. Generate tokens (consistent with login)
-        const token = signToken({ id: user.id, email: user.email });
-        const refreshToken = signRefreshToken({ id: user.id });
-        const stoken = supabaseToken({ sub: user.id, email: user.email, role: 'authenticated' });
+        const token = signToken({ id: result.user.id, email: result.user.email });
+        const refreshToken = signRefreshToken({ id: result.user.id });
+        const stoken = supabaseToken({ sub: result.user.id, email: result.user.email, role: 'authenticated' });
 
         // 5. Respond with token
         res.status(201).json({ token, stoken });
