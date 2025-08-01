@@ -3,13 +3,13 @@ import axios from "axios";
 import { showErrorToast } from "@/utils/toast";
 import useUser from "@/stores/useUser";
 
-const handleSubscription = async (plan, userId) => {
+const handleSubscription = async (planType, userId) => {
 
     try {
         const token = localStorage.getItem("token")
         const response = await axios.post(
             `${import.meta.env.VITE_API_URL}/api/stripe/create-checkout-session`, 
-            { plan, userId },
+            { planType, userId },
             {
                 headers: {
                     'Authorization': `Bearer ${token}`
