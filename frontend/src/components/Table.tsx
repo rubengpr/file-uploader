@@ -223,9 +223,9 @@ export default function Table({ files, folders, sortDirection, sortKey, onUpdate
     }  
 
     return(
-        <div className="w-full h-fit rounded-md shadow-md border border-gray-500">
+        <div className="w-full h-fit rounded-md shadow-md border border-gray-500 overflow-hidden">
             <table className="w-full text-white bg-neutral-900">
-                <thead className="text-xs border-b border-white overflow-hidden">
+                <thead className="text-xs border-b border-white">
                     <tr className='bg-neutral-700'>
                         <th className="pl-6 pr-1 py-2 text-left cursor-pointer" onClick={() => onHeaderClick("name")}>
                             <div className="flex flex-row items-center gap-1">
