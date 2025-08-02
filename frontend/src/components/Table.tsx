@@ -287,6 +287,7 @@ export default function Table({ files, folders, sortDirection, sortKey, onUpdate
                                     icon: faPenToSquare,
                                     onClick: () => {
                                         setSelectedItem({ type: 'folder', data: folder });
+                                        setNewItemName(folder.name);
                                         setOpenOptionsMenu(null);
                                         toggleRenameModal()
                                     }
@@ -333,6 +334,7 @@ export default function Table({ files, folders, sortDirection, sortKey, onUpdate
                                     icon: faPenToSquare,
                                     onClick: () => {
                                         setSelectedItem({ type: 'file', data: file });
+                                        setNewItemName(file.name);
                                         setOpenOptionsMenu(null)
                                         toggleRenameModal()
                                     },
@@ -363,7 +365,7 @@ export default function Table({ files, folders, sortDirection, sortKey, onUpdate
                     >
                         <>
                             <div className="mb-6">
-                                <LabelInput inputSize='sm' onValueChange={setNewItemName} type="text" label="New name" name="newName" />
+                                <LabelInput inputSize='sm' onValueChange={setNewItemName} type="text" label="New name" name="newName" value={newItemName} />
                             </div>
                         <div className="flex flex-row gap-4">
                             <Button
