@@ -77,7 +77,7 @@ export default function SettingsPage() {
                                 {currentPlan === 'free' && (
                                     <Tag />
                                 )}
-                                <button className="text-white text-sm border px-4 py-1 bg-neutral-900 rounded-full hover:cursor-pointer hover:bg-neutral-800">Get Free</button>
+                                <button disabled={currentPlan === 'free'} className="text-white text-sm border px-4 py-1 bg-neutral-900 rounded-full hover:cursor-pointer hover:bg-neutral-800 disabled:bg-neutral-700 disabled:text-neutral-400 disabled:hover:cursor-not-allowed">Get Free</button>
                             </div>
                         </div>
                         <div className="flex flex-row justify-between items-center border-b border-neutral-700 px-2 py-4">
@@ -89,7 +89,7 @@ export default function SettingsPage() {
                                 {currentPlan === 'standard' && (
                                     <Tag />
                                 )}
-                                <button onClick={() => handleSubscription('standard', userId)} className="text-white text-sm border px-4 py-1 bg-neutral-900 rounded-full hover:cursor-pointer hover:bg-neutral-800">Get Standard</button>
+                                <button disabled={currentPlan === 'standard'} onClick={() => handleSubscription('standard', userId)} className="text-white text-sm border px-4 py-1 bg-neutral-900 rounded-full hover:cursor-pointer hover:bg-neutral-800 disabled:bg-neutral-700 disabled:text-neutral-400 disabled:hover:cursor-not-allowed">Get Standard</button>
                             </div>
                         </div>
                         <div className="flex flex-row justify-between items-center px-2 py-4">
@@ -101,7 +101,7 @@ export default function SettingsPage() {
                                 {currentPlan === 'max' && (
                                     <Tag />
                                 )}
-                                <button onClick={() => handleSubscription('max', userId)} className="text-white text-sm border px-4 py-1 bg-neutral-900 rounded-full hover:cursor-pointer hover:bg-neutral-800">Get Max</button>
+                                <button disabled={currentPlan === 'max'} onClick={() => handleSubscription('max', userId)} className="text-white text-sm border px-4 py-1 bg-neutral-900 rounded-full hover:cursor-pointer hover:bg-neutral-800 disabled:bg-neutral-700 disabled:text-neutral-400 disabled:hover:cursor-not-allowed">Get Max</button>
                             </div>
                         </div>
                     </div>
