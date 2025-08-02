@@ -3,6 +3,7 @@ import axios from "axios";
 import { showErrorToast } from "@/utils/toast";
 import useUser from "@/stores/useUser";
 import { useEffect } from "react";
+import Tag from "@/components/Tag";
 
 const handleSubscription = async (planType, userId) => {
 
@@ -31,7 +32,7 @@ const handleSubscription = async (planType, userId) => {
 }
 
 export default function SettingsPage() {
-    const { userId } = useUser()
+    const { userId, currentPlan } = useUser()
 
     useEffect(() => {
         const getUser = async () => {
@@ -72,21 +73,36 @@ export default function SettingsPage() {
                                 <p className="text-white text-lg">Free</p>
                                 <span className="text-neutral-400 text-sm">5 files, 1 user and unlimited folders</span>
                             </div>
-                            <button className="text-white text-sm border px-4 py-1 bg-neutral-900 rounded-full hover:cursor-pointer hover:bg-neutral-800">Get Free</button>
+                            <div className="flex flex-row justify-center items-center gap-4">
+                                {currentPlan === 'free' && (
+                                    <Tag />
+                                )}
+                                <button className="text-white text-sm border px-4 py-1 bg-neutral-900 rounded-full hover:cursor-pointer hover:bg-neutral-800">Get Free</button>
+                            </div>
                         </div>
                         <div className="flex flex-row justify-between items-center border-b border-neutral-700 px-2 py-4">
                             <div className="flex flex-col">
                                 <p className="text-white text-lg">Standard</p>
                                 <span className="text-neutral-400 text-sm">20 files, 3 users and unlimited folders</span>
                             </div>
-                            <button onClick={() => handleSubscription('standard', userId)} className="text-white text-sm border px-4 py-1 bg-neutral-900 rounded-full hover:cursor-pointer hover:bg-neutral-800">Get Standard</button>
+                            <div className="flex flex-row justify-center items-center gap-4">
+                                {currentPlan === 'standard' && (
+                                    <Tag />
+                                )}
+                                <button onClick={() => handleSubscription('standard', userId)} className="text-white text-sm border px-4 py-1 bg-neutral-900 rounded-full hover:cursor-pointer hover:bg-neutral-800">Get Standard</button>
+                            </div>
                         </div>
                         <div className="flex flex-row justify-between items-center px-2 py-4">
                             <div className="flex flex-col">
                                 <p className="text-white text-lg">Max</p>
                                 <span className="text-neutral-400 text-sm">Unlimited everything</span>
                             </div>
-                            <button onClick={() => handleSubscription('max', userId)} className="text-white text-sm border px-4 py-1 bg-neutral-900 rounded-full hover:cursor-pointer hover:bg-neutral-800">Get Max</button>
+                            <div className="flex flex-row justify-center items-center gap-4">
+                                {currentPlan === 'max' && (
+                                    <Tag />
+                                )}
+                                <button onClick={() => handleSubscription('max', userId)} className="text-white text-sm border px-4 py-1 bg-neutral-900 rounded-full hover:cursor-pointer hover:bg-neutral-800">Get Max</button>
+                            </div>
                         </div>
                     </div>
                 </div>
