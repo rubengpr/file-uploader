@@ -118,10 +118,7 @@ export default function FoldersPage() {
 
   const updateTable = async () => {
     const id = folderId ?? "root";
-    setLoading(true);
     await Promise.all([getFiles(id), getFolders(id)]);
-    setLoading(false);
-    handleSort("createdAt");
   }
     
   useEffect(() => {
