@@ -365,7 +365,24 @@ export default function Table({ files, folders, sortDirection, sortKey, onUpdate
                     >
                         <>
                             <div className="mb-6">
-                                <LabelInput inputSize='sm' onValueChange={setNewItemName} type="text" label="New name" name="newName" value={newItemName} />
+                                <LabelInput 
+                                    inputSize='sm' 
+                                    onValueChange={setNewItemName} 
+                                    type="text" 
+                                    label="New name" 
+                                    name="newName" 
+                                    value={newItemName}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' && !isDisabled(newItemName)) {
+                                            e.preventDefault();
+                                            if (selectedItem.type === 'file') {
+                                                handleRename(selectedItem.data as AppFile);
+                                            } else {
+                                                handleRenameFolder(selectedItem.data as AppFolder);
+                                            }
+                                        }
+                                    }}
+                                />
                             </div>
                         <div className="flex flex-row gap-4">
                             <Button
