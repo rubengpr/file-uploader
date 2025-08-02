@@ -16,7 +16,6 @@ const handleSubscription = async (planType, userId) => {
                 }
             }
         );
-        
         if (response.data.url) {
             window.location.href = response.data.url;
         }

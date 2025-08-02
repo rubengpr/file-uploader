@@ -39,6 +39,7 @@ router.get('/me', async (req: any, res: any) => {
                 role: true,
                 language: true,
                 timezone: true,
+                currentPlan: true,
             }
         })
         
