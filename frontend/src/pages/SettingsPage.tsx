@@ -2,6 +2,7 @@ import MainLayout from "./MainLayout"
 import axios from "axios";
 import { showErrorToast } from "@/utils/toast";
 import useUser from "@/stores/useUser";
+import { useEffect } from "react";
 
 const handleSubscription = async (planType, userId) => {
 
@@ -31,6 +32,31 @@ const handleSubscription = async (planType, userId) => {
 
 export default function SettingsPage() {
     const { userId } = useUser()
+
+    useEffect(() => {
+        const getUser = async () => {
+            try {
+                const token = localStorage.getItem('token')
+                const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/profile/me`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+                const user = response.data.user
+                useUser.getState().setUser(user)
+
+            } catch(error) {
+                if (axios.isAxiosError(error)) {
+                    const message = error.response?.data?.error
+                    showErrorToast(message)
+                } else {
+                    showErrorToast("Unexpected error occurred")
+                }
+            }
+        }
+
+        getUser()
+    }, [])
 
     return(
         <MainLayout>
