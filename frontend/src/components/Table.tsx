@@ -120,6 +120,7 @@ export default function Table({ files, folders, sortDirection, sortKey, onUpdate
         }
 
         if (data) {
+            console.log(data)
             downloadBlob(data, `${fileName}`);
             showSuccessToast("File downloaded successfully");
         } else {
@@ -223,11 +224,11 @@ export default function Table({ files, folders, sortDirection, sortKey, onUpdate
     }  
 
     return(
-        <div className="w-full h-fit rounded-md shadow-md border border-gray-500 overflow-hidden">
-            <table className="w-full text-white bg-neutral-900">
+        <div className="w-full h-fit shadow-md border border-gray-500 rounded-md">
+            <table className="w-full text-white bg-neutral-900 rounded-md">
                 <thead className="text-xs border-b border-white">
                     <tr className='bg-neutral-700'>
-                        <th className="pl-6 pr-1 py-2 text-left cursor-pointer" onClick={() => onHeaderClick("name")}>
+                        <th className="pl-6 pr-1 py-2 text-left cursor-pointer rounded-tl-md" onClick={() => onHeaderClick("name")}>
                             <div className="flex flex-row items-center gap-1">
                                 File name
                                 {sortKey === "name" && (
@@ -267,7 +268,7 @@ export default function Table({ files, folders, sortDirection, sortKey, onUpdate
                             )}
                             </div>
                         </th>
-                        <th className="px-6 py-2 text-left"></th>
+                        <th className="px-6 py-2 text-left rounded-tr-md"></th>
                     </tr>
                 </thead>
                 <tbody className="divide-y divide-white/10">
@@ -278,7 +279,7 @@ export default function Table({ files, folders, sortDirection, sortKey, onUpdate
                         <td className="px-6 py-2 text-xs"></td>
                         <td className="px-6 py-2 text-xs"></td>
                         <td className="px-6 py-2 text-xs">{folder.user.email}</td>
-                        <td className="relative flex flex-row justify-center items-center px-6 py-2 text-xs">
+                        <td className="relative flex flex-row justify-center items-center px-6 py-2 text-xs overflow-visible">
                             <FontAwesomeIcon onClick={(e) => {e.stopPropagation(); toggleMenu(folder.id, 'folder')}} className='px-2 py-1 rounded-full hover:bg-neutral-600' icon={faEllipsisVertical} />
                             {openOptionsMenu?.id === folder.id && openOptionsMenu?.type === 'folder' && (<DropdownMenu
                             options={[
@@ -312,7 +313,7 @@ export default function Table({ files, folders, sortDirection, sortKey, onUpdate
                         <td className="px-6 py-2 text-xs">{file.type}</td>
                         <td className="px-6 py-2 text-xs">{formatFileSize(file.size)}</td>
                         <td className="px-6 py-2 text-xs">{file.user.email}</td>
-                        <td className="relative flex flex-row justify-center items-center px-6 py-2 text-xs">
+                        <td className="relative flex flex-row justify-center items-center px-6 py-2 text-xs overflow-visible">
                             <FontAwesomeIcon onClick={() => toggleMenu(file.id, 'file')} className='px-2 py-1 rounded-full hover:bg-neutral-600' icon={faEllipsisVertical} />
                             {openOptionsMenu?.id === file.id && openOptionsMenu?.type === 'file' && (<DropdownMenu
                             options={[
