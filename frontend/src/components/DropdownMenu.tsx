@@ -14,7 +14,7 @@ interface DropdownMenuProps {
 
 export default function DropdownMenu({ options }: DropdownMenuProps) {
     return (
-        <div className="absolute z-50 min-w-26 top-8 right-10 rounded-xs text-[10px] flex flex-col items-center justify-center bg-neutral-50 shadow-lg">
+        <div className="absolute z-50 min-w-26 top-8 right-10 rounded-xs text-[10px] flex flex-col items-center justify-center bg-neutral-50">
           {options.map(({ label, icon, onClick }) => (
             <div
             key={label}
