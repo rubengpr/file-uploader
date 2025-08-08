@@ -79,7 +79,7 @@ export default function PricingPage() {
                         </div>
                     </div>
                     <Button
-                    buttonText="Get Starter"
+                    buttonText="Get Standard"
                     type="button"
                     onClick={handlePlanSelection}
                     />
