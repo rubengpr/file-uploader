@@ -58,7 +58,7 @@ export default function PricingPage() {
                 </div>
                 <div className="bg-neutral-900 border border-neutral-700 rounded-lg px-6 py-6 min-w-80">
                     <div className="min-h-20 mb-10 border-b border-neutral-700 pb-4">
-                        <h2 className="text-neutral-300 text-lg mb-3">Starter</h2>
+                        <h2 className="text-neutral-300 text-lg mb-3">Standard</h2>
                         <div className="flex items-baseline gap-2">
                             <p className="text-white text-4xl">5€</p>
                             <span className="text-neutral-400">/mo</span>
@@ -79,7 +79,7 @@ export default function PricingPage() {
                         </div>
                     </div>
                     <Button
-                    buttonText="Get Starter"
+                    buttonText="Get Standard"
                     type="button"
                     onClick={handlePlanSelection}
                     />
