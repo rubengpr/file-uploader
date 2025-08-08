@@ -18,12 +18,4 @@ test.describe('Landing Page', () => {
         await expect(page.getByRole('heading', { name: 'Standard' })).toBeVisible()
         await expect(page.getByRole('heading', { name: 'Max' })).toBeVisible()
     })
-
-    test('should show correct pricing names', async ({ page }) => {
-        await page.goto('/')
-
-        await page.getByRole('link', { name: 'Pricing' }).click()
-
-        await expect(page.getByRole('heading'))
-    })
 })
