@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test'
 
 test.describe('Landing Page', () => {
-    test('should navigate to pricing page', async ({ page }) => {
+    test('should navigate to /pricing', async ({ page }) => {
         await page.goto('/')
         
         await page.getByRole('link', { name: 'Pricing' }).click()
@@ -24,9 +24,16 @@ test.describe('Landing Page', () => {
 
         await page.getByRole('link', { name: 'Pricing' }).click()
 
-        // Look for the pricing amounts using text content instead of role
         await expect(page.getByText('Free')).toBeVisible()
         await expect(page.getByText('5€')).toBeVisible()
         await expect(page.getByText('20€')).toBeVisible()
+    })
+
+    test('should navigate to /login', async ({ page }) => {
+        await page.goto('')
+        
+        await page.getByRole('button', { name: 'Log in' }).click()
+
+        await expect(page.getByRole('heading', { name: 'Log in' })).toBeVisible()
     })
 })
