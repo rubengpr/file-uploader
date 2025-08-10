@@ -1,97 +1,150 @@
 # File Uploader
 
-A modern web application for managing and organizing files with a beautiful user interface. Built with React, TypeScript, and Supabase.
+A pragmatic PERN-TS monorepo for uploading, organizing, and sharing files. Backend (Express + Prisma + JWT) and Frontend (React + Vite + Tailwind + Supabase).
 
-## Features
+## Monorepo Layout
 
-- 📁 **File Management**
-  - Upload files (max 20MB)
-  - Create and manage folders
-  - Rename files and folders
-  - Delete files and folders
-  - Download files
-  - Share files via generated URLs
+- `backend/`
+  - `src/` Express API, routes, middleware, utilities
+  - `prisma/` schema and migrations
+- `frontend/`
+  - `src/` React app, components, hooks, pages, utils
 
-- 🔍 **Advanced Features**
-  - File sorting by name, type, size, creation date, and creator
-  - File filtering by type and date
-  - Search functionality
-  - File size formatting
-  - Secure file storage with Supabase
+## Prerequisites
 
-- 🎨 **Modern UI/UX**
-  - Responsive design
-  - Dark mode interface
-  - Interactive file operations
-  - Toast notifications for user feedback
-  - Modal dialogs for important actions
+- Node.js LTS (recommended)
+- A PostgreSQL-compatible database for Prisma
+- Supabase project (storage + client access) for file storage
+- Stripe account for subscriptions (optional)
 
-## Tech Stack
+## Setup
 
-### Frontend
-- React with TypeScript
-- Vite for build tooling
-- Tailwind CSS for styling
-- React Router for navigation
-- Axios for API requests
-- React Hot Toast for notifications
-- Font Awesome for icons
-
-### Backend
-- Supabase for file storage and database
-- RESTful API endpoints for file operations
-- JWT authentication
-
-## Project Structure
-
-```
-frontend/
-├── src/
-│   ├── api/         # API integration
-│   ├── components/  # Reusable UI components
-│   ├── hooks/       # Custom React hooks
-│   ├── pages/       # Page components
-│   ├── routes/      # Route definitions
-│   ├── stores/      # State management
-│   ├── styles/      # Global styles
-│   └── utils/       # Utility functions
-```
-
-## Getting Started
-
-1. Clone the repository
-2. Install dependencies:
-   ```bash
-   cd frontend
-   npm install
-   ```
-3. Set up environment variables:
-   Create a `.env` file in the frontend directory with:
-   ```
-   VITE_API_URL=your_api_url
-   ```
-4. Start the development server:
-   ```bash
-   npm run dev
+1. Install dependencies
+   ```sh
+   cd backend && npm install
+   cd ../frontend && npm install
    ```
 
-## File Operations
+2. Configure environment
+   - Create environment files in `backend/` and `frontend/` as needed for your runtime.
+   - Do not commit secrets. Use `.env.local` for local development where applicable.
 
-The application provides a comprehensive set of file operations through the `useFileOperations` hook:
+3. Database
+   - Apply migrations and generate Prisma client
+   ```sh
+   cd backend
+   npm run migrate
+   ```
 
-- `uploadFile`: Upload new files
-- `shareFile`: Generate shareable URLs
-- `renameFile`: Rename files and folders
-- `handleFileChange`: Handle file input changes
+## Development
 
-## Contributing
+- Backend (watch mode)
+  ```sh
+  cd backend
+  npm run dev
+  ```
+  Starts the API server using TypeScript ESM loader with file watching.
 
-1. Fork the repository
-2. Create your feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a new Pull Request
+- Frontend (Vite dev server)
+  ```sh
+  cd frontend
+  npm run dev
+  ```
+  Ensure the frontend points to your API base URL via your environment configuration.
 
-## License
+## Ports & URLs
 
-This project is licensed under the MIT License.
+- Backend: http://localhost:4000 (API base: http://localhost:4000/api)
+- Frontend: http://localhost:5173
+
+## Build & Run (Production)
+
+- Backend
+  ```sh
+  cd backend
+  npm run build
+  npm start
+  ```
+
+- Frontend
+  ```sh
+  cd frontend
+  npm run build
+  npm run preview   # optional local preview
+  ```
+
+## Testing
+
+- Unit tests
+  - Backend: Vitest
+    ```sh
+    cd backend
+    npm test
+    ```
+  - Frontend: Vitest
+    ```sh
+    cd frontend
+    npm test
+    ```
+
+- E2E (frontend)
+  ```sh
+  cd frontend
+  npx playwright test
+  ```
+
+## Linting & Formatting
+
+- Frontend lint
+  ```sh
+  cd frontend
+  npm run lint
+  ```
+
+- TypeScript
+  - Both apps are TypeScript-first. Prefer explicit function signatures and clear naming.
+
+## API Surface (High-Level)
+
+- Auth: login, signup, password recovery, token refresh
+- Files: create, list by folder, rename, delete
+- Folders: create, list children, rename, delete
+- Profile: get current user, update profile
+- Billing: Stripe subscriptions (checkout session, webhooks)
+
+Endpoint prefixes:
+- `POST /api/auth/*`
+- `GET|POST|PATCH|DELETE /api/file/*`
+- `GET|POST|PATCH|DELETE /api/folder/*`
+- `GET|PATCH /api/profile/*`
+- `POST /api/stripe/create-checkout-session`
+- `POST /webhooks/stripe` (Stripe webhooks)
+
+Refer to route handlers under `backend/src/routes/` and middleware in `backend/src/middleware/` for exact behavior and validations.
+
+## Data & Storage
+
+- Database access via Prisma (`backend/prisma/`)
+- File storage via Supabase (client used in frontend for upload, download, rename and delete)
+
+## Conventions
+
+- Validation and sanitization on both client and server
+- JWT for auth with short-lived access tokens and refresh strategy
+- Rate limiting on API
+- Consistent UI feedback with toasts on the frontend
+
+## Troubleshooting
+
+- If Prisma client is missing:
+  ```sh
+  cd backend
+  npm run migrate   # also runs generate via postinstall on fresh install
+  ```
+- CORS: backend allows `http://localhost:5173` by default. If your dev origin differs, add it in `backend/src/index.ts`.
+- Stripe webhooks: ensure your webhook endpoint targets `/webhooks/stripe` and sends the raw request body.
+- Ensure environment configuration exists for both apps before running.
+
+---
+
+This README is the single source of truth for the repository. For details, read the code in `backend/src` and `frontend/src`. Keep docs minimal and up-to-date by reflecting actual scripts and code paths.
