@@ -1,5 +1,3 @@
-import 'dotenv/config';
-
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser'
@@ -12,10 +10,13 @@ import profileRoutes from './routes/profileRoutes.js';
 import stripeRoutes from './routes/stripeRoutes.js'
 import webhookRoutes from './routes/webhookRoutes.js';
 
+if (process.env.NODE_ENV !== 'production') {
+  const { config } = await import('dotenv');
+  config();
+}
+
 const app = express();
 app.set('trust proxy', 1);
-
-const isProd = process.env.NODE_ENV === 'production';
 
 // 👉 allowed domains for both prod and local dev
 const allowedOrigins = [
@@ -51,7 +52,6 @@ app.use(limiter)
 app.use(cookieParser())
 app.use(cors(corsOptions))
 app.use('/webhooks', express.raw({ type: 'application/json' }), webhookRoutes);
-app.use(express.json())
 app.use(express.json({ limit: '10kb' })); // Limit JSON payload size
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 
