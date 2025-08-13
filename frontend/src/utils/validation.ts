@@ -4,6 +4,11 @@ export const validateEmail = (email: string): boolean => {
 };
 
 export const validatePassword = (password: string): boolean => {
+    // OWASP/NIST recommendations: 8-128 characters
+    if (password.length < 8 || password.length > 128) {
+        return false;
+    }
+    
     const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
     return passwordRegex.test(password);
 };

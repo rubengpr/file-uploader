@@ -5,6 +5,7 @@ import { useState, useEffect, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import LabelInput from "@/components/LabelInput"
 import axios from "axios";
+import { validatePassword } from '@/utils/validation'
 
 export default function ChangePasswordPage() {
 
@@ -31,9 +32,8 @@ export default function ChangePasswordPage() {
     }
 
     const handlePasswordBlur = () => {
-        const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/
-        if(!passwordRegex.test(password)) {
-            setPasswordError("One capital letter, number and special character")
+        if(!validatePassword(password)) {
+            setPasswordError("Invalid password format")
         } else {
             setPasswordError("")
         }

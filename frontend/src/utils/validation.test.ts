@@ -23,6 +23,23 @@ describe('validatePassword', () => {
         expect(validatePassword('Password123!')).toBe(true)
         expect(validatePassword('Mypass1@')).toBe(true)
         expect(validatePassword('wEiRdPaSsWorD1!,.')).toBe(true)
+    })
+    
+    test('validates passwords at length boundaries', () => {
+        // Minimum length (8 characters)
+        expect(validatePassword('Pass1!@')).toBe(true)
+        // Maximum length (128 characters) - create a valid 128-char password
+        const maxLengthPassword = 'A'.repeat(125) + '1!@' // 125 A's + 1 number + 2 special chars = 128
+        expect(validatePassword(maxLengthPassword)).toBe(true)
+    })
+    
+    test('rejects passwords that are too short or too long', () => {
+        // Too short (7 characters)
+        expect(validatePassword('Pass1!')).toBe(false)
+        // Too long (129 characters)
+        const tooLongPassword = 'A'.repeat(126) + '1!@' // 126 A's + 1 number + 2 special chars = 129
+        expect(validatePassword(tooLongPassword)).toBe(false)
+        // Very long password (existing test case)
         expect(validatePassword('thisisaveryveryvery!longpasswordthatshouldbeallowedanywaybecauseIthasEverythingthevalidationreggexneedssowearenotvalidatingforpasswordlength')).toBe(false)
     })
     
