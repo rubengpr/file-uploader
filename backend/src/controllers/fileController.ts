@@ -56,7 +56,7 @@ export const deleteFile = async (req: AuthenticatedRequest, res: Response) => {
 
         await fileModel.deleteFile(fileId, userId)
 
-
+        res.status(200).json({ message: 'File deleted successfully' })
     } catch (error) {
         const errorMessage = getErrorMessage(error)
         res.status(500).json({ message: errorMessage })
