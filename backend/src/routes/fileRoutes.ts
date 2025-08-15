@@ -1,12 +1,11 @@
 import { Router } from 'express';
-import { PrismaClient } from '@prisma/client';
 import sanitize from 'sanitize-filename';
 import { mapMimeType } from '../utils/mapMimeType.js';
 import authenticateToken from '../middleware/authMiddleware.js';
 import DOMPurify from "isomorphic-dompurify";
+import prisma from '../lib/prisma.js'
 
 const router = Router()
-const prisma = new PrismaClient()
 
 router.use(authenticateToken)
 

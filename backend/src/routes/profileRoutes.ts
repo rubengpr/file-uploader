@@ -1,12 +1,11 @@
 import { Router } from 'express';
-import { PrismaClient } from '@prisma/client';
 import authenticateToken from '../middleware/authMiddleware.js'
 import sanitizeInput from '../utils/sanitizeInput.js';
 import DOMPurify from "isomorphic-dompurify";
+import prisma from '../lib/prisma.js'
 import { getValidCountryValues, getValidLanguageValues, getValidTimezoneValues } from '../constants/index.js';
 
 const router = Router()
-const prisma = new PrismaClient();
 
 // Valid dropdown values
 const validCountries = getValidCountryValues()

@@ -1,9 +1,8 @@
 import { Router } from 'express';
 import Stripe from 'stripe';
-import { PrismaClient } from '@prisma/client';
+import prisma from '../lib/prisma.js'
 
 const router = Router();
-const prisma = new PrismaClient();
 const stripeSecret = process.env.STRIPE_SK_TEST;
 if (!stripeSecret) {
   throw new Error('Missing STRIPE_SK_TEST environment variable');
