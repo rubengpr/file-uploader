@@ -1,8 +1,5 @@
-import { Router } from 'express';
-import sanitize from 'sanitize-filename'
+import { Router } from 'express'
 import authenticateToken from '../middleware/authMiddleware.js'
-import DOMPurify from "isomorphic-dompurify"
-import prisma from '../lib/prisma.js'
 import * as folderController from '../controllers/folderController.js'
 
 const router = Router()

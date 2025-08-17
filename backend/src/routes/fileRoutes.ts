@@ -1,6 +1,6 @@
-import { Router } from 'express';
+import { Router } from 'express'
+import authenticateToken from '../middleware/authMiddleware.js'
 import * as fileController from '../controllers/fileController.js'
-import authenticateToken from '../middleware/authMiddleware.js';
 
 const router = Router()
 
