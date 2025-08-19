@@ -21,26 +21,26 @@ export const createFile = async (data: CreateFileData) => {
     const { name, size, userId, type, folderId } = data
 
     if (!name || !size || !userId || !type) {
-        throw new Error('Missing required fields')
+        throw { message: 'Missing required fields', statusCode: 400 }
     }
 
     if (typeof name !== 'string' || typeof size !== 'number' || typeof userId !== 'string' || typeof type !== 'string') {
-        throw new Error('Invalid fields value format')
+        throw { message: 'Invalid fields value format', statusCode: 400 }
     }
 
     if (name.length < 1 || name.length > 60) {
-        throw new Error('File name must be between 1 and 60 characters')
+        throw { message: 'File name must be between 1 and 60 characters', statusCode: 400 }
     }
 
     if (size > 20 * 1024 * 1024) {
-        throw new Error('Max file size is 20MB')
+        throw { message: 'Max file size is 20MB', statusCode: 400 }
     }
     
     const allowedExtensions = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'csv', 'txt', 'jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg'];
     const fileExtension = getFileExtension(name)
     
     if (!fileExtension || !allowedExtensions.includes(fileExtension)) {
-        throw new Error('File extension not supported')
+        throw { message: 'File extension not supported', statusCode: 400 }
     }
 
     if (folderId) {
@@ -52,7 +52,7 @@ export const createFile = async (data: CreateFileData) => {
         });
         
         if (!folder) {
-            throw new Error('Access denied to folder')
+            throw { message: 'Access denied to folder', statusCode: 403 }
         }
     }
     
@@ -60,7 +60,7 @@ export const createFile = async (data: CreateFileData) => {
     const filename = sanitize(sanitizedName)
 
     if (!filename.trim()) {
-        throw new Error('Invalid file name')
+        throw { message: 'Invalid file name', statusCode: 400 }
     }
 
     const fileType = mapMimeType(type)
@@ -76,14 +76,14 @@ export const createFile = async (data: CreateFileData) => {
             }
         })
     } catch(error) {
-        throw new Error('Something went wrong')
+        throw { message: 'Something went wrong', statusCode: 500 }
     }
 }
 
 export const getFiles = async (folderId: string | null, userId: string) => {
     
     if (folderId !== null && typeof folderId !== 'string') {
-        throw new Error('Invalid fields value format')
+        throw { message: 'Invalid fields value format', statusCode: 400 }
     }
     
     try {
@@ -96,7 +96,7 @@ export const getFiles = async (folderId: string | null, userId: string) => {
             });
             
             if (!folder) {
-                throw new Error('Access denied to folder')
+                throw { message: 'Access denied to folder', statusCode: 403 }
             }
         }
 
@@ -109,22 +109,22 @@ export const getFiles = async (folderId: string | null, userId: string) => {
             },
         });
     } catch (error) {
-        throw new Error('Failed to fetch files')
+        throw { message: 'Failed to fetch files', statusCode: 500 }
     }
 }
 
 export const renameFile = async (fileId: string, userId: string, itemName: string) => {
     
     if (!fileId || !itemName || !userId) {
-        throw new Error('Missing required fields')
+        throw { message: 'Missing required fields', statusCode: 400 }
     }
 
     if (typeof fileId !== 'string' || typeof itemName !== 'string' || typeof userId !== 'string') {
-        throw new Error('Invalid fields value format')
+        throw { message: 'Invalid fields value format', statusCode: 400 }
     }
 
     if (itemName.length < 1 || itemName.length > 60) {
-        throw new Error('File name must be between 1 and 60 characters')
+        throw { message: 'File name must be between 1 and 60 characters', statusCode: 400 }
     }
 
     const sanitizedFileName = DOMPurify.sanitize(itemName);
@@ -139,7 +139,7 @@ export const renameFile = async (fileId: string, userId: string, itemName: strin
         });
 
         if (!file) {
-            throw new Error('Access denied to file')
+            throw { message: 'Access denied to file', statusCode: 403 }
         }
 
         await prisma.file.update({
@@ -147,17 +147,17 @@ export const renameFile = async (fileId: string, userId: string, itemName: strin
             data: { name: sanitizedFileName }
         })
     } catch (error) {
-        throw new Error('Something went wrong')
+        throw { message: 'Something went wrong', statusCode: 500 }
     }
 }
 
 export const deleteFile = async (fileId: string, userId: string) => {
     if (!fileId) {
-        throw new Error('Missing required fields')
+        throw { message: 'Missing required fields', statusCode: 400 }
     }
 
     if (typeof fileId !== 'string') {
-        throw new Error('Invalid fields value format')
+        throw { message: 'Invalid fields value format', statusCode: 400 }
     }
 
     try {
@@ -168,6 +168,6 @@ export const deleteFile = async (fileId: string, userId: string) => {
             }
         })
     } catch (error) {
-        throw new Error('Something went wrong')
+        throw { message: 'Something went wrong', statusCode: 500 }
     }
 }

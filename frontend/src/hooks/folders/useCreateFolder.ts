@@ -24,7 +24,7 @@ export default function useCreateFolder({ onUploadSuccess, currentFolderId }: Us
             showSuccessToast(response.data.message);
         } catch(error) {
             if (axios.isAxiosError(error)) {
-                const message = error.response?.data?.error || "Something went wrong. Please, try again.";
+                const message = error.response?.data?.message || "Something went wrong. Please, try again.";
                 showErrorToast(message);
             } else {
                 showErrorToast("Unexpected error occurred.");

@@ -5,7 +5,7 @@ import prisma from '../lib/prisma.js'
 const router = Router();
 const stripeSecret = process.env.STRIPE_SK_TEST;
 if (!stripeSecret) {
-  throw new Error('Missing STRIPE_SK_TEST environment variable');
+  throw { message: 'Missing STRIPE_SK_TEST environment variable', statusCode: 500 }
 }
 const stripe = new Stripe(stripeSecret);
 

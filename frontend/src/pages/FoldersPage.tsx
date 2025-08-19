@@ -65,7 +65,7 @@ export default function FoldersPage() {
           localStorage.setItem('token', token);
         } catch(error) {
         if (axios.isAxiosError(error)) {
-            const message = error.response?.data?.error || "Error refreshing the token";
+            const message = error.response?.data?.message || "Error refreshing the token";
             showErrorToast(message);
         } else {
             showErrorToast("Unexpected error occurred.");
@@ -89,7 +89,7 @@ export default function FoldersPage() {
         setAllFiles(response.data);
     } catch(error) {
         if (axios.isAxiosError(error)) {
-            const message = error.response?.data?.error || "Error getting the files.";
+            const message = error.response?.data?.message || "Error getting the files.";
             showErrorToast(message);
         } else {
             showErrorToast("Unexpected error occurred.");
@@ -108,7 +108,7 @@ export default function FoldersPage() {
         setFolders(response.data);
     } catch(error) {
         if (axios.isAxiosError(error)) {
-            const message = error.response?.data?.error || "Error getting the folders";
+            const message = error.response?.data?.message || "Error getting the folders";
             showErrorToast(message);
         } else {
             showErrorToast("Unexpected error occurred.");

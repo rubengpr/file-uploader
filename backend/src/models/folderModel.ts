@@ -6,41 +6,38 @@ import prisma from '../lib/prisma.js'
 export const createFolder = async (name: string, parentId: string | null, userId: string) => {
     
     if (!name || !userId) {
-        throw new Error('Missing required fields')
+        throw { message: 'Missing required fields', statusCode: 400 };
     }
 
     if (typeof name !== 'string' || typeof userId !== 'string' || (parentId && typeof parentId !== 'string')) {
-        throw new Error('Invalid fields value format')
+        throw { message: 'Invalid fields value format', statusCode: 400 };
     }
 
     if (name.length < 1 || name.length > 60) {
-        throw new Error('Folder name must be between 1 and 60 characters')
+        throw { message: 'Folder name must be between 1 and 60 characters', statusCode: 400 };
     }
 
-    const sanitizedFolderName = DOMPurify.sanitize(name)
-    const folderName = sanitize(sanitizedFolderName)
-
-    if (!folderName.trim()) {
-        throw new Error('Invalid folder name')
+    if (!/^[a-zA-Z0-9\s\-_\.]+$/.test(name)) {
+        throw { message: 'Invalid folder name', statusCode: 400 };
     }
 
     try {
         await prisma.folder.create({
             data: {
-                name: folderName,
+                name: name,
                 createdBy: userId,
                 parentId: parentId || null
             }
         })
     } catch (error) {
-        throw new Error('Something went wrong')
+        throw { message: 'Something went wrong', statusCode: 500 };
     }
 }
 
 export const getFolders = async (folderId: string | null, userId: string) => {
     
     if (folderId !== null && typeof folderId !== 'string') {
-        throw new Error('Invalid fields value format')
+        throw { message: 'Invalid fields value format', statusCode: 400 };
     }
 
     try {
@@ -56,29 +53,29 @@ export const getFolders = async (folderId: string | null, userId: string) => {
             }
         })
     } catch (error) {
-        throw new Error('Something went wrong')
+        throw { message: 'Something went wrong', statusCode: 500 };
     }
 }
 
 export const renameFolder = async (folderId: string | null, userId: string, itemName: string) => {
     
     if (!folderId || !itemName || !userId) {
-        throw new Error('Missing required fields')
+        throw { message: 'Missing required fields', statusCode: 400 }
     }
 
     if (typeof folderId !== 'string' || typeof itemName !== 'string' || typeof userId !== 'string') {
-        throw new Error('Invalid fields value format')
+        throw { message: 'Invalid fields value format', statusCode: 400 }
     }
 
     if (itemName.length < 1 || itemName.length > 60) {
-        throw new Error('Folder name must be between 1 and 60 characters')
+        throw { message: 'Folder name must be between 1 and 60 characters', statusCode: 400 }
     }
 
     const sanitizedFolderName = DOMPurify.sanitize(itemName);
     const folderName = sanitize(sanitizedFolderName)
 
     if (!folderName.trim()) {
-        throw new Error('Invalid folder name')
+        throw { message: 'Invalid folder name', statusCode: 400 }
     }
 
     try {
@@ -92,18 +89,18 @@ export const renameFolder = async (folderId: string | null, userId: string, item
             }
         })
     } catch (error) {
-        throw new Error('Something went wrong')
+        throw { message: 'Something went wrong', statusCode: 500 }
     }
 }
 
 export const deleteFolder = async (folderId: string, userId: string) => {
     
     if (!folderId || !userId) {
-        throw new Error('Missing required fields')
+        throw { message: 'Missing required fields', statusCode: 400 };
     }
 
     if (typeof folderId !== 'string' || typeof userId !== 'string') {
-        throw new Error('Invalid fields value format')
+        throw { message: 'Invalid fields value format', statusCode: 400 };
     }
 
     try {
@@ -113,18 +110,18 @@ export const deleteFolder = async (folderId: string, userId: string) => {
             },
         })
     } catch (error) {
-        throw new Error('Something went wrong')
+        throw { message: 'Something went wrong', statusCode: 500 };
     }
 }
 
 export const getFolderHierarchy = async (folderId: string, userId: string) => {
     
     if (!folderId || !userId) {
-        throw new Error('Missing required fields')
+        throw { message: 'Missing required fields', statusCode: 400 }
     }
 
     if (typeof folderId !== 'string' || typeof userId !== 'string') {
-        throw new Error('Invalid fields value format')
+        throw { message: 'Invalid fields value format', statusCode: 400 }
     }
 
     try {
@@ -138,7 +135,7 @@ export const getFolderHierarchy = async (folderId: string, userId: string) => {
 
         // If folder not found or user doesn't have access
         if (!currentFolder) {
-            throw new Error('Folder not found or access denied')
+            throw { message: 'Folder not found or access denied', statusCode: 400 }
         }
 
         // Build the hierarchy from current folder up to root
@@ -162,6 +159,6 @@ export const getFolderHierarchy = async (folderId: string, userId: string) => {
 
         return folderHierarchy
     } catch(err) {
-        throw new Error('Something went wrong')
+        throw { message: 'Something went wrong', statusCode: 500 }
     }
 }

@@ -52,7 +52,7 @@ export default function LoginPage() {
         
             } catch(error) {
                 if (axios.isAxiosError(error)) {
-                    const message = error.response?.data?.error || "Error getting the files.";
+                    const message = error.response?.data?.message || "Error getting the files.";
                     setErrorMsg(message);
                 } else {
                     setErrorMsg("Unexpected error occurred.");
@@ -62,7 +62,7 @@ export default function LoginPage() {
             navigate('/folders')
         } catch (error) {
             if (axios.isAxiosError(error)) {
-                const message = error.response?.data?.error || "Something went wrong. Please, try again."
+                const message = error.response?.data?.message || "Something went wrong. Please, try again."
                 setErrorMsg(message)
             } else {
                 setErrorMsg("Unexpected error occurred.")
@@ -91,7 +91,7 @@ export default function LoginPage() {
         
             } catch(error) {
                 if (axios.isAxiosError(error)) {
-                    const message = error.response?.data?.error || "Error getting the files.";
+                    const message = error.response?.data?.message || "Error getting the files.";
                     setErrorMsg(message);
                 } else {
                     setErrorMsg("Unexpected error occurred.");
@@ -101,7 +101,7 @@ export default function LoginPage() {
             navigate('/folders')
         } catch (error) {
             if (axios.isAxiosError(error)) {
-                const message = error.response?.data?.error || "Something went wrong. Please, try again."
+                const message = error.response?.data?.message || "Something went wrong. Please, try again."
                 setErrorMsg(message)
             } else {
                 setErrorMsg("Unexpected error occurred.")

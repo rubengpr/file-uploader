@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import * as fileModel from '../models/fileModel.js'
-import { getErrorMessage } from '../utils/errorHandler.js'
+import { handleError } from '../utils/errorHandler.js'
 
 interface AuthenticatedRequest extends Request {
   user: { id: string }
@@ -15,8 +15,8 @@ export const createFile = async (req: AuthenticatedRequest, res: Response) => {
     
     res.status(200).json({ message: 'File uploaded successfully' })
   } catch (error) {
-    const errorMessage = getErrorMessage(error)
-    res.status(500).json({ message: errorMessage })
+    const { message, statusCode } = handleError(error)
+    res.status(statusCode).json({ message })
   }
 }
 
@@ -30,8 +30,8 @@ export const getFiles = async (req: AuthenticatedRequest, res: Response) => {
 
         res.status(200).json(files)
     } catch (error) {
-        const errorMessage = getErrorMessage(error)
-        res.status(500).json({ message: errorMessage })
+        const { message, statusCode } = handleError(error)
+        res.status(statusCode).json({ message })
     }
 }
 
@@ -44,8 +44,8 @@ export const renameFile = async (req: AuthenticatedRequest, res: Response) => {
 
         res.status(200).json({ message: 'File renamed successfully' })
     } catch (error) {
-        const errorMessage = getErrorMessage(error)
-        res.status(500).json({ message: errorMessage })
+        const { message, statusCode } = handleError(error)
+        res.status(statusCode).json({ message })
     }
 }
 
@@ -58,7 +58,7 @@ export const deleteFile = async (req: AuthenticatedRequest, res: Response) => {
 
         res.status(200).json({ message: 'File deleted successfully' })
     } catch (error) {
-        const errorMessage = getErrorMessage(error)
-        res.status(500).json({ message: errorMessage })
+        const { message, statusCode } = handleError(error)
+        res.status(statusCode).json({ message })
     }
 }

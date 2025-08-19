@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import * as folderModel from '../models/folderModel.js'
-import { getErrorMessage } from '../utils/errorHandler.js'
+import { handleError } from '../utils/errorHandler.js'
 
 interface AuthenticatedRequest extends Request {
     user: { id: string }
@@ -15,8 +15,8 @@ export const createFolder = async (req: AuthenticatedRequest, res: Response) => 
 
         res.status(200).json({ message: 'Folder created successfully' })
     } catch (error) {
-        const errorMessage = getErrorMessage(error)
-        res.status(500).json({ message: errorMessage })
+        const { message, statusCode } = handleError(error)
+        res.status(statusCode).json({ message })
     }
 }
 
@@ -30,8 +30,8 @@ export const getFolders = async (req: AuthenticatedRequest, res: Response) => {
 
         res.status(200).json(folders)
     } catch (error) {
-        const errorMessage = getErrorMessage(error)
-        res.status(500).json({ message: errorMessage })
+        const { message, statusCode } = handleError(error)
+        res.status(statusCode).json({ message })
     }
 }
 
@@ -44,8 +44,8 @@ export const renameFolder = async (req: AuthenticatedRequest, res: Response) => 
 
         res.status(200).json({ message: 'Folder renamed successfully' })
     } catch (error) {
-        const errorMessage = getErrorMessage(error)
-        res.status(500).json({ message: errorMessage })
+        const { message, statusCode } = handleError(error)
+        res.status(statusCode).json({ message })
     }
 }
 
@@ -58,8 +58,8 @@ export const deleteFolder = async (req: AuthenticatedRequest, res: Response) => 
 
         res.status(200).json({ message: 'Folder deleted successfully' })
     } catch (error) {
-        const errorMessage = getErrorMessage(error)
-        res.status(500).json({ message: errorMessage })
+        const { message, statusCode } = handleError(error)
+        res.status(statusCode).json({ message })
     }
 }
 
@@ -72,7 +72,7 @@ export const getFolderHierarchy = async (req: AuthenticatedRequest, res: Respons
 
         res.status(200).json(folderHierarchy)
     } catch (error) {
-        const errorMessage = getErrorMessage(error)
-        res.status(500).json({ message: errorMessage })
+        const { message, statusCode } = handleError(error)
+        res.status(statusCode).json({ message })
     }
 }

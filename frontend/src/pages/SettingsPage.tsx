@@ -23,7 +23,7 @@ const handleSubscription = async (planType, userId) => {
         }
     } catch(error) {
         if (axios.isAxiosError(error)) {
-            const message = error.response?.data?.error || "Error creating checkout session.";
+            const message = error.response?.data?.message || "Error creating checkout session.";
             showErrorToast(message);
         } else {
             showErrorToast("Unexpected error occurred.");
@@ -48,7 +48,7 @@ export default function SettingsPage() {
 
             } catch(error) {
                 if (axios.isAxiosError(error)) {
-                    const message = error.response?.data?.error
+                    const message = error.response?.data?.message
                     showErrorToast(message)
                 } else {
                     showErrorToast("Unexpected error occurred")
