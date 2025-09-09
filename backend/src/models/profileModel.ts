@@ -30,11 +30,15 @@ export const getUser = async (userId: string) => {
         })
         
         if (!user) {
-            throw { message: 'User not found', statusCode: 400 }
+            throw { message: 'User not found', statusCode: 404 }
         }
         
         return { user }
     } catch (error) {
+        // If error already has statusCode, preserve it
+        if (error && typeof error === 'object' && 'statusCode' in error) {
+            throw error
+        }
         throw { message: 'Something went wrong', statusCode: 500 }
     }
 }
@@ -97,6 +101,10 @@ export const updateUser = async (userId: string, draftFullname: string, draftCou
             },
         })
     } catch (error) {
+        // If error already has statusCode, preserve it
+        if (error && typeof error === 'object' && 'statusCode' in error) {
+            throw error
+        }
         throw { message: 'Something went wrong', statusCode: 500 }
     }
 }
