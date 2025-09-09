@@ -1,9 +1,7 @@
 import { Link } from "react-router-dom"
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faFile, faFolder, faUser } from '@fortawesome/free-solid-svg-icons'
-import Button from "@/components/Button"
 import { useNavigate } from "react-router-dom"
 import { isAuthenticated } from "@/utils/auth"
+import Card from "@/components/Card"
 
 export default function PricingPage() {
     const navigate = useNavigate()
@@ -36,82 +34,35 @@ export default function PricingPage() {
                 <h1 className="text-5xl font-bold text-white mb-6 tracking-tighter">Storage plans for all use cases</h1>
             </div>
             <div className="flex flex-row justify-center gap-4 mb-16">
-                <div className="bg-neutral-900 border border-neutral-700 rounded-lg px-6 py-6 min-w-80">
-                    <div className="min-h-20 mb-10 border-b border-neutral-700 pb-4">
-                        <h2 className="text-neutral-300 text-lg mb-3">Hobby</h2>
-                        <p className="text-white text-4xl">Free</p>
-                    </div>
-                    <div className="flex flex-col gap-2 mb-10">
-                        <div className='flex flex-row items-center gap-2'>
-                            <FontAwesomeIcon className='text-white w-4' icon={faFolder} />
-                            <p className='text-white'>Unlimited folders</p>
-                        </div>
-                        <div className='flex flex-row items-center gap-2'>
-                            <FontAwesomeIcon className='text-white w-4' icon={faFile} />
-                            <p className='text-white'>5 files</p>
-                        </div>
-                        <div className='flex flex-row items-center gap-2'>
-                            <FontAwesomeIcon className='text-white w-4' icon={faUser} />
-                            <p className='text-white'>1 user</p>
-                        </div>
-                    </div>
-                </div>
-                <div className="bg-neutral-900 border border-neutral-700 rounded-lg px-6 py-6 min-w-80">
-                    <div className="min-h-20 mb-10 border-b border-neutral-700 pb-4">
-                        <h2 className="text-neutral-300 text-lg mb-3">Standard</h2>
-                        <div className="flex items-baseline gap-2">
-                            <p className="text-white text-4xl">5€</p>
-                            <span className="text-neutral-400">/mo</span>
-                        </div>
-                    </div>
-                    <div className="flex flex-col gap-2 mb-10">
-                        <div className='flex flex-row items-center gap-2'>
-                            <FontAwesomeIcon className='text-white w-4' icon={faFolder} />
-                            <p className='text-white'>Unlimited folders</p>
-                        </div>
-                        <div className='flex flex-row items-center gap-2'>
-                            <FontAwesomeIcon className='text-white w-4' icon={faFile} />
-                            <p className='text-white'>50 files</p>
-                        </div>
-                        <div className='flex flex-row items-center gap-2'>
-                            <FontAwesomeIcon className='text-white w-4' icon={faUser} />
-                            <p className='text-white'>3 users</p>
-                        </div>
-                    </div>
-                    <Button
-                    buttonText="Get Standard"
-                    type="button"
-                    onClick={handlePlanSelection}
-                    />
-                </div>
-                <div className="bg-neutral-900 border border-neutral-700 rounded-lg px-6 py-6 min-w-80">
-                    <div className="min-h-20 mb-10 border-b border-neutral-700 pb-4">
-                        <h2 className="text-neutral-300 text-lg mb-3">Max</h2>
-                        <div className="flex items-baseline gap-2">
-                            <p className="text-white text-4xl">20€</p>
-                            <span className="text-neutral-400">/mo</span>
-                        </div>
-                    </div>
-                    <div className="flex flex-col gap-2 mb-10">
-                        <div className='flex flex-row items-center gap-2'>
-                            <FontAwesomeIcon className='text-white w-4' icon={faFolder} />
-                            <p className='text-white'>Unlimited folders</p>
-                        </div>
-                        <div className='flex flex-row items-center gap-2'>
-                            <FontAwesomeIcon className='text-white w-4' icon={faFile} />
-                            <p className='text-white'>Unlimited files</p>
-                        </div>
-                        <div className='flex flex-row items-center gap-2'>
-                            <FontAwesomeIcon className='text-white w-4' icon={faUser} />
-                            <p className='text-white'>Unlimited users</p>
-                        </div>
-                    </div>
-                    <Button
-                    buttonText="Get Max"
-                    type="button"
-                    onClick={handlePlanSelection}
-                    />
-                </div>
+                <Card
+                planType="Hobby"
+                planPrice="Free"
+                folderLimit='Unlimited folders'
+                fileLimit='5 files'
+                userLimit='1 user'
+                />
+                <Card
+                planType="Standard"
+                planPrice="5€"
+                monthTag
+                folderLimit='Unlimited folders'
+                fileLimit='50 files'
+                userLimit='3 users'
+                button
+                handlePlanClick={handlePlanSelection}
+                planButtonCta="Get Standard"
+                />
+                <Card
+                planType="Max"
+                planPrice="20€"
+                monthTag
+                folderLimit='Unlimited folders'
+                fileLimit='Unlimited files'
+                userLimit='Unlimited users'
+                button
+                handlePlanClick={handlePlanSelection}
+                planButtonCta="Get Max"
+                />
             </div>
             <div className="flex flex-row justify-center items-center">
                 <p className="text-white">Need an enterprise plan? <span className="underline cursor-pointer">Contact us</span>. Otherwise we won't believe it is real. Why would you pay for this?</p>
