@@ -3,7 +3,7 @@ import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 
 interface ButtonProps {
     disabled?: boolean;
-    buttonText: string;
+    buttonText?: string;
     type: 'button' | 'submit';
     onClick?: () => void;
     loading?: boolean;
