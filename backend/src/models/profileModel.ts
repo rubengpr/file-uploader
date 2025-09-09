@@ -1,6 +1,6 @@
 import prisma from '../lib/prisma.js'
 import { getValidCountryValues, getValidLanguageValues, getValidTimezoneValues } from '../constants/index.js'
-import DOMPurify from 'dompurify'
+import DOMPurify from 'isomorphic-dompurify'
 
 export const getUser = async (userId: string) => {
 
