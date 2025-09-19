@@ -1,0 +1,55 @@
+---
+globs: backend/prisma/**/*.prisma,backend/src/models/**/*.ts
+---
+
+# Database and Model Patterns
+
+## Prisma Schema
+
+- Use UUID for all primary keys: `@id @default(uuid())`
+- Include `createdAt` and `updatedAt` timestamps
+- Use proper foreign key relationships with `@relation`
+- Implement cascade deletes where appropriate: `onDelete: Cascade`
+
+## Model Functions
+
+- Always validate required fields first
+- Check field types and formats
+- Implement business logic validation
+- Sanitize input before database operations
+- Use transactions for multi-table operations
+
+## User Ownership
+
+- Always verify user ownership before operations
+- Use `createdBy` field to track ownership
+- Check permissions before allowing modifications
+- Implement proper access control
+
+## File Operations
+
+- Validate file extensions against allowed list
+- Check file size limits (20MB max)
+- Sanitize file names before storage
+- Map MIME types to internal types
+
+## Folder Hierarchy
+
+- Support nested folder structure with `parentId`
+- Validate folder name patterns
+- Check for circular references
+- Implement proper cleanup on deletion
+
+## Error Handling
+
+- Use consistent error message format
+- Include appropriate HTTP status codes
+- Never expose database errors to clients
+- Log errors for debugging
+
+## Data Validation
+
+- Validate email format with regex
+- Check password strength requirements
+- Sanitize all text inputs
+- Validate file types and sizes

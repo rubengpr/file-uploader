@@ -1,0 +1,91 @@
+---
+globs: backend/src/**/*.ts
+---
+
+# Backend Development Patterns
+
+## Controller Pattern
+
+All controllers follow this structure:
+
+```typescript
+interface AuthenticatedRequest extends Request {
+  user: { id: string };
+}
+
+export const controllerFunction = async (
+  req: AuthenticatedRequest,
+  res: Response
+) => {
+  try {
+    // Extract data from request
+    const { param1, param2 } = req.body;
+    const userId = req.user.id;
+
+    // Call model function
+    const result = await modelFunction({ param1, param2, userId });
+
+    // Return success response
+    res.status(200).json({ message: "Success message", data: result });
+  } catch (error) {
+    const { message, statusCode } = handleError(error);
+    res.status(statusCode).json({ message });
+  }
+};
+```
+
+## Model Pattern
+
+All models follow this validation and error handling pattern:
+
+```typescript
+export const modelFunction = async (data: InterfaceType) => {
+  const { field1, field2, userId } = data
+
+  // 1. Required field validation
+  if (!field1 || !field2 || !userId) {
+    throw { message: 'Missing required fields', statusCode: 400 }
+  }
+
+  // 2. Type validation
+  if (typeof field1 !== 'string' || typeof field2 !== 'number') {
+    throw { message: 'Invalid fields value format', statusCode: 400 }
+  }
+
+  // 3. Business logic validation
+  if (field1.length < 1 || field1.length > 60) {
+    throw { message: 'Field must be between 1 and 60 characters', statusCode: 400 }
+  }
+
+  // 4. Sanitization
+  const sanitizedField = DOMPurify.sanitize(field1)
+  const cleanField = sanitizeInput(sanitizedField)
+
+  // 5. Database operation
+  try {
+    const result = await prisma.model.create({ data: { ... } })
+    return result
+  } catch (error) {
+    throw { message: 'Something went wrong', statusCode: 500 }
+  }
+}
+```
+
+## Error Handling
+
+- Always use `handleError()` utility for consistent error responses
+- Throw objects with `message` and `statusCode` properties
+- Use appropriate HTTP status codes (400, 401, 403, 404, 500)
+- Never expose internal errors to clients
+
+## Authentication
+
+- All protected routes use `AuthenticatedRequest` interface
+- Access user ID via `req.user.id`
+- Validate user ownership before database operations
+
+## Input Sanitization
+
+- Always sanitize user input with `DOMPurify.sanitize()`
+- Use `sanitizeInput()` utility for additional cleaning
+- Validate file names with `sanitize-filename` package

@@ -1,0 +1,54 @@
+---
+globs: backend/src/**/*.ts,frontend/src/**/*.tsx
+---
+
+# Security Best Practices
+
+## Input Sanitization
+
+- Always sanitize user input with `DOMPurify.sanitize()`
+- Use `sanitizeInput()` utility for additional cleaning
+- Sanitize file names with `sanitize-filename` package
+- Validate input types and formats
+
+## Authentication
+
+- Use JWT tokens for authentication
+- Implement refresh token strategy
+- Validate tokens on protected routes
+- Store tokens securely (httpOnly cookies recommended)
+
+## Authorization
+
+- Check user ownership before operations
+- Verify permissions for each action
+- Use middleware for route protection
+- Implement role-based access control
+
+## File Security
+
+- Validate file types against whitelist
+- Check file size limits
+- Scan for malicious content
+- Use secure file storage (Supabase)
+
+## API Security
+
+- Implement rate limiting
+- Use CORS properly
+- Validate all request data
+- Handle errors securely
+
+## Password Security
+
+- Use bcrypt for password hashing
+- Implement strong password requirements
+- Use secure password reset tokens
+- Never log passwords
+
+## Data Protection
+
+- Use HTTPS in production
+- Encrypt sensitive data
+- Implement proper session management
+- Follow GDPR compliance practices

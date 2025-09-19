@@ -1,0 +1,90 @@
+---
+globs: frontend/src/**/*.tsx,frontend/src/**/*.ts
+---
+
+# Frontend Development Patterns
+
+## Component Structure
+
+All React components follow this pattern:
+
+```typescript
+import { useState, useEffect, FormEvent } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faIconName } from "@fortawesome/free-solid-svg-icons";
+import ComponentName from "@/components/ComponentName";
+import useStore from "@/stores/useStore";
+
+interface ComponentProps {
+  prop1: string;
+  prop2?: number;
+  onAction: () => void;
+}
+
+export default function ComponentName({
+  prop1,
+  prop2,
+  onAction,
+}: ComponentProps) {
+  const [state, setState] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+
+  useEffect(() => {
+    // Effect logic
+  }, [dependencies]);
+
+  const handleAction = async (e: FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      // Action logic
+    } catch (error) {
+      setErrorMsg("Error message");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return <div className="tailwind-classes">{/* JSX content */}</div>;
+}
+```
+
+## State Management
+
+- Use Zustand stores for global state: [frontend/src/stores/](mdc:frontend/src/stores/)
+- Local state with `useState` for component-specific data
+- Always initialize state with appropriate default values
+
+## Form Handling
+
+- Use controlled components with `useState`
+- Implement loading states with `isLoading` boolean
+- Show error messages with `errorMsg` state
+- Always prevent default form submission
+
+## API Integration
+
+- Use axios for HTTP requests
+- Handle errors with try-catch blocks
+- Show loading states during API calls
+- Use toast notifications for user feedback
+
+## Styling
+
+- Use Tailwind CSS classes exclusively
+- Follow the dark theme pattern: `bg-gray-700`, `text-white`, `border-white`
+- Use consistent spacing: `px-4 py-2`, `gap-3`, `mt-6`
+- Implement hover states: `hover:bg-gray-800`
+
+## Icons
+
+- Use FontAwesome icons with `@fortawesome/react-fontawesome`
+- Import from `@fortawesome/free-solid-svg-icons`
+- Use `faSpinner` for loading states
+
+## File Operations
+
+- Use custom hooks for file operations: [frontend/src/hooks/](mdc:frontend/src/hooks/)
+- Integrate with Supabase for file storage
+- Always validate file types and sizes before upload

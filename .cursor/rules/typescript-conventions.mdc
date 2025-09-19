@@ -1,0 +1,54 @@
+---
+globs: *.ts,*.tsx
+---
+
+# TypeScript Conventions
+
+## Type Definitions
+
+- Always define interfaces for component props
+- Use descriptive interface names: `AuthenticatedRequest`, `CreateFileData`
+- Export interfaces that are used across multiple files
+- Use union types for limited string values: `'button' | 'submit'`
+
+## Function Signatures
+
+- Always provide explicit return types for functions
+- Use `async/await` for asynchronous operations
+- Prefer arrow functions for simple operations
+- Use function declarations for complex logic
+
+## Error Handling
+
+- Use typed error objects: `{ message: string, statusCode: number }`
+- Always handle errors in try-catch blocks
+- Provide meaningful error messages
+- Use proper HTTP status codes
+
+## Import/Export
+
+- Use named exports for utilities and types
+- Use default exports for React components
+- Group imports: external libraries, internal modules, types
+- Use absolute imports with `@/` prefix for internal modules
+
+## Prisma Integration
+
+- Use Prisma client for all database operations
+- Define proper select clauses to limit returned fields
+- Use transactions for multi-step operations
+- Handle Prisma errors appropriately
+
+## Validation
+
+- Validate input types before processing
+- Use utility functions for common validations
+- Sanitize all user input
+- Check required fields before database operations
+
+## API Responses
+
+- Always return consistent response structure
+- Include appropriate HTTP status codes
+- Use meaningful success/error messages
+- Return data in consistent format
